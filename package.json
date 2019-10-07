@@ -1,8 +1,8 @@
 {
-  "name": "music-bot",
+  "name": "mint-bot",
   "version": "1.0.0",
-  "repository": "https://github.com/TannerGabriel/discord-music-bot.git",
-  "description": "A simple discord music bot",
+  "repository": "https://github.com/UtopicUnicorns/mint-bot.git",
+  "description": "bot for discord mint server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,7 @@
     "music",
     "bot"
   ],
-  "author": "Gabriel Tanner",
+  "author": "UtopicUnicorns",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^11.4.2",
