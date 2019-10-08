@@ -38,6 +38,16 @@ client.once('disconnect', () => {
 	console.log('Disconnect!');
 });
 
+	client.on("guildMemberAdd", (guildMember) => {
+        var ReBeL = guildMember.user.username;
+        var bel = ["@ just started brewing some minty tea!", "Smells like debian in here, oh it's just @ !", "@ is using Arch BTW!"]
+        var moon = bel[Math.floor(Math.random() * bel.length)];
+        moon = moon.replace('@', ReBeL)
+		client.channels.get('628984660298563584').send(moon)
+        guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Member"));
+	  });
+
+
 client.on('message', async message => {
 	const args = message.content.slice(1).split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -45,6 +55,8 @@ client.on('message', async message => {
 
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix)) return;
+
+
 
 	try {
 		command.execute(message);
@@ -60,6 +72,7 @@ client.on('message', async message => {
 		let seconds = totalSeconds % 60;
 		message.reply(`${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
 	}
+
 
 
 

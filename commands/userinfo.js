@@ -1,9 +1,12 @@
 module.exports = {
 	name: 'userinfo',
-	description: 'Get information about a user.',
+	description: 'userinfo here ',
 	execute(message) {
-		const member = message.mentions.members.first();
-		const user = member.user;
-		message.channel.send(`Name: ${user.username}, ID: ${user.id}, Username: ${user.lastMessage.member.nickname}`);
+
+    let user = message.mentions.users.first() || message.author;
+        message.channel.send(`>>> Username: ${user.username} \nUser ID: ${user.id} \nCreated at: ${user.createdAt} \nLast message: ${user.lastMessage} \nAvatar: ${user.displayAvatarURL}`);
+
+
+
 	},
 };
