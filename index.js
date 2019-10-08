@@ -61,9 +61,7 @@ client.on('message', async message => {
 		message.reply(`${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
 	}
 
-client.on('guildMemberAdd', member => {
-    member.guild.channels.get('628984660298563584').send("Welcome");
-});
+
 
 });
 
