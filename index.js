@@ -49,9 +49,16 @@ client.on('message', async message => {
 	try {
 		command.execute(message);
 	} catch (error) {
-		console.error(error);
+		//console.error(error);
         //sentMessage.react(':x:');
 		//message.reply('+:x:');
+		let totalSeconds = (client.uptime / 1000);
+		let days = Math.floor(totalSeconds / 86400);
+		let hours = Math.floor(totalSeconds / 3600);
+		totalSeconds %= 3600;
+		let minutes = Math.floor(totalSeconds / 60);
+		let seconds = totalSeconds % 60;
+		message.reply(`${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
 	}
 
 client.on('guildMemberAdd', member => {
