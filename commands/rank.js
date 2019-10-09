@@ -5,12 +5,18 @@ module.exports = {
 
               // client.on("message"), (message) => {
                 if(message.content === "!rank debian") {
-                message.channel.send("> Joined/Left Debian!");
+                message.channel.send("> Left Debian!");
                 let role = message.guild.roles.find(r => r.name === "Debian");
                 let member = message.member;
-                member.addRole(role).catch(console.error);
+                if(message.member.roles.find(r => r.name === "Debian") {
                 member.removeRole(role).catch(console.error);
                 }
+                else {
+                message.channel.send("> Joined Debian!");
+                member.addRole(role).catch(console.error);
+                }
+                }
+
                 if(message.content === "!rank new") {
                 message.channel.send("> Joined/Left New!");
                 let role = message.guild.roles.find(r => r.name === "New");
