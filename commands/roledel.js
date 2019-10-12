@@ -1,3 +1,4 @@
+const fs = require('fs');
 module.exports = {
 	name: 'roledel',
 	description: 'Delete roles',
@@ -8,8 +9,6 @@ module.exports = {
                 let user = message.author;
                 let args = message.content.slice().split(' ');
                 let filter = ['Admin', 'Artemis', 'Bot', 'Moderator', 'fired', 'V.I.P.', 'Musician', 'Scholar', 'Lucky', 'Day 1 User', 'Discord.RSS'];
-                //let rolerank = message.guild.roles.find(r => r.name === `${args[1]}`);
-                //let member = message.member;
                 
                 if(message.content === "!roledel") {
 
@@ -26,11 +25,22 @@ module.exports = {
                 return message.channel.send(`${user}\n**${args[1]}** is not a role!`);
                 }
                 
-                //let checking2 = message.member.roles.find(r => r.name === `${args[1]}`);
-                //if(checking2) {
-                    message.guild.roles.find(r => r.name === `${args[1]}`).delete();
+                message.guild.roles.find(r => r.name === `${args[1]}`).delete();
+
+                let array = fs.readFileSync('ranks.txt').toString().split("\n");
+                let element = `${args[1]}`;
+
+                let str = "";
+                for(let i of array) {
+                    if (i != element)
+                    str += i + "\n";
+                    }
+
+                fs.writeFile("ranks.txt", str, (error) => {
+                    if (error) throw error;
+                });
+
                 return message.channel.send(`${user}\nYou have deleted rank: **${args[1]}**!`);
-                //}
             
 
 
