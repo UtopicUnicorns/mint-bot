@@ -4,7 +4,7 @@ const {
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
 const fs = require('fs');
-const youtube = new YouTube('AIzaSyBkwOiad7j4E7GJ4lgLfuNbiEaFxEBmPOM');
+const youtube = new YouTube('YOURAPIKEYHERE');
 
 module.exports = {
 	name: 'play',
