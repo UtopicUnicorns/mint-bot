@@ -1,5 +1,8 @@
 const fs = require('fs')
 const Discord = require('discord.js');
+//
+const request = require("request");
+//
 const Client = require('./client/Client');
 const {
 	prefix,
@@ -118,21 +121,97 @@ client.once('disconnect', () => {
         guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Member"));
 	  });
 
+      client.on("presenceUpdate", (oldMember, newMember) => {
+        if(oldMember.presence.status !== newMember.presence.status){
+            //console.log(`${newMember.user.username} is now ${newMember.presence.status}`);
+
+            //
+            if(`${newMember.user.username}` === "UtopicUnicorn") {
+                if(`${newMember.presence.status}` === "dnd") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+            if(`${newMember.user.username}` === "Trap Connoisseur") {
+                if(`${newMember.presence.status}` === "online") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+            if(`${newMember.user.username}` === "azadad96") {
+                if(`${newMember.presence.status}` === "online") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+            if(`${newMember.user.username}` === "GardenData61371") {
+                if(`${newMember.presence.status}` === "online") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+            if(`${newMember.user.username}` === "-phobos") {
+                if(`${newMember.presence.status}` === "online") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+            if(`${newMember.user.username}` === "LGBTQueen") {
+                if(`${newMember.presence.status}` === "online") {
+                client.channels.get('628984660298563584').send(`${newMember.user.username} has enlightened us with their presence!`);
+                }
+            }
+            //
+        }
+    });
+
 
 client.on('message', async message => {
 
 
+
+
 	const args = message.content.slice(1).split(/ +/);
 	const commandName = args.shift().toLowerCase();
-	const command = client.commands.get(commandName);
+    const command = client.commands.get(commandName);
+    
+    if (message.author.bot) return;
+    
+    if(message.content.includes("Arch")) {
+        let archemote = client.emojis.find(emoji => emoji.name === "arch");
+        message.channel.send(`I am using Arch BTW! ${archemote}`);
+    }
+
+    if(message.content.includes("Fedora")) {
+        message.channel.send("M'Linux");
+    }
+
+    if(message.content.includes("Artemis")) {
+        message.channel.send("Did you call me?");
+    }
+
+
+    //
+        let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+        let key = "YOURAPIHERE";
+        let text = message.content;
+        let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
+        request(url, { json: true }, (err, res, body) => {
+            //console.log(JSON.stringify(body));
+            if(JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
+                return //console.log("Omit");
+            }
+            if (err) return message.channel.send(err);
+            message.channel.send(body.text);
+            //console.log(body.text);
+        });
+    //
 
     if (message.author.bot) return;
     if(message.content.startsWith("^")) {
         message.channel.send("I agree!");
     }
-   // if(message.content.startsWith("Windows")) {
-   //     message.channel.send("Whatever you tried to say, it became irrelevant after you mentioned Windows.");
-   // }
+    
     if (!message.content.startsWith(prefix)) return;
 
 
