@@ -12,4 +12,4 @@ set NPM to python 2.7
 
 Follow the module errors and install everything trough npm
 
-Also install node-opus
+Also install node-opus trough NPM and ffmpeg trough your linux distribution's package manager
