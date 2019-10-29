@@ -54,7 +54,7 @@ client.once('ready', () => {
             `!top`,
             `${client.users.size} total users`
         ];
-        client.user.setActivity({RAN[~~(Math.random() * RAN.length)], type: 'LISTENING'});
+        client.user.setActivity(RAN[~~(Math.random() * RAN.length)], type:{ 'LISTENING'});
         
     }, 10000);
 });
