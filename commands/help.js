@@ -28,7 +28,7 @@ module.exports = {
 		.setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
 		.addField('!help', 'Display this page', true)
 		.addField('!rank', 'User !rank to see all available roles and use !rank RANKNAME to set a rank', true)
-		.addField('!neofetch', 'Show bot server info in bot', true)
+		.addField('!man', 'Shows you man pages', true)
 		.addField('!userinfo', 'Show your user info or mention a user to get theirs', true)
 		.addField('!search', 'Search duck duck go', true)
 		.addBlankField()

@@ -1,0 +1,33 @@
+const Discord = module.require('discord.js');
+const request = require("request");
+module.exports = {
+    name: 'man',
+    description: 'Man pages basically',
+    execute(message) {
+        if(message.content === "!man") {
+            return message.channel.send("!man ARGS");
+        }
+
+        let args = message.content.slice(4);
+        let baseurl = "https://www.mankier.com/api/v2/mans/?q=";
+        let search = args;
+        let url = baseurl + search + "&sections=1";
+        request(url, { json: true }, (err, res, body) => {
+            body2 = body.results[0];
+            if(!body2) {
+                return message.channel.send("Page not found");
+            }
+            if (err) return message.channel.send(err);
+
+            let embed = new Discord.RichEmbed()
+            .setTitle(JSON.stringify(body2.name).replace(/"/g, ``))
+            .setDescription(JSON.stringify(body2.description).replace(/"/g, ``))
+            .setColor(`RANDOM`)
+            message.channel.send({ embed: embed });
+            return
+
+
+            
+        });
+    }
+};

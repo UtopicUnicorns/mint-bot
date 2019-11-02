@@ -1,5 +1,6 @@
 const fs = require('fs')
 const Discord = require('discord.js');
+const Canvas = require('canvas');
 const request = require("request");
 const Client = require('./client/Client');
 const {
@@ -52,9 +53,10 @@ client.once('ready', () => {
             `!rank`,
             `!userinfo`,
             `!top`,
+            `your breathing`,
             `${client.users.size} total users`
         ];
-        client.user.setActivity(RAN[~~(Math.random() * RAN.length)], type:{ 'LISTENING'});
+        client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {type: 'LISTENING'});
         
     }, 10000);
 });
@@ -68,19 +70,41 @@ client.once('disconnect', () => {
     console.log('Disconnect!');
 });
 
-client.on("guildMemberAdd", (guildMember) => {
+client.on("guildMemberAdd", async (guildMember) => {
         var ReBeL = guildMember.user.username;
-        var bel = ["@ just started brewing some minty tea!", "Smells like debian in here, oh it's just @ !", "@ is using Arch BTW!", "Ubuntu: The lovechild of Debian and @!"];
+        var bel = ["@\n just started brewing some minty tea!", "Smells like debian in here, oh it's just \n@!", "@\nis using Arch BTW!", "Ubuntu: The lovechild of Debian and\n@!"];
         var moon = bel[~~(Math.random() * bel.length)];
         moon = moon.replace('@', ReBeL)
-        client.channels.get('628984660298563584').send(moon)
+
+
+
+        const canvas = Canvas.createCanvas(700, 250);
+	const ctx = canvas.getContext('2d');
+	const background = await Canvas.loadImage('./mintwelcome.png');
+	ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+	ctx.strokeStyle = '#74037b';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '20px sans-serif';
+    ctx.shadowColor="black";
+    ctx.shadowBlur=5;
+	ctx.fillStyle = '#FFFFFF';
+	ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+
+	ctx.beginPath();
+	ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.clip();
+
+    const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+    
+
+
+        client.channels.get('628984660298563584').send(attachment);
         guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Member"));
 });
 
 
 client.on("presenceUpdate", (oldMember, newMember) => {
-    
-    console.log("something");
     if(oldMember.presence.game !== newMember.presence.game) {
         
         // let streamer = newMember.roles.find(r => r.name === `Streamer`);
@@ -169,6 +193,10 @@ client.on('message', async message => {
             return;
         }
     }
+
+   // if (message.content === '!join') {
+	//	client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
+//	}
     
     if(message.content.includes("Stop it artemis")) {
         if(message.author.username === "UtopicUnicorn") {
@@ -210,7 +238,7 @@ client.on('message', async message => {
     request(url, { json: true }, (err, res, body) => {
         //console.log(JSON.stringify(body.text));
         if(!body.text) {
-            return:
+            return
         }
         
         if(JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
@@ -299,9 +327,9 @@ client.on('message', async message => {
             message.reply("You earned the title " + rulerofmessages);
         }
     }
-
     //15
     if(score.level > 14 && score.level < 19) {
+        //console.log("HELLO");
         let checking4 = message.member.roles.find(r => r.name === `Fresh Messenger`);
         if (!checking4) {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);

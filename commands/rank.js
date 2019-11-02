@@ -13,7 +13,8 @@ module.exports = {
                 let rolerank = message.guild.roles.find(r => r.name === `${args[1]}`);
                 let member = message.member;
                 if(message.content === "!rank") {
-                    let array = message.guild.roles.map(role => role.name);
+                    let array = message.guild.roles.map(role => role.name).sort();
+                    //console.log(array);
                 let filter = verynicefilter;
                 let str = "";
                     for(let i of array) {
