@@ -3,8 +3,8 @@ module.exports = {
 	description: 'Clone bot',
 	execute(message) {
         let user = message.author;
-        message.guild.channels.get('628992550836895744').send(`${user} I am fetching the package now...`);
-		message.guild.channels.get('628992550836895744').send( {
+        message.guild.channels.get('642882039372185609').send(`${user} I am fetching the package now...`);
+		message.guild.channels.get('642882039372185609').send( {
     files: ['./clone.tar']
 });
 

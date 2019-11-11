@@ -8,27 +8,29 @@ const {
     prefix,
     token,
     yandex,
+    rolemoteconf,
+    rolenameconf,
     dadjokes
 } = require('./config.json');
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./scores.sqlite');
-
 const client = new Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const queue = new Map();
+
+let emojiname = rolemoteconf;
+let rolename= rolenameconf;
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
 
-console.log(client.commands);
+//console.log(client.commands);
 
 client.once('ready', () => {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-    //client.channels.get('628992550836895744').send("Oh no, I think I just crashed!");
-    
     
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
@@ -41,30 +43,48 @@ client.once('ready', () => {
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
     client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
     
-    
     setInterval(() => {
         client.channels.get('628984660298563584').send(dadjokes[~~(Math.random() * dadjokes.length)]);
     }, 43200000);
-    
-    
+
     setInterval(() => {
-        //client.channels.get('628984660298563584').send("test");
+        let today = new Date();
+        let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        client.channels.get('640949324829818914').setTopic('Chatter and off-topic here | '+client.users.size+' users | '+date+' '+time);
+            }, 1000);
+    
+            setInterval(() => {
+                let totalSeconds = (client.uptime / 1000);
+                let days = Math.floor(totalSeconds / 86400);
+                let hours = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = Math.ceil(totalSeconds % 60);
+                client.channels.get('628992550836895744').setTopic(`${client.users.size} users | bot uptime | ${days} days | ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
+            }, 1000);
+
+
+    setInterval(() => {
         var RAN = [
             `!help`,
             `!rank`,
             `!userinfo`,
             `!top`,
-            `your breathing`,
             `${client.users.size} total users`
         ];
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {type: 'LISTENING'});
         
     }, 10000);
+
+    let testchannel = client.channels.get('643176341079851019');
+    testchannel.fetchMessage('643177494848995349');
+    testchannel.fetchMessage('643182486926524417');
+    testchannel.fetchMessage('643399090666733569');
 });
 
 client.once('reconnecting', () => {
     console.log('Reconnecting!');
-    //client.channels.get('628992550836895744').send("I had to reconnect!");
 });
 
 client.once('disconnect', () => {
@@ -73,12 +93,9 @@ client.once('disconnect', () => {
 
 client.on("guildMemberAdd", async (guildMember) => {
         var ReBeL = guildMember.user.username;
-        var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!"];
+        var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
         var moon = bel[~~(Math.random() * bel.length)];
         moon = moon.replace('@', ReBeL)
-
-
-
         const canvas = Canvas.createCanvas(700, 250);
 	const ctx = canvas.getContext('2d');
 	const background = await Canvas.loadImage('./mintwelcome.png');
@@ -90,30 +107,18 @@ client.on("guildMemberAdd", async (guildMember) => {
     ctx.shadowBlur=5;
 	ctx.fillStyle = '#FFFFFF';
     ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
-    
     ctx.font = '21px sans-serif';
 	ctx.fillStyle = '#ffffff';
     ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-    
     const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
-	// Move the image downwards vertically and constrain its height to 200, so it's a square
 	ctx.drawImage(avatar, 600, 25, 50, 50);
-
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-    
-
-
         client.channels.get('628984660298563584').send(attachment);
-        guildMember.addRole(guildMember.guild.roles.find(role => role.name === "Member"));
+        guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
 });
-
 
 client.on("presenceUpdate", (oldMember, newMember) => {
     if(oldMember.presence.game !== newMember.presence.game) {
-        
-        // let streamer = newMember.roles.find(r => r.name === `Streamer`);
-        // if(streamer) {
-            //console.log(newMember.presence.game);
             if(!newMember.presence.game) {
                 return;
             }
@@ -129,12 +134,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                 if(client.guilds.get('628978428019736619')) {
                     client.channels.get('628992550836895744').send(` ` + " " + newMember.user.username + " just went live!" + "\n" + newMember.presence.game.name + "\n" + newMember.presence.game.url);
                 }
-                //utopic
-                if(client.guilds.get('638687097880051723')) {
-                    client.channels.get('638687098316128268').send(`@here` + " " + newMember.user.username + " just went live!" + "\n" + newMember.presence.game.name + "\n" + newMember.presence.game.url);
-                }
             }
-        // }
     }
     
     if(oldMember.presence.status !== newMember.presence.status){
@@ -152,50 +152,120 @@ client.on("presenceUpdate", (oldMember, newMember) => {
     }
 });
 
+//reaction roles
+
+client.on("messageReactionAdd",(reaction,user)=>{
+    if (reaction.message.channel.id === '643176341079851019') {
+    if(!user) return;
+    if(user.bot)return;
+    if(!reaction.message.channel.guild) return;
+    for(let n in emojiname){
+    if(reaction.emoji.name == emojiname[n]){
+      let role = reaction.message.guild.roles.find(r => r.name == rolename[n]);          
+      reaction.message.guild.member(user).addRole(role).catch(console.error);
+      client.channels.get('643176341079851019').send("Joined "+role)
+      .then(message => {
+        message.delete(5000)
+      });
+    }
+  }
+  }});
+  
+  
+  client.on("messageReactionRemove",(reaction,user)=>{
+    if (reaction.message.channel.id === '643176341079851019') {
+    if(!user) return;
+    if(user.bot)return;
+    if(!reaction.message.channel.guild) return;
+    for(let n in emojiname){
+    if(reaction.emoji.name == emojiname[n]){
+      let role = reaction.message.guild.roles.find(r => r.name == rolename[n]);   
+      reaction.message.guild.member(user).removeRole(role).catch(console.error);
+      client.channels.get('643176341079851019').send("Left "+role)
+      .then(message => {
+        message.delete(5000)
+      });
+    }
+    }
+  }});
+  //
 
 client.on('message', async message => {
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
+    //Reaction roles
+    if(message.content.startsWith(prefix+"reaction")){
+        if(!message.channel.guild) return;
+        for(let n in emojiname){
+        var emoji =[message.guild.emojis.find(r => r.name == emojiname[n])];
+        for(let i in emoji){
+         message.react(emoji[i]);
+        }
+       }
+      }
 
+    //Disboard watch
     if(message.author.username === "DISBOARD") {
-        //console.log(message.embeds[0].description);
         if(message.embeds[0].description.includes("Bump done")) {
     setTimeout(() => {
         client.channels.get('628984660298563584').send("You can !d bump");
     }, 7200000);
     return
+        }
     }
-}
+    //
     
     if (message.author.bot) return;
-
+    //Mute filter
     let filtermute = fs.readFileSync('mute.txt').toString().split("\n");
     if(filtermute.includes(message.author.id)) {
         console.log(message.author.username + ' ' + message.content);
         message.delete()
     return
     }
-
-    //anarchydelete = ['fuck', 'FUCK', 'Fuck', 'SHIT', 'shit', 'Shit'];
-    //if(anarchydelete.some(word => message.content.includes(word))) {
-     //   if(message.author.username === "LLJ") {
-     //       message.delete()
-     //       return message.reply("Behave yourself.");
-   //     }
-   // }
-
-    if (message.channel.type == "dm") {
-        if(message.author.id === "606067073445003284") {
-            client.channels.get('628984660298563584').send(message.content);
-            return;
+    //
+    //Artemis Talk
+   if (message.channel.id === '642882039372185609') {
+    if(message.author.id === "127708549118689280") {
+        client.channels.get('640949324829818914').send(message.content);
+        return;
+    }
+}
+    //
+    //chatgiffilter
+    if (message.channel.id === '640949324829818914') {
+        if(message.content.startsWith("https://tenor.com")) {
+            message.delete()
         }
     }
-
-   // if (message.content === '!join') {
-	//	client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
-	//}
-    
+    if (message.channel.id === '628984660298563584') {
+        if(message.content.startsWith("https://tenor.com")) {
+            message.delete()
+        }
+    }
+    if (message.channel.id === '628984660298563584') {
+    if(message.content.includes(".gif")) {
+        message.delete();
+    }}
+    if (message.channel.id === '640949324829818914') {
+        if(message.content.includes(".gif")) {
+            message.delete();
+        }}
+    //
+    //Direct Message handle
+    if (message.channel.type == "dm") {
+        return
+    }
+    //
+    //Simulate guild member join
+    if (message.content === '!join') {
+        if(message.author.id === "127708549118689280") {
+		client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
+        }
+    }
+    //
+    //bot reactions
     if(message.content.includes("Stop it artemis")) {
         if(message.author.id === "127708549118689280") {
             message.channel.send(`THIS IS NOT A PHASE DAD, YOU DONT KNOW ME!`);
@@ -225,14 +295,11 @@ client.on('message', async message => {
         }
     }
     
-    if(message.content.includes("Fedora")) {
-        message.channel.send("M'Linux");
-    }
-    
     if(message.content.includes("Artemis")) {
         message.react("👀");
     }
-     
+    //
+    //translate
     let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
     let key = yandex;
     let text = message.content;
@@ -251,20 +318,11 @@ client.on('message', async message => {
         });
         if (err) return message.channel.send(err);
     });
-  
+    //
+
     if (message.author.bot) return;
     if(message.content.startsWith("^")) {
         message.channel.send("I agree!");
-    }
-    
-    if(message.content.startsWith("!uptime")) {
-        let totalSeconds = (client.uptime / 1000);
-        let days = Math.floor(totalSeconds / 86400);
-        let hours = Math.floor(totalSeconds / 3600);
-        totalSeconds %= 3600;
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = Math.ceil(totalSeconds % 60);
-        message.reply(`${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
     }
 
     let score;

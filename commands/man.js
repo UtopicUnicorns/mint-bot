@@ -5,7 +5,8 @@ module.exports = {
     name: 'man',
     description: 'Man pages basically',
     execute(message) {
-        
+        if (message.channel.id === '628992550836895744') {
+
         if(message.content === "!man") {
             return message.channel.send("!man ARGS");
         }
@@ -29,5 +30,10 @@ module.exports = {
               message.channel.send({ embed });
               return
             })
+
+        }
+        else {
+        message.reply("You may use this command in <#628992550836895744>");
+        }
     }
 };

@@ -6,6 +6,9 @@ module.exports = {
 	name: 'rank',
 	description: 'Set a rank!',
 	async execute(message) {
+        return
+        if (message.channel.id === '629020686496563220') {
+
                 let user = message.author;
                 let args = message.content.slice().split(' ');
                 let filter = verynicefilter2;
@@ -40,17 +43,21 @@ module.exports = {
                 }
 
                 if(filter.includes(rolerank.id)) {
-                    return message.channel.send(`${user}\n**${args[1]}** is a forbidden role!`);
+                    return message.channel.send(`${user}\n**${rolerank}** is a forbidden role!`);
                 }
                 
                 let checking2 = message.member.roles.find(r => r.name === `${args[1]}`);
                 if(checking2) {
                 member.removeRole(rolerank).catch(console.error);
-                return message.channel.send(`${user}\nYou already had the role **${args[1]}**, so I removed it for you.`);
+                return message.channel.send(`${user}\nYou already had the role **${rolerank}**, so I removed it for you.`);
                 }
             
                 message.channel.send(`${user}\nYou have joined the **${rolerank}** rank!`);
                 member.addRole(rolerank).catch(console.error);
+            }
+            else {
+                message.reply("You may use this command in <#629020686496563220>");
+                }
  
 	},
 };
