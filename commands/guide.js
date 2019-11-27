@@ -1,0 +1,40 @@
+const Discord = module.require('discord.js');
+const fs = require("fs");
+module.exports = {
+    name: 'guide',
+    description: 'Guides here',
+    execute(message) {
+        if (message.channel.id === '648911771624538112') {
+            let args = message.content.slice(7).split(' ');
+            fs.stat(`./guide/${args[0]}/${args[1]}.txt`, function(err, fileStat) {
+                if (err) {
+                    if (err.code == 'ENOENT') {
+                        let embed = new Discord.RichEmbed()
+                            .setDescription(`Guide not found!`)
+                            .setColor(`RANDOM`)
+                            .setTimestamp();
+                        message.author.send({
+                            embed: embed
+                        });
+                        message.delete();
+                        return;
+                    }
+                } else {
+                    openfile = fs.readFileSync(`./guide/${args[0]}/${args[1]}.txt`).toString();
+                    let embed = new Discord.RichEmbed()
+                        .setDescription(`${openfile}`)
+                        .setColor(`RANDOM`)
+                        .setTimestamp();
+                    message.author.send({
+                        embed: embed
+                    });
+                    message.delete();
+                    return;
+                }
+            });
+        } else {
+            message.delete();
+            message.reply("You may use this command in <#648911771624538112>");
+        }
+    },
+};
