@@ -38,24 +38,20 @@ module.exports = {
             .addField('!userinfo', 'Show your user info or mention a user to get theirs', true)
             .addField('!search', 'Search duck duck go', true)
             .addField('!guide', '!guide [NUM] [NUM]', true)
-            .addField('!package', 'Looks up packages for you.', true)
+            .addField('!package', 'Looks up packages for you', true)
             .addBlankField()
             .addField('!play', 'Play a song', true)
             .addField('!stop', 'Stop the music', true)
             .addField('!skip', 'Skips the current song', true)
             .addField('!np', 'Shows the current song', true)
             .addBlankField()
-            .addField('!bird', 'Show a random bird', true)
-            .addField('!cat', 'Show a random cat', true)
-            .addField('!catfact', 'Show a random cat fact', true)
-            .addField('!dog', 'Show a random dog', true)
-            .addField('!fox', 'Show a random fox', true)
+            .addField('!bird !cat !dog !fox', 'Show a random animal', true)
+            .addField('!xkcd', 'Today xkcd use !xkcd random for random xkcd', true)
             .addField('!top !points', 'See your points and level and leaderboard', true)
             .setFooter('Artemis is our overlord!')
             .setTimestamp();
         message.channel.send({
             embed: embed
         });
-        return;
     },
 };
