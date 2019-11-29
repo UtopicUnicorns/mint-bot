@@ -210,8 +210,24 @@ client.on('message', async message => {
     };
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
-        if (message.author.id === "127708549118689280") {
-            client.channels.get('640949324829818914').send(message.content);
+        if (message.author.id !== "440892659264126997") {
+            let cargs = message.content.slice(5);
+            if(message.content.startsWith("!channel")) {
+                let readname = fs.readFileSync('channelset.txt').toString().split("\n");
+                let channelname = client.channels.get(`${readname}`);
+                return message.channel.send(channelname.name);
+            }
+            if(message.content.startsWith("!set")) {
+                fs.writeFile('channelset.txt', cargs, function(err) {
+                    if (err) throw err;
+                });
+                return message.channel.send('Set channel id to: '+cargs);
+            }
+            let channelcheck = fs.readFileSync('channelset.txt').toString().split("\n");
+            if(!client.channels.get(`${channelcheck}`)) {
+               return message.channel.send("Enter a valid channel ID first!\n!set ChannelID");
+            }
+            client.channels.get(`${channelcheck}`).send(message.content);
             return;
         }
     }
