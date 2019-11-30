@@ -208,6 +208,10 @@ client.on('message', async message => {
             process.exit(1);
         })
     };
+    if (message.content === "!ping") {
+        const m = await message.channel.send("Ping?");
+        m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+    }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
         if (message.author.id !== "440892659264126997") {
