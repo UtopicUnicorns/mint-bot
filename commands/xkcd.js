@@ -14,8 +14,10 @@ module.exports = {
             }, (err, res, body) => {
                 if (err) return message.channel.send(err);
                 const embed = new Discord.RichEmbed()
-                    .setDescription(body.alt)
+                    .setDescription(body.safe_title)
+                    .setColor('#RANDOM')
                     .setImage(body.img)
+                    .setFooter(body.alt)
                 message.channel.send({
                     embed: embed
                 });
@@ -28,8 +30,10 @@ module.exports = {
         }, (err, res, body) => {
             if (err) return message.channel.send(err);
             const embed = new Discord.RichEmbed()
-                .setDescription(body.alt)
+                .setDescription(body.safe_title)
+                .setColor('#RANDOM')
                 .setImage(body.img)
+                .setFooter(body.alt)
             message.channel.send({
                 embed: embed
             });
