@@ -1,11 +1,13 @@
 const Discord = module.require('discord.js');
 const moment = require('moment');
+const Client = require('../client/Client');
 const fs = require("fs");
 module.exports = {
     name: 'userinfo',
     description: 'userinfo here ',
     execute(message) {
         if (message.channel.id === '628992550836895744') {
+            let args = message.content.slice(10).split(' ');
             let user = message.mentions.users.first() || message.author;
             fs.stat(`./specs/${user.id}.txt`, function(err, fileStat) {
                 if (err) {
