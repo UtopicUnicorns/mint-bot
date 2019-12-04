@@ -394,21 +394,27 @@ client.on('message', async message => {
     }
     //Point give command
     if (message.content.startsWith("!add")) {
-  if(message.author.id !== '127708549118689280') return;
-  const user = message.mentions.users.first() || client.users.get(args[0]);
-  if(!user) return message.reply("You must mention someone or give their ID!");
-  const pointsToAdd = parseInt(args[1], 10);
-  if(!pointsToAdd) return message.reply("You didn't tell me how many points to give...")
-  let userscore = client.getScore.get(user.id, message.guild.id);
-    if (!userscore) {
-    userscore = { id: `${message.guild.id}-${user.id}`, user: user.id, guild: message.guild.id, points: 0, level: 1 }
-  }
-  userscore.points += pointsToAdd;
-  let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-  userscore.level = userLevel;
-  client.setScore.run(userscore);
-  return message.channel.send(`${user.tag} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
-}
+        if (message.author.id !== '127708549118689280') return;
+        const user = message.mentions.users.first() || client.users.get(args[0]);
+        if (!user) return message.reply("You must mention someone or give their ID!");
+        const pointsToAdd = parseInt(args[1], 10);
+        if (!pointsToAdd) return message.reply("You didn't tell me how many points to give...")
+        let userscore = client.getScore.get(user.id, message.guild.id);
+        if (!userscore) {
+            userscore = {
+                id: `${message.guild.id}-${user.id}`,
+                user: user.id,
+                guild: message.guild.id,
+                points: 0,
+                level: 1
+            }
+        }
+        userscore.points += pointsToAdd;
+        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+        userscore.level = userLevel;
+        client.setScore.run(userscore);
+        return message.channel.send(`${user.tag} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
+    }
     //show top10 points
     if (message.content.startsWith("!top")) {
         const top10 = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);

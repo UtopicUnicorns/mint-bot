@@ -1,6 +1,5 @@
 const Discord = module.require('discord.js');
 const moment = require('moment');
-const Client = require('../client/Client');
 const fs = require("fs");
 module.exports = {
     name: 'userinfo',
@@ -8,7 +7,8 @@ module.exports = {
     execute(message) {
         if (message.channel.id === '628992550836895744') {
             let args = message.content.slice(10).split(' ');
-            let user = message.mentions.users.first() || message.author;
+            let user = message.mentions.users.first() || message.guild.members.get(args[0]) || message.author;
+            let target = message.mentions.users.first() || message.author;
             fs.stat(`./specs/${user.id}.txt`, function(err, fileStat) {
                 if (err) {
                     if (err.code == 'ENOENT') {
@@ -17,7 +17,7 @@ module.exports = {
                             .setAuthor(user.username + '#' + user.discriminator, user.displayAvatarURL)
                             .setDescription(`${user}`)
                             .setColor(`RANDOM`)
-                            .setThumbnail(`${user.displayAvatarURL}`)
+                            .setThumbnail(`${target.displayAvatarURL}`)
                             .addField('Joined at:', `${moment.utc(member.joinedAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
                             .addField('Status:', user.presence.status, true)
                             .addField('Created at:', `${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
@@ -38,7 +38,7 @@ module.exports = {
                         .setAuthor(user.username + '#' + user.discriminator, user.displayAvatarURL)
                         .setDescription(`${user}`)
                         .setColor(`RANDOM`)
-                        .setThumbnail(`${user.displayAvatarURL}`)
+                        .setThumbnail(`${target.displayAvatarURL}`)
                         .addField('Joined at:', `${moment.utc(member.joinedAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
                         .addField('Status:', user.presence.status, true)
                         .addField('Created at:', `${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
