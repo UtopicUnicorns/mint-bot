@@ -46,6 +46,7 @@ module.exports = {
             .addField('!np', 'Shows the current song', true)
             .addBlankField()
             .addField('!bird !cat !dog !fox', 'Show a random animal', true)
+            .addField('!gamble', 'Get rid of those points', true)
             .addField('!xkcd', 'Today xkcd use !xkcd random for random xkcd', true)
             .addField('!top !points', 'See your points and level and leaderboard', true)
             .setFooter('Artemis is our overlord!')
