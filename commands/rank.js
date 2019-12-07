@@ -4,7 +4,7 @@ const {
 } = require('../config.json');
 module.exports = {
     name: 'rank',
-    description: 'Set a rank!',
+    description: '[general] Shows amount of users in a rank',
     async execute(message) {
         if (message.channel.id === '628992550836895744') {
             let user = message.author;

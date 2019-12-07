@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const fs = require("fs");
 module.exports = {
     name: 'guide',
-    description: 'Guides here',
+    description: '[general] Request a guide',
     async execute(message) {
         if (message.channel.id === '648911771624538112') {
             let args = message.content.slice(7).split(' ');

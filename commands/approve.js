@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const Canvas = require('canvas');
 module.exports = {
     name: 'approve',
-    description: 'Accepts a new member',
+    description: '[mod] Accepts a new member',
     async execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let args = message.content.slice().split(' ');

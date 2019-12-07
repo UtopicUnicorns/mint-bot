@@ -1,6 +1,6 @@
 module.exports = {
     name: 'rolegive',
-    description: 'Give a role to a member. !rolegive @USER ROLENAME',
+    description: '[mod] Give a role to a member. !rolegive @USER ROLENAME',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let args = message.content.slice().split(' ');

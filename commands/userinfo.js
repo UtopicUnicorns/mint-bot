@@ -1,9 +1,11 @@
 const Discord = module.require('discord.js');
 const moment = require('moment');
+//const Client = require('../client/Client');
+//const client = new Client();
 const fs = require("fs");
 module.exports = {
     name: 'userinfo',
-    description: 'userinfo here ',
+    description: '[general] Displays your own or mentioned user info',
     execute(message) {
         if (message.channel.id === '628992550836895744') {
             let args = message.content.slice(10).split(' ');

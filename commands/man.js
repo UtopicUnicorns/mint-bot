@@ -3,7 +3,7 @@ const curl = require('curl');
 const htmlToText = require('html-to-text');
 module.exports = {
     name: 'man',
-    description: 'Man pages basically',
+    description: '[general] Shows linux manual pages',
     execute(message) {
         if (message.content === "!man") {
             return message.channel.send("!man ARGS");

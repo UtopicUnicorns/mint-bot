@@ -1,6 +1,6 @@
 module.exports = {
    name: 'roleadd',
-   description: 'Add a role',
+   description: '[mod] Create a new role',
    execute(message) {
        if (message.member.hasPermission('KICK_MEMBERS')) {
            let args = message.content.slice().split(' ');

@@ -1,6 +1,6 @@
 module.exports = {
     name: 'fire',
-    description: 'You are fired',
+    description: '[mod] You are fired',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let args = message.content.slice().split(' ');

@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'embed',
-    description: 'generate an embed',
+    description: '[mod] generate an embed',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let args = message.content.slice(7).split('\n');

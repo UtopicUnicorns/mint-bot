@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const request = require("request");
 module.exports = {
     name: 'xkcd',
-    description: 'Xkcd images',
+    description: '[fun] Xkcd images',
     execute(message) {
         if (message.content == "!xkcd random") {
             let baseurl = "https://xkcd.com/";

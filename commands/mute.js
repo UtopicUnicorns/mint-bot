@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const fs = require('fs');
 module.exports = {
     name: 'mute',
-    description: 'mute a member',
+    description: '[mod] Mute a member',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const member = message.mentions.members.first();

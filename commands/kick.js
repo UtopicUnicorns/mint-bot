@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'kick',
-    description: 'Kick a player',
+    description: '[mod] Kick a user from the server',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const member = message.mentions.members.first();

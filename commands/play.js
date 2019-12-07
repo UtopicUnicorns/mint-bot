@@ -10,7 +10,7 @@ const {
 const youtube = new YouTube(youtubekey);
 module.exports = {
     name: 'play',
-    description: 'Play a song!',
+    description: '[music] Play a song!',
     async execute(message) {
         let args = message.content.slice(6).split(' ');
         if (message.content.startsWith("!play https://www.youtube.com/playlist?list=")) {

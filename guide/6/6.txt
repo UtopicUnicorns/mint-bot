@@ -1,0 +1,24 @@
+6 7 > 4.2.4 Time Zone & User Profile
+
+You will be asked for your time zone, this is pretty straightforward. Just enter your time zone.
+
+Next Linux Mint will want you to provide the basic user information: Your Name, the Username, your computer's name and Password.
+
+Your username is the lowercase and english alphabet version of your name.
+
+Your computer name is composed of your username and your computer model. It is used for example in networking, and does not need to be changed usually.
+
+I will not prescribe you how to choose your password. You should be intelligent enough to generate a secure password by yourself.
+
+Then you can check whether you want to be logged in automatically or if you'd like to have a login screen.
+
+If you've selected Require my password to log in, you can also choose Encrypt my home folder, which encrypts your home folder.
+
+This is useful for a computer with multiple users. It will protect your data from being viewed from other users.
+4.3: The install screen
+
+The install screen features a progress bar, a skip button for skipping optional tasks (Note: Every task has a reason for it existing, so skipping an action may cause problems afterwards!) and a big info area.
+
+The info area shows off the features Linux Mint offers. Also it is nice reading material for the long install time you will now have to wait through.
+
+Above the progress bar it is said what installation action is done, and if you click on the arrow left to the text you will also see a more verbose description of what is happening.

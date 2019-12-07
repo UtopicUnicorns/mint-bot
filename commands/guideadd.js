@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const fs = require("fs");
 module.exports = {
     name: 'guideadd',
-    description: 'Guides add',
+    description: '[mod] Add a guide to the system',
     execute(message) {
         if (message.channel.id === '648911771624538112') {
             if (message.member.hasPermission('KICK_MEMBERS')) {

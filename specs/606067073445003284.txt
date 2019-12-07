@@ -1,0 +1,15 @@
+caesar@ForumLinucis 
+------------------- 
+OS: TrapOS x86_64 
+Kernel: 5.4.1
+Packages: 1248 (pacman), 18 (flatpak) 
+Shell: bash 5.0.11 
+Resolution: 1920x1080 @ 144.00Hz 
+WM: i3 
+Theme: Midnight-RedNight [GTK2] 
+Icons: Hey-purple-dark [GTK2] 
+Terminal: kitty 
+Terminal Font: Hack 10.0 
+CPU: AMD FX-4300 (4) @ 3.800GHz 
+GPU: NVIDIA GeForce GTX 1050 Ti 
+GPU Driver: NVIDIA 440.36

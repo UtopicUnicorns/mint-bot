@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'massdell',
-    description: 'Mass dell a role',
+    description: '[admin] Mass dell a role',
     async execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let array = await message.guild.members.map(m => m);

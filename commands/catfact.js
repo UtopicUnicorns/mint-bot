@@ -1,7 +1,7 @@
 const request = require("request");
 module.exports = {
     name: 'catfact',
-    description: 'Random cat fact',
+    description: '[fun] Random cat fact',
     execute(message) {
         let baseurl = "https://some-random-api.ml/facts/cat";
         let url = baseurl;

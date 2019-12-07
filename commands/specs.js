@@ -1,7 +1,7 @@
 const fs = require("fs");
 module.exports = {
     name: 'specs',
-    description: 'Specs',
+    description: '[general] Add your hardware specifications to !userinfo',
     execute(message) {
         if (message.channel.id === '628992550836895744') {
             if (message.content == "!specs") {

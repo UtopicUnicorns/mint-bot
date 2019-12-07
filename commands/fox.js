@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const request = require("request");
 module.exports = {
     name: 'fox',
-    description: 'Random fox picture',
+    description: '[fun] Random fox picture',
     execute(message) {
         let baseurl = "https://some-random-api.ml/img/fox";
         let url = baseurl;

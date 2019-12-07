@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'rules',
-    description: 'rules',
+    description: '[mod] Show rules',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let embed = new Discord.RichEmbed()

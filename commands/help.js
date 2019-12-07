@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'help',
-    description: 'Displays all available commands',
+    description: '[general] Displays all available commands',
     execute(message) {
         if (message.content === "!help mod") {
             if (message.member.hasPermission('KICK_MEMBERS')) {

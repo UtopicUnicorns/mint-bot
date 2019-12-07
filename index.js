@@ -441,17 +441,19 @@ client.on('message', async message => {
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
             }, 30000);
-            let number1 = Math.floor(Math.random() * 100);
-            message.reply("\nWill the next number be Higher or Lower than: " + number1 + "?\nhigher/lower Amount_to_bet\nhigher 123");
+            let number1 = 5;
+            message.reply("\nBetween (0-9)\nWill the next number be Higher or Lower than: " + number1 + "?\nhigher/lower Amount_to_bet");
             const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
                 time: 20000
             });
             collector.on('collect', message => {
-                let number2 = Math.floor(Math.random() * 100);
+                let number2 = Math.floor(Math.random() * 10);
+                if (number2 == number1) return message.channel.send("Both numbers were the same, it's a tie!");
                 if (message.content.toLowerCase().startsWith("higher")) {
                     if (number2 > number1) {
                         const user = message.author;
                         const gargs = message.content.slice(7).split(" ");
+                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
                         let pointsToAdd = parseInt(gargs[0], 10);
                         if (gargs[0].startsWith("-")) return;
                         if (!pointsToAdd) {
@@ -468,6 +470,7 @@ client.on('message', async message => {
                     if (number2 < number1) {
                         const user = message.author;
                         const gargs = message.content.slice(7).split(" ");
+                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
                         if (gargs[0].startsWith("-")) return;
                         let pointsToAdd = parseInt("-" + gargs[0], 10);
                         if (!pointsToAdd) {
@@ -486,6 +489,7 @@ client.on('message', async message => {
                     if (number2 > number1) {
                         const user = message.author;
                         const gargs = message.content.slice(6).split(" ");
+                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
                         if (gargs[0].startsWith("-")) return;
                         let pointsToAdd = parseInt("-" + gargs[0], 10);
                         if (!pointsToAdd) {
@@ -502,6 +506,7 @@ client.on('message', async message => {
                     if (number2 < number1) {
                         const user = message.author;
                         const gargs = message.content.slice(6).split(" ");
+                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
                         if (gargs[0].startsWith("-")) return;
                         let pointsToAdd = parseInt(gargs[0], 10);
                         if (!pointsToAdd) {

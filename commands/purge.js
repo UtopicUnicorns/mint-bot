@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 module.exports = {
     name: 'purge',
-    description: 'Purge a mentioned user or a specified ammount',
+    description: '[mod] Purge a mentioned user or a specified ammount',
     async execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const user = message.mentions.users.first();

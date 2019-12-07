@@ -3,7 +3,7 @@ const {
     } = require('../config.json');
     module.exports = {
         name: 'roledel',
-        description: 'Delete roles',
+        description: '[mod] Delete a role',
         execute(message) {
             if (message.member.hasPermission('KICK_MEMBERS')) {
                 let user = message.author;

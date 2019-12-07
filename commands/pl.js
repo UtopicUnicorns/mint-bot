@@ -10,7 +10,7 @@ const {
 const youtube = new YouTube(youtubekey);
 module.exports = {
     name: 'pl',
-    description: 'Play a song!',
+    description: '[music] Adds a playlist to the bot(experimental)',
     async execute(message) {
         let args = message.content.slice(4).split(' ');
 

@@ -1,0 +1,16 @@
+-------------------------------- 
+OS: Fedora 31 (Workstation Edition) x86_64 
+Host: 4238AB9 ThinkPad T420 
+Kernel: 5.3.11-300.fc31.x86_64 
+Uptime: 4 hours, 13 mins 
+Packages: 1772 (rpm) 
+Shell: bash 5.0.7 
+Resolution: 1600x900 
+WM: Openbox 
+WM Theme: Nightmare 
+Theme: Adwaita [GTK2] 
+Icons: Adwaita [GTK2] 
+Terminal: gnome-terminal 
+CPU: Intel i5-2520M (4) @ 3.200GHz 
+GPU: Intel 2nd Generation Core Processor Family 
+Memory: 1900MiB / 7847MiB

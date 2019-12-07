@@ -1,6 +1,6 @@
 module.exports = {
     name: 'emote',
-    description: 'hidden',
+    description: '[admin] Add an emote to specific message',
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let args = message.content.slice().split(' ');

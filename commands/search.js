@@ -1,7 +1,7 @@
 const search = require('node-ddg').default;
 module.exports = {
     name: 'search',
-    description: 'Search the internet!',
+    description: '[general] Search the internet!',
     execute(message) {
         if (message.content === "!search") {
             return message.channel.send("Feel free to give me some search terms.");

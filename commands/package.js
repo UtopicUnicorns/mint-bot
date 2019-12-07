@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const request = require("request");
 module.exports = {
     name: 'package',
-    description: 'package search',
+    description: '[general] Searches Ubuntu/Mint packages',
     execute(message) {
         let args = message.content.slice(9);
         let baseurl = "https://api.launchpad.net/1.0/ubuntu/+archive/primary?ws.op=getPublishedSources&source_name=";
