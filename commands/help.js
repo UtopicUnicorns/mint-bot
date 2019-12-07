@@ -1,57 +1,105 @@
 const Discord = module.require('discord.js');
+const fs = require('fs')
 module.exports = {
     name: 'help',
     description: '[general] Displays all available commands',
     execute(message) {
-        if (message.content === "!help mod") {
+        if (message.content === "!help admin") {
             if (message.member.hasPermission('KICK_MEMBERS')) {
-                let modbed = new Discord.RichEmbed()
-                    .setTitle('Mod commands')
-                    .setDescription('Do not be an idiot')
-                    .setColor(`RANDOM`)
-                    .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-                    .addField('!ban', 'Ban a user', true)
-                    .addField('!kick', 'Kicks a user', true)
-                    .addField('!massadd', 'Add a role to everyone', true)
-                    .addField('!massdell', 'Delete a role from everyone', true)
-                    .addField('!purge', '!purge 1-100 OR !purge @user 1-100', true)
-                    .addField('!roleadd', 'Create a new role', true)
-                    .addField('!roledel', 'Destroy a role', true)
-                    .addField('!rolegive', 'Give a role to mentioned member', true)
-                    .addField('!mute', '!mute @mention mutes or unmutes the target', true)
-                    .addField('!rules', 'Displays the server rules', true)
-                    .setFooter('Artemis owns you too!')
-                    .setTimestamp();
+                let str = '';
+                const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+                for (const file of commandFiles) {
+                    const command = require(`./${file}`);
+                    if (command.description.includes("[admin]"))
+                    str += `!${command.name}, ${command.description} \n`;
+                }
+                let embed = new Discord.RichEmbed()
+                .setColor(`RANDOM`)
+                .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+                .setDescription(`${str}\n!add, Give a user X points or take them\n!restart, well restart the bot\n!channel, Display sentient channelname\n!set, Set sentient channel ID\n!join, simulate a guildmemberjoin`)
+                .setTimestamp();
                 return message.channel.send({
-                    embed: modbed
+                    embed: embed
                 });
             }
         }
-        let embed = new Discord.RichEmbed()
-            .setTitle('Help')
-            .setDescription('These commands are available to you')
+        if (message.content === "!help mod") {
+            if (message.member.hasPermission('KICK_MEMBERS')) {
+                let str = '';
+                const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+                for (const file of commandFiles) {
+                    const command = require(`./${file}`);
+                    if (command.description.includes("[mod]"))
+                    str += `!${command.name}, ${command.description} \n`;
+                }
+                let embed = new Discord.RichEmbed()
+                .setColor(`RANDOM`)
+                .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+                .setDescription(`${str}`)
+                .setTimestamp();
+                return message.channel.send({
+                    embed: embed
+                });
+            }
+        }
+        if (message.content === "!help general") {
+            let str = '';
+            const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const command = require(`./${file}`);
+                if (command.description.includes("[general]"))
+                str += `!${command.name}, ${command.description} \n`;
+            }
+            let embed = new Discord.RichEmbed()
             .setColor(`RANDOM`)
             .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-            .addField('!help', 'Display this page', true)
-            .addField('!specs', 'Set up your pc specifications', true)
-            .addField('!man', 'Shows you man pages', true)
-            .addField('!userinfo', 'Show your user info or mention a user to get theirs', true)
-            .addField('!search', 'Search duck duck go', true)
-            .addField('!guide', '!guide [NUM] [NUM]', true)
-            .addField('!package', 'Looks up packages for you', true)
-            .addBlankField()
-            .addField('!play', 'Play a song', true)
-            .addField('!stop', 'Stop the music', true)
-            .addField('!skip', 'Skips the current song', true)
-            .addField('!np', 'Shows the current song', true)
-            .addBlankField()
-            .addField('!bird !cat !dog !fox', 'Show a random animal', true)
-            .addField('!gamble', 'Get rid of those points', true)
-            .addField('!xkcd', 'Today xkcd use !xkcd random for random xkcd', true)
-            .addField('!top !points', 'See your points and level and leaderboard', true)
-            .setFooter('Artemis is our overlord!')
+            .setDescription(`${str}\n!points, Display your own points\n!top, Show the point leaderboard\n!ping, display bot/server ping`)
             .setTimestamp();
-        message.channel.send({
+            return message.channel.send({
+                embed: embed
+            });
+        }
+        if (message.content === "!help fun") {
+            let str = '';
+            const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const command = require(`./${file}`);
+                if (command.description.includes("[fun]"))
+                str += `!${command.name}, ${command.description} \n`;
+            }
+            let embed = new Discord.RichEmbed()
+            .setColor(`RANDOM`)
+            .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+            .setDescription(`${str}\n!gamble, Get rid of those points`)
+            .setTimestamp();
+            return message.channel.send({
+                embed: embed
+            });
+        }
+        if (message.content === "!help music") {
+            let str = '';
+            const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const command = require(`./${file}`);
+                if (command.description.includes("[music]"))
+                str += `!${command.name}, ${command.description} \n`;
+            }
+            let embed = new Discord.RichEmbed()
+            .setColor(`RANDOM`)
+            .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+            .setDescription(`${str}`)
+            .setTimestamp();
+            return message.channel.send({
+                embed: embed
+            });
+        }
+        let embed = new Discord.RichEmbed()
+        .setColor(`RANDOM`)
+        .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+        .setTitle('Pick a category')
+        .setDescription(`!help general\n!help fun\n!help music\n!help mod\n!help admin`)
+        .setTimestamp();
+        return message.channel.send({
             embed: embed
         });
     },
