@@ -156,11 +156,31 @@ client.on("presenceUpdate", (oldMember, newMember) => {
         if (newMember.presence.game.url.includes("twitch")) {
             //elervated
             if (client.guilds.get('356642342184288258')) {
-                client.channels.get('356642342184288259').send(`@here` + " " + newMember.user.username + " just went live!" + "\n" + newMember.presence.game.name + "\n" + newMember.presence.game.url);
+                const embed = new Discord.RichEmbed()
+                    .setTitle(newMember.presence.game.state)
+                    .setColor(`RANDOM`)
+                    .setURL(newMember.presence.game.url)
+                    .setThumbnail(`${newMember.user.displayAvatarURL}`)
+                    .setDescription(`@here `+newMember.user.username+' went live!')
+                    .addField(newMember.presence.game.details+'\n'+newMember.presence.game.url)
+                    .setTimestamp();
+                client.channels.get('356642342184288259').send({
+                    embed
+                });
             }
             //mint
             if (client.guilds.get('628978428019736619')) {
-                client.channels.get('650822971996241970').send(` ` + " " + newMember.user.username + " just went live!" + "\n" + newMember.presence.game.name + "\n" + newMember.presence.game.url);
+                const embed = new Discord.RichEmbed()
+                    .setTitle(newMember.presence.game.state)
+                    .setColor(`RANDOM`)
+                    .setURL(newMember.presence.game.url)
+                    .setThumbnail(`${newMember.user.displayAvatarURL}`)
+                    .setDescription(newMember.user.username+' went live!')
+                    .addField(newMember.presence.game.details+'\n'+newMember.presence.game.url)
+                    .setTimestamp();
+                client.channels.get('650822971996241970').send({
+                    embed
+                });
             }
         }
     }
@@ -226,7 +246,7 @@ client.on('message', async message => {
                 fs.writeFile('channelset.txt', cargs, function(err) {
                     if (err) throw err;
                 });
-                return message.channel.send('Set channel id to: ' + cargs);
+                return message.channel.send('Set channel id to: ' + client.channels.get(`${cargs}`));
             }
             let channelcheck = fs.readFileSync('channelset.txt').toString().split("\n");
             if (!client.channels.get(`${channelcheck}`)) {
@@ -346,7 +366,6 @@ client.on('message', async message => {
     }
     //15
     if (score.level > 14 && score.level < 19) {
-        //console.log("HELLO");
         let checking4 = message.member.roles.find(r => r.name === `Fresh Messenger`);
         if (!checking4) {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
