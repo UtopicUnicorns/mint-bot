@@ -161,8 +161,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     .setColor(`RANDOM`)
                     .setURL(newMember.presence.game.url)
                     .setThumbnail(`${newMember.user.displayAvatarURL}`)
-                    .setDescription(`@here `+newMember.user.username+' went live!')
-                    .addField(newMember.presence.game.details+'\n'+newMember.presence.game.url)
+                    .setDescription(`@here ` + newMember.user.username + ' went live!')
+                    .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                     .setTimestamp();
                 client.channels.get('356642342184288259').send({
                     embed
@@ -170,16 +170,32 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             }
             //mint
             if (client.guilds.get('628978428019736619')) {
-                const embed = new Discord.RichEmbed()
-                    .setTitle(newMember.presence.game.state)
-                    .setColor(`RANDOM`)
-                    .setURL(newMember.presence.game.url)
-                    .setThumbnail(`${newMember.user.displayAvatarURL}`)
-                    .setDescription(newMember.user.username+' went live!')
-                    .addField(newMember.presence.game.details+'\n'+newMember.presence.game.url)
-                    .setTimestamp();
-                client.channels.get('650822971996241970').send({
-                    embed
+                request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
+                    json: true
+                }, function(err, res, body) {
+                    if (!body.results[0].background_image) {
+                        const embed = new Discord.RichEmbed()
+                        .setTitle(newMember.presence.game.state)
+                        .setColor(`RANDOM`)
+                        .setURL(newMember.presence.game.url)
+                        .setDescription(newMember.user.username + ' went live!')
+                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                        .setTimestamp();
+                    return client.channels.get('650822971996241970').send({
+                        embed
+                    }); 
+                    }
+                    const embed = new Discord.RichEmbed()
+                        .setTitle(newMember.presence.game.state)
+                        .setColor(`RANDOM`)
+                        .setURL(newMember.presence.game.url)
+                        .setThumbnail(`${body.results[0].background_image}`)
+                        .setDescription(newMember.user.username + ' went live!')
+                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                        .setTimestamp();
+                    client.channels.get('650822971996241970').send({
+                        embed
+                    });
                 });
             }
         }
@@ -277,6 +293,10 @@ client.on('message', async message => {
         if (!message.content.startsWith("!guide")) {
             message.delete();
         }
+    }
+    //testing grounds
+    if (message.content.startsWith("!images")) {
+        message.delete();
     }
     //Direct Message handle
     if (message.channel.type == "dm") {
