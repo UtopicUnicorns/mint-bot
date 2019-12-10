@@ -19,6 +19,7 @@ const client = new Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const talkedRecently = new Set();
+const thankedRecently = new Set();
 const queue = new Map();
 let emojiname = rolemoteconf;
 let rolename = rolenameconf;
@@ -175,15 +176,15 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                 }, function(err, res, body) {
                     if (!body.results[0].background_image) {
                         const embed = new Discord.RichEmbed()
-                        .setTitle(newMember.presence.game.state)
-                        .setColor(`RANDOM`)
-                        .setURL(newMember.presence.game.url)
-                        .setDescription(newMember.user.username + ' went live!')
-                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
-                        .setTimestamp();
-                    return client.channels.get('650822971996241970').send({
-                        embed
-                    }); 
+                            .setTitle(newMember.presence.game.state)
+                            .setColor(`RANDOM`)
+                            .setURL(newMember.presence.game.url)
+                            .setDescription(newMember.user.username + ' went live!')
+                            .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                            .setTimestamp();
+                        return client.channels.get('650822971996241970').send({
+                            embed
+                        });
                     }
                     const embed = new Discord.RichEmbed()
                         .setTitle(newMember.presence.game.state)
@@ -454,6 +455,28 @@ client.on('message', async message => {
         userscore.level = userLevel;
         client.setScore.run(userscore);
         return message.channel.send(`${user.tag} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
+    }
+    //thanks
+    if (message.content.includes("thank")) {
+        const user = message.mentions.users.first() || client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (talkedRecently.has(message.author.id)) {
+            return message.reply("You are thanking too much!");
+        } else {
+            talkedRecently.add(message.author.id);
+            setTimeout(() => {
+                talkedRecently.delete(message.author.id);
+            }, 600000);
+            const pointsToAdd = parseInt(20, 10);
+            let userscore = client.getScore.get(user.id, message.guild.id);
+            if (!userscore) return message.reply("This user does not have a database index yet.");
+            userscore.points += pointsToAdd;
+            let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+            userscore.level = userLevel;
+            client.setScore.run(userscore);
+            return message.reply("thanked " + user + "\n" + user + " gotten 20 points for their effort!");
+        }
     }
     //show top10 points
     if (message.content.startsWith("!top")) {
