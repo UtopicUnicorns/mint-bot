@@ -52,11 +52,8 @@ client.once('ready', () => {
     }, 21600000);
     //change description
     setInterval(() => {
-        let today = new Date();
-        let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        client.channels.get('640949324829818914').setTopic('Chatter and off-topic here | ' + client.users.size + ' users | ' + date + ' ' + time);
-    }, 10000);
+        client.channels.get('640949324829818914').setTopic('Chatter and off-topic here | ' + client.users.size + ' users ');
+    }, 600000);
     //change description
     setInterval(() => {
         let totalSeconds = (client.uptime / 1000);
@@ -66,21 +63,18 @@ client.once('ready', () => {
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.ceil(totalSeconds % 60);
         client.channels.get('628992550836895744').setTopic(`${client.users.size} users | bot uptime | ${days} days | ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
-    }, 10000);
+    }, 600000);
     //change bot Status
     setInterval(() => {
         var RAN = [
             `!help`,
-            `!rank`,
-            `!userinfo`,
-            `!top`,
             `${client.users.size} total users`
         ];
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
             type: 'LISTENING'
         });
 
-    }, 10000);
+    }, 60000);
     //preload messages on reconnect
     let testchannel = client.channels.get('645033708860211206');
     testchannel.fetchMessage('645034653652090880');
@@ -431,7 +425,13 @@ client.on('message', async message => {
     }
     //Show user points
     if (message.content.startsWith("!points")) {
-        message.reply(`You currently have ${score.points} points and are level ${score.level}!`);
+        const user = message.mentions.users.first() || message.author;
+        let userscore = client.getScore.get(user.id, message.guild.id);
+        if (!userscore) return message.reply("This user does not have a database index yet.");
+        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+        userscore.level = userLevel;
+        client.setScore.run(userscore);
+        return message.channel.send(user + " got " + userscore.points + " points\nand is level " + userscore.level);
     }
     //Point give command
     if (message.content.startsWith("!add")) {
