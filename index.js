@@ -634,10 +634,10 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         embed: editmessage
     });
 });  */
-client.on("messageReactionAdd", (reaction, user) => {
+client.on("messageReactionAdd", async (reaction, user) => {
     //report
-    let limit = 2; // number of thumbsdown reactions you need
-  if (reaction.emoji.name == '❌' && reaction.count >= limit) {
+    let limit1 = 1;
+    if (reaction.emoji.name == '❌' && reaction.count == limit1) {
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
@@ -646,6 +646,21 @@ client.on("messageReactionAdd", (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
         return client.channels.get('646672806033227797').send({
+            embed: editmessage
+        });
+    }
+    //Highlights
+    let limit = 3;
+    if (reaction.emoji.name == '🍵' && reaction.count == limit) {
+        const editmessage = new Discord.RichEmbed()
+            .setTitle("A message got highlighted!")
+            .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
+            .setDescription("Message by: " + reaction.message.author)
+            .setColor('RANDOM')
+            .addField('Mintiest Message:\n', reaction.message.content, true)
+            .setFooter("Message ID: " + reaction.message.id)
+            .setTimestamp();
+        return client.channels.get('654447738070761505').send({
             embed: editmessage
         });
     }
