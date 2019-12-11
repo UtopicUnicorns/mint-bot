@@ -595,7 +595,7 @@ client.on('message', async message => {
     }
 });
 //logs
-/*  client.on('messageDelete', function(message, channel) {
+client.on('messageDelete', function(message, channel) {
     if (message.author.username == "Artemis") return;
     let delauthor = message.author;
     if (!message.content) return;
@@ -610,6 +610,7 @@ client.on('message', async message => {
         embed: delmessage
     });
 });
+/*
 client.on('messageUpdate', (oldMessage, newMessage) => {
     if (oldMessage.author.username == "Artemis") return;
     let editauthor = oldMessage.author;
@@ -628,8 +629,21 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         embed: editmessage
     });
 });  */
-//reaction roles
 client.on("messageReactionAdd", (reaction, user) => {
+    //report
+    if (reaction.emoji.name == '❌') {
+        const editmessage = new Discord.RichEmbed()
+        .setTitle("A message got reported!")
+        .setDescription("Message by: "+reaction.message.author)
+        .setColor('RANDOM')
+        .addField('Reported Message:\n', reaction.message.content, true)
+        .setFooter("Message ID: "+reaction.message.id)
+        .setTimestamp();
+    return client.channels.get('646672806033227797').send({
+        embed: editmessage
+    });
+    }
+    //reaction roles
     if (reaction.message.channel.id === '645033708860211206') {
         if (!user) return;
         if (user.bot) return;
