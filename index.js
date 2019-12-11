@@ -457,7 +457,7 @@ client.on('message', async message => {
         return message.channel.send(`${user.tag} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
     }
     //thanks
-    if (message.content.includes("thank")) {
+    if (message.content.toLowerCase().includes("thank")) {
         const user = message.mentions.users.first() || client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
