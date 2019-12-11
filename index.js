@@ -221,7 +221,12 @@ client.on('message', async message => {
             }
         }
     }
-    if (message.author.bot) return;
+    //ignore bots other than Apollo
+    if (message.author.bot) {
+        if (message.author.id == '654361253413781537') {} else {
+            return
+        }
+    }
     //Mute filter
     let filtermute = fs.readFileSync('mute.txt').toString().split("\n");
     if (filtermute.includes(message.author.id)) {
@@ -631,17 +636,18 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 });  */
 client.on("messageReactionAdd", (reaction, user) => {
     //report
-    if (reaction.emoji.name == '❌') {
+    let limit = 2; // number of thumbsdown reactions you need
+  if (reaction.emoji.name == '❌' && reaction.count >= limit) {
         const editmessage = new Discord.RichEmbed()
-        .setTitle("A message got reported!")
-        .setDescription("Message by: "+reaction.message.author)
-        .setColor('RANDOM')
-        .addField('Reported Message:\n', reaction.message.content, true)
-        .setFooter("Message ID: "+reaction.message.id)
-        .setTimestamp();
-    return client.channels.get('646672806033227797').send({
-        embed: editmessage
-    });
+            .setTitle("A message got reported!")
+            .setDescription("Message by: " + reaction.message.author)
+            .setColor('RANDOM')
+            .addField('Reported Message:\n', reaction.message.content, true)
+            .setFooter("Message ID: " + reaction.message.id)
+            .setTimestamp();
+        return client.channels.get('646672806033227797').send({
+            embed: editmessage
+        });
     }
     //reaction roles
     if (reaction.message.channel.id === '645033708860211206') {
