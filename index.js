@@ -330,6 +330,7 @@ client.on('message', async message => {
         translate(text, {
             to: 'en'
         }).then(res => {
+            if (message.content.includes("ツ")) return;
             if (res == message.content) return;
             message.channel.send(res);
         }).catch(err => {
@@ -480,7 +481,7 @@ client.on('message', async message => {
             let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
             userscore.level = userLevel;
             client.setScore.run(userscore);
-            return message.reply("thanked " + user + "\n" + user + " gotten 20 points for their effort!");
+            return message.reply("thanked " + user.username + "\n" + user.username + " gotten 20 points for their effort!");
         }
     }
     //show top10 points
@@ -610,7 +611,8 @@ client.on('messageDelete', function(message, channel) {
         .setDescription(delauthor)
         .setColor('RANDOM')
         .addField('Deleted message:\n', `${delcontent}\n`, true)
-        .setTimestamp();
+        .addField('Channel', message.channel, true)
+        .setTimestamp()
     return client.channels.get('646672806033227797').send({
         embed: delmessage
     });
@@ -641,8 +643,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
+            .setURL(reaction.message.url)
             .setColor('RANDOM')
             .addField('Reported Message:\n', reaction.message.content, true)
+            .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
         return client.channels.get('646672806033227797').send({
@@ -656,8 +660,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setTitle("A message got highlighted!")
             .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
             .setDescription("Message by: " + reaction.message.author)
+            .setURL(reaction.message.url)
             .setColor('RANDOM')
             .addField('Mintiest Message:\n', reaction.message.content, true)
+            .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
         return client.channels.get('654447738070761505').send({
