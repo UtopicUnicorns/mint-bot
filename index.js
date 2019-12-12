@@ -89,6 +89,7 @@ client.once('disconnect', () => {
     console.log('Disconnect!');
 });
 client.on("guildMemberAdd", async (guildMember) => {
+    if (!client.guilds.get('628978428019736619')) return;
     //account age check
     let user = guildMember.user;
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
@@ -137,6 +138,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
 });
 client.on("guildMemberRemove", async (guildMember) => {
+    if (!client.guilds.get('628978428019736619')) return;
     client.channels.get('646672806033227797').send(guildMember.user.username + ' left the server!');
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
@@ -151,16 +153,32 @@ client.on("presenceUpdate", (oldMember, newMember) => {
         if (newMember.presence.game.url.includes("twitch")) {
             //elervated
             if (client.guilds.get('356642342184288258')) {
-                const embed = new Discord.RichEmbed()
-                    .setTitle(newMember.presence.game.state)
-                    .setColor(`RANDOM`)
-                    .setURL(newMember.presence.game.url)
-                    .setThumbnail(`${newMember.user.displayAvatarURL}`)
-                    .setDescription(`@here ` + newMember.user.username + ' went live!')
-                    .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
-                    .setTimestamp();
-                client.channels.get('356642342184288259').send({
-                    embed
+                request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
+                    json: true
+                }, function(err, res, body) {
+                    if (!body.results[0].background_image) {
+                        const embed = new Discord.RichEmbed()
+                            .setTitle(newMember.presence.game.state)
+                            .setColor(`RANDOM`)
+                            .setURL(newMember.presence.game.url)
+                            .setDescription(newMember.user.username + ' went live!')
+                            .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                            .setTimestamp();
+                        return client.channels.get('356642342184288259').send({
+                            embed
+                        });
+                    }
+                    const embed = new Discord.RichEmbed()
+                        .setTitle(newMember.presence.game.state)
+                        .setColor(`RANDOM`)
+                        .setURL(newMember.presence.game.url)
+                        .setThumbnail(`${body.results[0].background_image}`)
+                        .setDescription('@everyone ' + newMember.user.username + ' went live!')
+                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                        .setTimestamp();
+                    client.channels.get('356642342184288259').send({
+                        embed
+                    });
                 });
             }
             //mint
@@ -173,7 +191,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                             .setTitle(newMember.presence.game.state)
                             .setColor(`RANDOM`)
                             .setURL(newMember.presence.game.url)
-                            .setDescription(newMember.user.username + ' went live!')
+                            .setDescription('@everyone ' + newMember.user.username + ' went live!')
                             .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                             .setTimestamp();
                         return client.channels.get('650822971996241970').send({
@@ -370,6 +388,7 @@ client.on('message', async message => {
         let checking2 = message.member.roles.find(r => r.name === `Minty Messenger`);
         if (!checking2) {
             let freshnew = message.guild.roles.find(r => r.name === `Minty Messenger`);
+            if (!freshnew) return;
             message.member.addRole(freshnew);
             message.reply("You earned the title " + freshnew);
         }
@@ -379,6 +398,7 @@ client.on('message', async message => {
         let checking3 = message.member.roles.find(r => r.name === `Ruler of Messages`);
         if (!checking3) {
             let freshnew = message.guild.roles.find(r => r.name === `Minty Messenger`);
+            if (!freshnew) return;
             let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
             message.member.addRole(rulerofmessages);
             message.member.removeRole(freshnew);
@@ -390,6 +410,7 @@ client.on('message', async message => {
         let checking4 = message.member.roles.find(r => r.name === `Fresh Messenger`);
         if (!checking4) {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
+            if (!freshmessenger) return;
             let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
             message.member.addRole(freshmessenger);
             message.member.removeRole(rulerofmessages);
@@ -401,6 +422,7 @@ client.on('message', async message => {
         let checking5 = message.member.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
         if (!checking5) {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
+            if (!freshmessenger) return;
             let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
             message.member.addRole(rhkw);
             message.member.removeRole(freshmessenger);
@@ -412,6 +434,7 @@ client.on('message', async message => {
         let checking6 = message.member.roles.find(r => r.name === `Basically a Cheater`);
         if (!checking6) {
             let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
+            if (!rhkw) return;
             let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
             message.member.addRole(bac);
             message.member.removeRole(rhkw);
@@ -423,6 +446,7 @@ client.on('message', async message => {
         let checking7 = message.member.roles.find(r => r.name === `Sage of Messages`);
         if (!checking7) {
             let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
+            if (!bac) return;
             let sageom = message.guild.roles.find(r => r.name === `Sage of Messages`);
             message.member.addRole(sageom);
             message.member.removeRole(bac);
