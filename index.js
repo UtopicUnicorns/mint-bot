@@ -272,6 +272,7 @@ client.on('message', async message => {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
         v = message.content;
         if (!message.content) return;
+        if (message.content.startsWith("http")) return;
         v = v.replace(/(?:r|l)/g, "w");
         v = v.replace(/(?:R|L)/g, "W");
         v = v.replace(/n([aeiou])/g, 'ny$1');
@@ -281,7 +282,7 @@ client.on('message', async message => {
         v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
         message.delete();
         const uwutext = new Discord.RichEmbed()
-            .setTitle(message.author)
+            .setTitle(message.author.username)
             .setColor('RANDOM')
             .setDescription(v)
             .setTimestamp()
