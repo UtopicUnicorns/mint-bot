@@ -7,7 +7,6 @@ module.exports = {
     name: 'userinfo',
     description: '[general] Displays your own or mentioned user info',
     execute(message) {
-        if (message.channel.id === '628992550836895744') {
             let args = message.content.slice(10).split(' ');
             let user = message.mentions.users.first() || message.guild.members.get(args[0]) || message.author;
             let target = message.mentions.users.first() || message.author;
@@ -55,8 +54,5 @@ module.exports = {
                     return;
                 }
             });
-        } else {
-            message.reply("You may use this command in <#628992550836895744>");
-        }
     },
 };

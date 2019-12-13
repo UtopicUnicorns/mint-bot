@@ -3,7 +3,6 @@ module.exports = {
     name: 'specs',
     description: '[general] Add your hardware specifications to !userinfo',
     execute(message) {
-        if (message.channel.id === '628992550836895744') {
             if (message.content == "!specs") {
                 return message.channel.send("use `neofetch --stdout` in your console.\nThen paste it here using:\n!specs [neofetch output]\n\nYou can check if you have your specifications setup with !userinfo");
             }
@@ -13,8 +12,5 @@ module.exports = {
                 message.reply("Specs updated!");
                 if (err) throw err;
             })
-        } else {
-            message.reply("You may use this command in <#628992550836895744>");
-        }
     }
 };

@@ -400,6 +400,7 @@ client.on('message', async message => {
             let freshnew = message.guild.roles.find(r => r.name === `Minty Messenger`);
             if (!freshnew) return;
             let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
+            if (!rulerofmessages) return;
             message.member.addRole(rulerofmessages);
             message.member.removeRole(freshnew);
             message.reply("You earned the title " + rulerofmessages);
@@ -412,6 +413,7 @@ client.on('message', async message => {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
             if (!freshmessenger) return;
             let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
+            if (!rulerofmessages) return;
             message.member.addRole(freshmessenger);
             message.member.removeRole(rulerofmessages);
             message.reply("You earned the title " + freshmessenger);
@@ -424,6 +426,7 @@ client.on('message', async message => {
             let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
             if (!freshmessenger) return;
             let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
+            if (!rhkw) return;
             message.member.addRole(rhkw);
             message.member.removeRole(freshmessenger);
             message.reply("You earned the title " + rhkw);
@@ -436,6 +439,7 @@ client.on('message', async message => {
             let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
             if (!rhkw) return;
             let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
+            if (!bac) return;
             message.member.addRole(bac);
             message.member.removeRole(rhkw);
             message.reply("You earned the title " + bac);
@@ -448,6 +452,7 @@ client.on('message', async message => {
             let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
             if (!bac) return;
             let sageom = message.guild.roles.find(r => r.name === `Sage of Messages`);
+            if (!sageom) return;
             message.member.addRole(sageom);
             message.member.removeRole(bac);
             message.reply("You earned the title " + sageom);
@@ -491,10 +496,10 @@ client.on('message', async message => {
         const user = message.mentions.users.first() || client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (talkedRecently.has(message.author.id)) {
+        if (thankedRecently.has(message.author.id)) {
             return message.reply("You are thanking too much!");
         } else {
-            talkedRecently.add(message.author.id);
+            thankedRecently.add(message.author.id);
             setTimeout(() => {
                 talkedRecently.delete(message.author.id);
             }, 600000);
@@ -628,7 +633,7 @@ client.on('message', async message => {
 client.on('messageDelete', function(message, channel) {
     if (message.author.username == "Artemis") return;
     let delauthor = message.author;
-    if (!message.content) return;
+    if (message.content.length > 2000) return;
     let delcontent = message.content;
     const delmessage = new Discord.RichEmbed()
         .setTitle("A message got deleted!")
