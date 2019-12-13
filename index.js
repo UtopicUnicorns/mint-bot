@@ -267,6 +267,28 @@ client.on('message', async message => {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
     }
+    //memes
+    if (message.channel.id === '628992595393118208') {
+        var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
+        v = message.content;
+        if (!message.content) return;
+        v = v.replace(/(?:r|l)/g, "w");
+        v = v.replace(/(?:R|L)/g, "W");
+        v = v.replace(/n([aeiou])/g, 'ny$1');
+        v = v.replace(/N([aeiou])/g, 'Ny$1');
+        v = v.replace(/N([AEIOU])/g, 'Ny$1');
+        v = v.replace(/ove/g, "uv");
+        v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
+        message.delete();
+        const uwutext = new Discord.RichEmbed()
+            .setTitle(message.author)
+            .setColor('RANDOM')
+            .setDescription(v)
+            .setTimestamp()
+        return message.channel.send({
+            embed: uwutext
+        });
+    }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
         if (message.author.id !== "440892659264126997") {
@@ -631,6 +653,7 @@ client.on('message', async message => {
 });
 //logs
 client.on('messageDelete', function(message, channel) {
+    if (message.channel.id === '628992595393118208') return;
     if (message.author.username == "Artemis") return;
     let delauthor = message.author;
     if (message.content.length > 2000) return;
