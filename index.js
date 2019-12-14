@@ -265,6 +265,7 @@ client.on('message', async message => {
     };
     //Reload Commands(GingkathFox)
     if (message.content === '!reload') {
+        const embed = new Discord.RichEmbed()
         embed.setTitle(`Reloading...`)
         embed.setDescription(`Starting reloading of commands...`)
         message.channel.startTyping()
