@@ -266,11 +266,11 @@ client.on('message', async message => {
     //reload commands
     if (message.content === '!reload') {
         if (message.author.id !== '127708549118689280') return;
-        const commandFiless = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-        for (const file of commandFiless) {
+        let commandFiless = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+        for (let file of commandFiless) {
             delete require.cache[require.resolve(`./commands/${file}`)];
             try {
-                const newCommand = require(`./commands/${file}`);
+                let newCommand = require(`./commands/${file}`);
                 message.client.commands.set(newCommand.name, newCommand);
             } catch (error) {
                 console.log(error);
