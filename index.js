@@ -265,12 +265,12 @@ client.on('message', async message => {
     };
     //Reload Commands(GingkathFox)
     if (message.content === '!reload') {
-        const embedreload = new Discord.RichEmbed()
-        embed.setTitle(`Reloading...`)
-        embed.setDescription(`Starting reloading of commands...`)
+        const reloadcommand = new Discord.RichEmbed()
+        reloadcommand.setTitle(`Reloading...`)
+        reloadcommand.setDescription(`Starting reloading of commands...`)
         message.channel.startTyping()
         message.channel.send({
-            embed: embedreload
+            embed: reloadcommand
         })
         .then(async function(m) {
             await esiJS.util.sleep(2000)
@@ -294,14 +294,18 @@ client.on('message', async message => {
                     const props = await require(`./${commandName}.js`)
                     await bot.commands.set(commandName, props) 
                 }
-                embed.setDescription(`Reloaded ${commandName} command!`)
-                m.edit(embed)
+                reloadcommand.setDescription(`Reloaded ${commandName} command!`)
+                m.edit({
+                    embed: reloadcommand
+                })
                 await esiJS.util.sleep(200)
             }
             endTime = Date.now()
-            embed.setTitle(`Reloaded!`)
-            embed.setDescription(`All ${commandNames.length} commands have been reloaded!\n Time to complete: ${Numeral(endTime - startTime).format('00:00:00')}`)
-            m.edit(embed)
+            reloadcommand.setTitle(`Reloaded!`)
+            reloadcommand.setDescription(`All ${commandNames.length} commands have been reloaded!\n Time to complete: ${Numeral(endTime - startTime).format('00:00:00')}`)
+            m.edit({
+                embed: reloadcommand
+            })
             message.channel.stopTyping()
             return true
         })
