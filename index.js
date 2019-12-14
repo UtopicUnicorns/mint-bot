@@ -263,6 +263,21 @@ client.on('message', async message => {
             process.exit(1);
         })
     };
+    //reload commands
+    if (message.content === '!reload') {
+        if (message.author.id !== '127708549118689280') return;
+        let commandarray = fs.readdirSync('./commands');
+        for (let i of commandarray) {
+            delete require.cache[require.resolve(`./commands/${i}`)];
+            try {
+                const newCommand = require(`./commands/${i}`);
+                message.client.commands.set(newCommand.name, newCommand);
+            } catch (error) {
+                console.log(error);
+                message.channel.send(`${i}:\n${error.message}`);
+            }            
+        }
+    };
     if (message.content === "!ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
