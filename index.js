@@ -277,6 +277,7 @@ client.on('message', async message => {
                 message.channel.send(`${i}:\n${error.message}`);
             }            
         }
+        message.channel.send("Done");
     };
     if (message.content === "!ping") {
         const m = await message.channel.send("Ping?");
