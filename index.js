@@ -656,6 +656,7 @@ client.on('message', async message => {
 client.on('messageDelete', function(message, channel) {
     if (message.channel.id === '628992595393118208') return;
     if (message.author.username == "Artemis") return;
+    if (!message.content) return;
     let delauthor = message.author;
     if (message.content.length > 2000) return;
     let delcontent = message.content;
