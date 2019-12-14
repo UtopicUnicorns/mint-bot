@@ -263,6 +263,48 @@ client.on('message', async message => {
             process.exit(1);
         })
     };
+    //Reload Commands(GingkathFox)
+    if (message.content === '!reload') {
+        embed.setTitle(`Reloading...`)
+        embed.setDescription(`Starting reloading of commands...`)
+        message.channel.startTyping()
+        message.channel.send(embed)
+        .then(async function(m) {
+            await esiJS.util.sleep(2000)
+            startTime = Date.now()
+            const commands = fs.readdirSync('./commands')
+            let commandNames = []
+            let startTime;
+            let endTime;
+            for (let i = 0; i < commands.length; i++) {
+                let commandFiles = commands[i].split('.')
+                commandNames[i] = commandFiles[0]
+            }
+            for (let i = 0; i < commandNames.length; i++) {
+                const commandName = commandNames[i]
+                if (!bot.commands.has(commandName)) {
+                    let command = await require(`./${commandName}.js`)
+                    bot.commands.set(commandName, command)
+                } else {
+                    await delete require.cache[require.resolve(`./${commandName}.js`)]
+                    await bot.commands.delete(commandName)
+                    const props = await require(`./${commandName}.js`)
+                    await bot.commands.set(commandName, props) 
+                }
+                embed.setDescription(`Reloaded ${commandName} command!`)
+                m.edit(embed)
+                await esiJS.util.sleep(200)
+            }
+            endTime = Date.now()
+            embed.setTitle(`Reloaded!`)
+            embed.setDescription(`All ${commandNames.length} commands have been reloaded!\n Time to complete: ${Numeral(endTime - startTime).format('00:00:00')}`)
+            m.edit(embed)
+            message.channel.stopTyping()
+            return true
+        })
+        message.channel.stopTyping()
+        return true          
+    }
     if (message.content === "!ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
