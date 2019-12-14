@@ -269,6 +269,7 @@ client.on('message', async message => {
         let commandarray = fs.readdirSync('./commands');
         for (let i of commandarray) {
             delete require.cache[require.resolve(`./commands/${i}`)];
+            console.log(i);
             try {
                 const newCommand = require(`./commands/${i}`);
                 message.client.commands.set(newCommand.name, newCommand);
