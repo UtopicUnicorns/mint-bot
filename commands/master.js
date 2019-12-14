@@ -13,8 +13,8 @@ module.exports = {
             const readingthisout = new Discord.RichEmbed()
             .setTitle('Read')
             .setColor('RANDOM')
-            .addField('./', readingthis, true)
-            .addField('./commands', readingthis2, true)
+            .addField('./', readingthis2, true)
+            .addField('./commands', readingthis, true)
             .setTimestamp()
         return message.channel.send({
             embed: readingthisout
