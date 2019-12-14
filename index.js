@@ -265,11 +265,13 @@ client.on('message', async message => {
     };
     //Reload Commands(GingkathFox)
     if (message.content === '!reload') {
-        const embed = new Discord.RichEmbed()
+        const embedreload = new Discord.RichEmbed()
         embed.setTitle(`Reloading...`)
         embed.setDescription(`Starting reloading of commands...`)
         message.channel.startTyping()
-        message.channel.send(embed)
+        message.channel.send({
+            embed: embedreload
+        })
         .then(async function(m) {
             await esiJS.util.sleep(2000)
             startTime = Date.now()
