@@ -1,3 +1,4 @@
+const Discord = module.require('discord.js');
 const fs = require("fs");
 const request = require('request');
 module.exports = {
@@ -5,7 +6,20 @@ module.exports = {
     description: '[admin] Download and insert scripts',
     execute(message) {
         if (message.author.id !== '127708549118689280') return;
-        if (message.content == "!master") return message.channel.send("!master commands/script.js / OR /commands/ script(without .js)");
+        if (message.content == "!master") return message.channel.send("!master read !master commands/script.js / OR /commands/ script(without .js)");
+        if (message.content == "!master read") {
+            let readingthis = fs.readdirSync('./commands');
+            let readingthis2 = fs.readdirSync('./');
+            const readingthisout = new Discord.RichEmbed()
+            .setTitle('Read')
+            .setColor('RANDOM')
+            .addField('./', readingthis, true)
+            .addField('./commands', readingthis2, true)
+            .setTimestamp()
+        return message.channel.send({
+            embed: readingthisout
+        });
+        }
         let args = message.content.split(" ");
         if (!args[1]) return message.reply("Provide your URL!\ncommands/script.js OR command.js");
         if (!args[2]) return message.reply("Provide a save folder / OR /commands/");
@@ -14,7 +28,6 @@ module.exports = {
         let url = baseurl+args[1];
         request(url, function (error, response, body) {
             if (error) return console.log('error:', error);
-            //return console.log(body);
             fs.writeFile(`.${args[2]}${args[3]}.js`, body, function(err) {
                 if (err) throw err;
                 return message.reply("Looks like we are done here!");
