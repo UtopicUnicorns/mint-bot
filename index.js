@@ -266,16 +266,15 @@ client.on('message', async message => {
     //reload commands
     if (message.content === '!reload') {
         if (message.author.id !== '127708549118689280') return;
-        let commandarray = fs.readdirSync('./commands');
-        for (let i of commandarray) {
-            delete require.cache[require.resolve(`./commands/${i}`)];
-            //console.log(i);
+        const commandFiless = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+        for (const file of commandFiless) {
+            delete require.cache[require.resolve(`./commands/${file}`)];
             try {
-                const newCommand = require(`./commands/${i}`);
+                const newCommand = require(`./commands/${file}`);
                 message.client.commands.set(newCommand.name, newCommand);
             } catch (error) {
                 console.log(error);
-                message.channel.send(`${i}:\n${error.message}`);
+                message.channel.send(`${file}:\n${error.message}`);
             }            
         }
         message.channel.send("Done");
