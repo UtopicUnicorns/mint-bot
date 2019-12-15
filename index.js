@@ -578,7 +578,7 @@ client.on('message', async message => {
         for (const data of databaselist) {
             databaselistcollect += client.users.get(data.user)+"\n";
         }
-        console.log(databaselistcollect);
+        //console.log(databaselistcollect);
         for (i in databaselistcollect) {
             if (!databaselistcollect.includes(guildlistcollect)) {
                 console.log(i);
