@@ -576,9 +576,14 @@ client.on('message', async message => {
         let databaselist = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC ;").all(message.guild.id);
         let databaselistcollect = "";
         for (const data of databaselist) {
-            databaselistcollect += client.users.get(data.id)+"\n";
+            databaselistcollect += client.users.get(data.user)+"\n";
         }
         console.log(databaselistcollect);
+        for (i in databaselistcollect) {
+            if (!databaselistcollect.includes(guildlistcollect)) {
+                console.log(i);
+            }
+        }
     }
     //game
     if (message.content.startsWith("!gamble")) {
