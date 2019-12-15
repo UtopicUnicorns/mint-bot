@@ -7,7 +7,7 @@ module.exports = {
             let embed = new Discord.RichEmbed()
                 .setTitle('Server Rules')
                 .setColor(`RANDOM`)
-                .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+                .setThumbnail(message.guild.iconURL)
                 .addField('(1)\n', 'Hatespeech by the means of messaging or usernames is forbidden.', true)
                 .addField('(2)\n', 'No spamming. No exceptions!', true)
                 .addField('(3)\n', 'Gore, nudity and general NSFW content is forbidden!', true)
