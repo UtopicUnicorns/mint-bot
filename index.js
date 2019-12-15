@@ -576,11 +576,11 @@ client.on('message', async message => {
         let databaselist = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC ;").all(message.guild.id);
         let databaselistcollect = [];
         for (const data of databaselist) {
-            databaselistcollect += client.users.get(data.user)+",";
+            databaselistcollect.push(client.users.get(data.user));
         }
         console.log(databaselistcollect);
         for (i in databaselistcollect) {
-                console.log(i);   
+                //console.log(i);   
         }
     }
     //game
