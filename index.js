@@ -572,7 +572,7 @@ client.on('message', async message => {
     if (message.content.startsWith("!clean")) {
         let guildlist = client.guilds.get("628978428019736619");
         guildlistcollect = "";
-        guildlist.members.forEach(member => guildlistcollect += member.user.username); 
+        guildlist.members.forEach(member => guildlistcollect += member.user.id+"\n"); 
         console.log(guildlistcollect);
     }
     //game
