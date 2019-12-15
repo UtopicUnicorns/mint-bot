@@ -568,6 +568,13 @@ client.on('message', async message => {
             embed
         });
     }
+    //Clean Database
+    if (message.content.startsWith("!clean")) {
+        let guildlist = client.guilds.get("628978428019736619");
+        guildlistcollect = "";
+        guildlist.members.forEach(member => guildlistcollect += member.user.username); 
+        console.log(guildlistcollect);
+    }
     //game
     if (message.content.startsWith("!gamble")) {
         if (talkedRecently.has(message.author.id)) {
