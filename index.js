@@ -568,7 +568,7 @@ client.on('message', async message => {
             embed
         });
     }
-    //Clean Database 
+    //Clean Database
     if (message.content.startsWith("!clean")) {
         let guildlist = client.guilds.get("628978428019736619");
         let guildlistcollect = "";
