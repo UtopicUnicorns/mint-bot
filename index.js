@@ -571,18 +571,16 @@ client.on('message', async message => {
     //Clean Database
     if (message.content.startsWith("!clean")) {
         let guildlist = client.guilds.get("628978428019736619");
-        let guildlistcollect = "";
+        let guildlistcollect = [];
         guildlist.members.forEach(member => guildlistcollect += member.user.id+"\n");
         let databaselist = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC ;").all(message.guild.id);
-        let databaselistcollect = "";
+        let databaselistcollect = [];
         for (const data of databaselist) {
             databaselistcollect += client.users.get(data.user)+"\n";
         }
-        //console.log(databaselistcollect);
+        console.log(databaselistcollect);
         for (i in databaselistcollect) {
-            if (!databaselistcollect.includes(guildlistcollect)) {
-                console.log(i);
-            }
+                console.log(i);   
         }
     }
     //game
