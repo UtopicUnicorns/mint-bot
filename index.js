@@ -570,18 +570,22 @@ client.on('message', async message => {
     }
     //Clean Database
     if (message.content.startsWith("!clean")) {
+        if (message.author.id !== '127708549118689280') return;
         let guildlist = client.guilds.get("628978428019736619");
         let guildlistcollect = [];
-        guildlist.members.forEach(member => guildlistcollect += member.user.id+",");
+        guildlist.members.forEach(member => guildlistcollect.push(member.user.id));
         let databaselist = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC ;").all(message.guild.id);
         let databaselistcollect = [];
         for (const data of databaselist) {
-            databaselistcollect.push(client.users.get(data.user));
+            databaselistcollect.push(data.user);
         }
-        console.log(databaselistcollect);
-        for (i in databaselistcollect) {
-                //console.log(i);   
+        for (let i of databaselistcollect) {
+            if (guildlistcollect.includes(i)) {
+            } else {
+                sql.prepare(`DELETE FROM scores WHERE user = ${i}`).run();
+            }
         }
+        message.channel.send("Done!");
     }
     //game
     if (message.content.startsWith("!gamble")) {
