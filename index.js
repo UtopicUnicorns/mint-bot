@@ -540,7 +540,7 @@ client.on('message', async message => {
         } else {
             thankedRecently.add(message.author.id);
             setTimeout(() => {
-                talkedRecently.delete(message.author.id);
+                thankedRecently.delete(message.author.id);
             }, 600000);
             const pointsToAdd = parseInt(20, 10);
             let userscore = client.getScore.get(user.id, message.guild.id);
