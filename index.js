@@ -699,7 +699,7 @@ client.on('messageDelete', function(message, channel) {
         .setTitle("A message got deleted!")
         .setDescription(delauthor)
         .setColor('RANDOM')
-        .addField('Deleted message:\n', `${delcontent}\n`, true)
+        .addField('@everyone Deleted message:\n', `${delcontent}\n`, true)
         .addField('Channel', message.channel, true)
         .setTimestamp()
     return client.channels.get('646672806033227797').send({
