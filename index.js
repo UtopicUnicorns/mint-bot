@@ -21,6 +21,10 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const talkedRecently = new Set();
 const thankedRecently = new Set();
 const queue = new Map();
+const {
+    FeedEmitter
+} = require("rss-emitter-ts");
+const emitter = new FeedEmitter();
 let emojiname = rolemoteconf;
 let rolename = rolenameconf;
 for (const file of commandFiles) {
@@ -225,6 +229,24 @@ client.on("presenceUpdate", (oldMember, newMember) => {
         }
     }
 });
+//reddit
+emitter.add({
+    url: "https://www.reddit.com/r/linuxmint/new.rss",
+    refresh: 10000,
+    ignoreFirst: true
+});
+emitter.on("item:new", (item) => {
+    const redditmessage = new Discord.RichEmbed()
+        .setTitle(item.title)
+        .setURL(item.link)
+        .setColor('RANDOM')
+        .addField(item.link+'\n', 'https://www.reddit.com' + item.author, true)
+        .setTimestamp();
+    return client.channels.get('656194923107713024').send({
+        embed: redditmessage
+    });
+});
+emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -275,7 +297,7 @@ client.on('message', async message => {
             } catch (error) {
                 console.log(error);
                 message.channel.send(`${file}:\n${error.message}`);
-            }            
+            }
         }
         message.channel.send("Done");
     };
@@ -372,30 +394,30 @@ client.on('message', async message => {
     }
     //translate
     if (message.channel.id !== '637373805844496434') {
-    let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
-    let key = yandex;
-    let text = message.content;
-    let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
-    request(url, {
-        json: true
-    }, (err, res, body) => {
-        if (!body.text) {
-            return
-        }
-        if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
-            return;
-        }
-        translate(text, {
-            to: 'en'
-        }).then(res => {
-            if (message.content.includes("ツ")) return;
-            if (res == message.content) return;
-            message.channel.send(res);
-        }).catch(err => {
-            console.error(err);
+        let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+        let key = yandex;
+        let text = message.content;
+        let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
+        request(url, {
+            json: true
+        }, (err, res, body) => {
+            if (!body.text) {
+                return
+            }
+            if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
+                return;
+            }
+            translate(text, {
+                to: 'en'
+            }).then(res => {
+                if (message.content.includes("ツ")) return;
+                if (res == message.content) return;
+                message.channel.send(res);
+            }).catch(err => {
+                console.error(err);
+            });
+            if (err) return message.channel.send(err);
         });
-        if (err) return message.channel.send(err);
-    });
     }
     //Do not respond to self
     if (message.author.bot) return;
@@ -582,8 +604,7 @@ client.on('message', async message => {
             databaselistcollect.push(data.user);
         }
         for (let i of databaselistcollect) {
-            if (guildlistcollect.includes(i)) {
-            } else {
+            if (guildlistcollect.includes(i)) {} else {
                 sql.prepare(`DELETE FROM scores WHERE user = ${i}`).run();
             }
         }
