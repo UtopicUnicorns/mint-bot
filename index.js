@@ -699,7 +699,7 @@ client.on('messageDelete', function(message, channel) {
         .setTitle("A message got deleted!")
         .setDescription(delauthor)
         .setColor('RANDOM')
-        .addField('@everyone Deleted message:\n', `${delcontent}\n`, true)
+        .addField('Deleted message:\n', `${delcontent}\n`, true)
         .addField('Channel', message.channel, true)
         .setTimestamp()
     return client.channels.get('646672806033227797').send({
@@ -729,6 +729,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //report
     let limit1 = 1;
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
+        client.channels.get('646672806033227797').send("@everyone");
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
