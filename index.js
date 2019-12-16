@@ -371,6 +371,7 @@ client.on('message', async message => {
         message.react("👀");
     }
     //translate
+    if (message.channel.id !== '637373805844496434') {
     let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
     let key = yandex;
     let text = message.content;
@@ -395,6 +396,7 @@ client.on('message', async message => {
         });
         if (err) return message.channel.send(err);
     });
+    }
     //Do not respond to self
     if (message.author.bot) return;
     //agree
