@@ -98,7 +98,7 @@ module.exports = {
         .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
         .setTitle('Pick a category')
         .setDescription(`!help general\n!help fun\n!help music\n!help mod\n!help admin`)
-        .addField('Basic info:', '\nWhen Artemis replies with an Arrow up emote, you leveled up!\n')
+        .addField('Basic info:', '\nWhen Artemis replies with an Arrow up emote, you leveled up!\nYou can report a message by reaction to it with :x: \nhaving 3 :tea: reactions to a message will highlight it!')
         .setTimestamp();
         return message.channel.send({
             embed: embed
