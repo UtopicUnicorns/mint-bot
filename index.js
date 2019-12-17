@@ -25,6 +25,7 @@ const {
     FeedEmitter
 } = require("rss-emitter-ts");
 const emitter = new FeedEmitter();
+const htmlToText = require('html-to-text');
 let emojiname = rolemoteconf;
 let rolename = rolenameconf;
 for (const file of commandFiles) {
@@ -236,11 +237,19 @@ emitter.add({
     ignoreFirst: true
 });
 emitter.on("item:new", (item) => {
+    const reddittext = htmlToText.fromString(item.description, {
+        wordwrap: false,
+        ignoreHref: true,
+        noLinkBrackets: true,
+        preserveNewlines: true
+    });
+    let reddittext2 = reddittext.replace('[link]', '').replace('[comments]', '');
     const redditmessage = new Discord.RichEmbed()
         .setTitle(item.title)
         .setURL(item.link)
         .setColor('RANDOM')
-        .addField(item.link+'\n', 'https://www.reddit.com' + item.author, true)
+        .setDescription(reddittext2)
+        .addField(item.link + '\n', 'https://www.reddit.com' + item.author, true)
         .setTimestamp();
     return client.channels.get('656194923107713024').send({
         embed: redditmessage
