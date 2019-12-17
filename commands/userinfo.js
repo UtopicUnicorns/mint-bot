@@ -23,8 +23,7 @@ module.exports = {
                             .addField('Status:', user.presence.status, true)
                             .addField('Created at:', `${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
                             .addField('Roles:', member.roles.map(r => `${r}`).join(' | '), true)
-                            .addBlankField()
-                            .addField('Specifications:\n', 'User has not added their specifications.\nTo add your own specs use !specs', true)
+                            .addField('Specifications:\n', 'User has not added their specifications.\nTo add your own specs use !specs')
                             .setFooter(`ID: ${user.id}`)
                             .setTimestamp();
                         message.channel.send({
@@ -44,8 +43,7 @@ module.exports = {
                         .addField('Status:', user.presence.status, true)
                         .addField('Created at:', `${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
                         .addField('Roles:', member.roles.map(r => `${r}`).join(' | '), true)
-                        .addBlankField()
-                        .addField('Specifications:\n', `${openfile}`, true)
+                        .addField('Specifications:\n', `${openfile}`)
                         .setFooter(`ID: ${user.id}`)
                         .setTimestamp();
                     message.channel.send({
