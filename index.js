@@ -244,11 +244,12 @@ emitter.on("item:new", (item) => {
         preserveNewlines: true
     });
     let reddittext2 = reddittext.replace('[link]', '').replace('[comments]', '');
+    let reddittext3 = reddittext2.substr(0, 1000);
     const redditmessage = new Discord.RichEmbed()
         .setTitle(item.title)
         .setURL(item.link)
         .setColor('RANDOM')
-        .setDescription(reddittext2)
+        .setDescription(reddittext3)
         .addField(item.link + '\n', 'https://www.reddit.com' + item.author, true)
         .setTimestamp();
     return client.channels.get('656194923107713024').send({
