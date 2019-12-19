@@ -156,36 +156,6 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             return;
         }
         if (newMember.presence.game.url.includes("twitch")) {
-            //elervated
-            if (client.guilds.get('356642342184288258')) {
-                request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
-                    json: true
-                }, function(err, res, body) {
-                    if (!body.results[0].background_image) {
-                        const embed = new Discord.RichEmbed()
-                            .setTitle(newMember.presence.game.state)
-                            .setColor(`RANDOM`)
-                            .setURL(newMember.presence.game.url)
-                            .setDescription(newMember.user.username + ' went live!')
-                            .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
-                            .setTimestamp();
-                        return client.channels.get('356642342184288259').send({
-                            embed
-                        });
-                    }
-                    const embed = new Discord.RichEmbed()
-                        .setTitle(newMember.presence.game.state)
-                        .setColor(`RANDOM`)
-                        .setURL(newMember.presence.game.url)
-                        .setThumbnail(`${body.results[0].background_image}`)
-                        .setDescription('@everyone ' + newMember.user.username + ' went live!')
-                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
-                        .setTimestamp();
-                    client.channels.get('356642342184288259').send({
-                        embed
-                    });
-                });
-            }
             //mint
             if (client.guilds.get('628978428019736619')) {
                 request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
@@ -315,6 +285,25 @@ client.on('message', async message => {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
     }
+    //EVENT
+    let eventnumber = 50
+    let eventnumber2 = Math.floor(Math.random() * 100);
+    if (eventnumber2 == eventnumber) {
+        let eventcheck = message.member.roles.find(r => r.name === `256Mb`);
+        if (!eventcheck) {
+            let eventr = message.guild.roles.find(r => r.name === `256Mb`);
+            if (!eventr) return;
+            message.member.addRole(eventr);
+            const eventembed = new Discord.RichEmbed()
+            .setTitle('EVENT')
+            .setColor('RANDOM')
+            .setDescription(message.author+'\n earned the event title:\n256mb\nCongratulations!')
+            .setTimestamp()
+         client.channels.get(`628984660298563584`).send({
+            embed: eventembed
+        });
+        }
+    }
     //memes
     if (message.channel.id === '628992595393118208') {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
@@ -382,10 +371,6 @@ client.on('message', async message => {
         if (!message.content.startsWith("!guide")) {
             message.delete();
         }
-    }
-    //testing grounds
-    if (message.content.startsWith("!images")) {
-        message.delete();
     }
     //Direct Message handle
     if (message.channel.type == "dm") {
