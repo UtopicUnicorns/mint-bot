@@ -568,7 +568,7 @@ client.on('message', async message => {
             let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
             userscore.level = userLevel;
             client.setScore.run(userscore);
-            return message.reply("thanked " + user.username + "\n" + user.username + " gotten 20 points for their effort!");
+            return message.reply("thanked " + user.username + "\n" + user.username + " has gotten 20 points for their effort!");
         }
     }
     //show top10 points
