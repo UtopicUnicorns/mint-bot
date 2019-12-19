@@ -102,15 +102,15 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nSend at least one message in this channel, and we will get back to you.\n\nMods can use !approve @mention to approve this member.");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "day") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nSend at least one message in this channel, and we will get back to you.\n\nMods can use !approve @mention to approve this member.");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nSend at least one message in this channel, and we will get back to you.\n\nMods can use !approve @mention to approve this member.");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     let muteevade = fs.readFileSync('mute.txt').toString().split("\n");
     if (muteevade.includes(guildMember.id)) {
@@ -258,6 +258,37 @@ client.on('message', async message => {
         message.delete()
         return
     }
+    if (message.channel.id === '641301287144521728') {
+        if (filtermute.includes(message.author.id)) return;
+        if (message.content == message.author.username + "1337") {
+            let roleadd = message.guild.roles.find(r => r.name === "~/Members");
+            let roledel = message.guild.roles.find(r => r.name === "Muted");
+            let member = message.member;
+            message.member.addRole(roleadd).catch(console.error);
+            message.member.removeRole(roledel).catch(console.error);
+            var ReBeL = member;
+            var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+            var moon = bel[~~(Math.random() * bel.length)];
+            moon = moon.replace('@', message.author.username)
+            const canvas = Canvas.createCanvas(700, 250);
+            const ctx = canvas.getContext('2d');
+            const background = await Canvas.loadImage('./mintwelcome.png');
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#74037b';
+            ctx.strokeRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '30px Zelda';
+            ctx.shadowColor = "black";
+            ctx.shadowBlur = 5;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
+            ctx.font = '21px sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+            const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+            message.guild.channels.get('628984660298563584').send(attachment);
+            return message.channel.send(`${member} has been approved.`);
+        }
+    }
     //restart
     if (message.content === '!restart') {
         if (message.author.id !== '127708549118689280') return;
@@ -295,13 +326,13 @@ client.on('message', async message => {
             if (!eventr) return;
             message.member.addRole(eventr);
             const eventembed = new Discord.RichEmbed()
-            .setTitle('EVENT')
-            .setColor('RANDOM')
-            .setDescription(message.author+'\n earned the event title:\n256mb\nCongratulations!')
-            .setTimestamp()
-         client.channels.get(`628984660298563584`).send({
-            embed: eventembed
-        });
+                .setTitle('EVENT')
+                .setColor('RANDOM')
+                .setDescription(message.author + '\n earned the event title:\n256mb\nCongratulations!')
+                .setTimestamp()
+            client.channels.get(`628984660298563584`).send({
+                embed: eventembed
+            });
         }
     }
     //memes
