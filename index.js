@@ -336,7 +336,7 @@ client.on('message', async message => {
         }
     }
     //memes
-    if (message.channel.id === '628992595393118208') {
+/*     if (message.channel.id === '628992595393118208') {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
         v = message.content;
         if (!message.content) return;
@@ -357,7 +357,7 @@ client.on('message', async message => {
         return message.channel.send({
             embed: uwutext
         });
-    }
+    } */
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
         if (message.author.id !== "440892659264126997") {
