@@ -100,15 +100,15 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "day") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     let muteevade = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (muteevade.includes(guildMember.id)) {
@@ -311,6 +311,25 @@ client.on('message', async message => {
         }
         message.channel.send("Done");
     };
+    //reloadprefix
+    if (message.content === "forceprefix") {
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        fs.writeFile(`./set/prefix.txt`, '!', (error) => {
+            if (error) throw error;
+        })
+        message.channel.send("Forced prefix back to !");
+    }
+    //WhoIsArtemis?
+    if (message.content.toLowerCase().includes("who" && "artemis")) {
+        const whoartemis = new Discord.RichEmbed()
+            .setTitle('Artemis')
+            .setColor('RANDOM')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/dSCqtqj')
+            .setTimestamp()
+        return message.channel.send({
+            embed: whoartemis
+        });
+    }
     if (message.content === prefix + "ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
@@ -336,7 +355,7 @@ client.on('message', async message => {
     }
     //memes
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
-     if (uwufilter.includes(message.channel.id)) {
+    if (uwufilter.includes(message.channel.id)) {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
         v = message.content;
         if (!message.content) return;
@@ -393,7 +412,7 @@ client.on('message', async message => {
     }
     //guide channel
     if (message.channel.id === '648911771624538112') {
-            message.delete();
+        message.delete();
     }
     //Direct Message handle
     if (message.channel.type == "dm") {
@@ -776,6 +795,23 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
             .setURL(reaction.message.url)
+            .setColor('RANDOM')
+            .addField('Reported Message:\n', reaction.message.content, true)
+            .addField('Channel', reaction.message.channel, true)
+            .setFooter("Message ID: " + reaction.message.id)
+            .setTimestamp();
+        return client.channels.get('646672806033227797').send({
+            embed: editmessage
+        });
+    }
+    //reportdelete
+    let limit2 = 3;
+    if (reaction.emoji.name == '❌' && reaction.count == limit2) {
+        reaction.message.delete();
+        client.channels.get('646672806033227797').send("@everyone");
+        const editmessage = new Discord.RichEmbed()
+            .setTitle("A message that was reported got deleted!")
+            .setDescription("Message by: " + reaction.message.author)
             .setColor('RANDOM')
             .addField('Reported Message:\n', reaction.message.content, true)
             .addField('Channel', reaction.message.channel, true)
