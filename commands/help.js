@@ -36,7 +36,7 @@ module.exports = {
                 let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
                 .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-                .setDescription(`${str}`)
+                .setDescription(`${str}\nforceprefix (without a prefix) to reset the prefix!`)
                 .setTimestamp();
                 return message.channel.send({
                     embed: embed
