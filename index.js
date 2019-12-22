@@ -790,6 +790,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //report
     let limit1 = 1;
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
+        if (reaction.message.author.id == '440892659264126997') return;
         client.channels.get('646672806033227797').send("@everyone");
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
@@ -807,6 +808,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //reportdelete
     let limit2 = 3;
     if (reaction.emoji.name == '❌' && reaction.count == limit2) {
+        if (reaction.message.author.id == '440892659264126997') return;
+        if (reaction.message.author.id == '127708549118689280') return;
         reaction.message.delete();
         client.channels.get('646672806033227797').send("@everyone");
         const editmessage = new Discord.RichEmbed()
