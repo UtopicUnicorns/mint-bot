@@ -320,7 +320,7 @@ client.on('message', async message => {
         message.channel.send("Forced prefix back to !");
     }
     //WhoIsArtemis?
-    if (message.content.toLowerCase().includes("who" && "artemis")) {
+    if (message.content.toLowerCase().includes("who is artemis")) {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
