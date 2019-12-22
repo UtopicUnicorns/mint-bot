@@ -1,0 +1,17 @@
+6 5 4 Proceeding with the installation
+4.1: Booting into the Live system
+
+Select Start Linux Mint and wait until you have booted to the desktop. From there, you can either try the system you will be installing soon, or install it now.
+4.2: Installing Linux Mint
+
+If you've decided to install Linux Mint, just click on the "Install Linux Mint" icon on your desktop.
+> 4.2.1: Language & Keyboard Settings
+
+The install window will open, prompting for your language of choice. Please note that I will only go through this process in the English language. After you've chosen your language, click on Continue (or the equivalent for that in your language).
+
+After that, you will be prompted to enter your keyboard layout. Note that the keyboard layout does not need to be the same as the language you entered, as those settings are independent.
+
+Under each Language you will find different settings, for example QWERT* or DVORAK versions. You can use the bar under the two select boxes to test out the layout, e.g. by typing every key and matching them with your keyboard key labels.
+> 4.2.2: Third-party software
+
+After confirming your Language & Keyboard Preferences, Linux Mint will ask you whether you'd like to install Third-party software like Wi-Fi drivers, programs MP3 files, etc. Generally, unless you have a reason not to check this box, you will want to check it.

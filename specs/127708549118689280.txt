@@ -1,0 +1,18 @@
+librorum@prohibitorum 
+--------------------- 
+OS: Utopic Unicorn OS x86_64 
+Host: MS-7918 1.0 
+Kernel: 5.4.1-arch1-1 
+Uptime: 6 hours, 59 mins 
+Packages: 1278 (pacman) 
+Shell: bash 5.0.11 
+Resolution: 1920x1080, 1920x1080 
+DE: Plasma 
+WM: Fluxbox 
+WM Theme: 02-Crunchy-orange_SQ 
+Theme: Breeze [GTK2], Breeze-Dark [GTK3] 
+Icons: candy-icons [GTK2/3] 
+Terminal: konsole 
+CPU: Intel i7-4790 (8) @ 4.000GHz 
+GPU: NVIDIA GeForce GTX 960 
+Memory: 2853MiB / 16028MiB

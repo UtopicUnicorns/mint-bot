@@ -1,0 +1,22 @@
+4 6 This small guide will teach you how to upgrade your kernel in Linux Mint.
+
+Fire up your terminal/console of choice, and type:
+sudo apt update %% sudo apt upgrade
+
+This ensures that your system is up to date.
+Next up you'll type:
+sudo add-apt-repository ppa:teejee2008/ppa
+Hit Enter when it asks you to.
+Then we'll type:
+sudo apt update
+This will take in the PPA we just added.
+Next up we'll type:
+sudo apt-get install ukuu
+
+Now that it's installed we can close the terminal.
+
+In your start menu type or find ukuu and click on it to open it.
+Select the kernel of choice(which you want to use) and hit Install.
+You will have to type your admin password again and then the program does the rest.
+
+After it's done reboot your system and if everything went right you should have the new kernel loaded!

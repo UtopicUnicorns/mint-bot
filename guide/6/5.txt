@@ -1,0 +1,17 @@
+6 6 > 4.2.3: Installation type
+
+If you've already got a system installed, Linux Mint will detect it and ask you if you want to install Linux Mint alongside of said system.
+
+Doing this will not change the already installed system in any way except for the fact that it will have less disk space to use, as that's used to install Linux Mint.
+
+If you select this option, you will be brought to a screen where you can appoint how much disk space should be allocated to the new installation.
+
+If you, however, want to have Linux Mint as a standalone system, you can select Erase disk and install Linux Mint. Doing this will delete all the files on your hard drive and install Linux Mint on it's place. You should only do this if working with a new hard drive or if you really want to replace your old system.
+
+Both of these options also support LVM and Encryption.
+
+LVM will allow you to create snapshots and roll back to them in case of a system emergency, alongside other things. Encryption will, well... encrypt. It will encrypt your partition and only decrypt with a password.
+
+If you want something entirely different, you can choose Something else and arrange the partition table to your heart's content.
+
+If you're done, you can click on Continue.

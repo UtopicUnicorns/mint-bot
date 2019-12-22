@@ -1,0 +1,10 @@
+6 8 5. Congratulations
+
+Congratulations! Linux Mint is now installed! You can either restart or continue using the system. Note that any changes you make on the system will not be saved when you reboot, since you are still on the medium you flashed on the USB or burned on the DVD.
+
+If you want to make permanent changes to your system now, reboot first.
+
+
+Online version: https://github.com/UtopicUnicorns/mint-bot/blob/master/InstallGuide.md
+USB flasher Etcher as mentioned in guide: https://www.balena.io/etcher/
+Linux Mint download page: https://www.linuxmint.com/download.php

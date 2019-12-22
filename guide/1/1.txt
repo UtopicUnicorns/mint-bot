@@ -1,0 +1,14 @@
+1 1 On Debian based systems (such as Mint), the package manager is apt. RHEL based systems (such as Fedora) use yum, and Arch based systems use pacman. Because this is the mint server and I use mint, I'll talk about apt.
+
+There's multiple front ends for apt, such as apt-get or aptitude. Although for things like scripting you would use apt-get, you want to use apt for most cases because it has neat features like a progress bar. It really doesn't matter though.
+
+Before doing any of the commands explained below, run sudo apt update to update your repository to ensure you get the newest selection of software.
+
+If you already know the name of the package you want to install, such as compton, simply run sudo apt install compton. Enter your password when prompted, and type y and then enter when it asks if you're sure. If you want to skip the y in the future, you can put alias "apt install"="apt install -y" in your ~/.bash_aliases.
+
+If you don't know the name of a package, but you know you want to install, for example, compton, you can run sudo apt search compton to get a list of available packages.
+
+To upgrade software on your computer, you can use 
+sudo apt upgrade.
+
+Lastly, if you get a .deb file from a website, you can run sudo dpkg -i and then the path to the file. Pro tip: To access a specific file in your terminal easily, you can open it in a file explorer like nemo (the default on Mint) and drag-drop it into your terminal window.
