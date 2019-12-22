@@ -1,8 +1,7 @@
 const Discord = module.require('discord.js');
 const moment = require('moment');
-//const Client = require('../client/Client');
-//const client = new Client();
-const fs = require("fs");
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'userinfo',
     description: '[general] Displays your own or mentioned user info',
@@ -23,7 +22,7 @@ module.exports = {
                             .addField('Status:', user.presence.status, true)
                             .addField('Created at:', `${moment.utc(user.createdAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`, true)
                             .addField('Roles:', member.roles.map(r => `${r}`).join(' | '), true)
-                            .addField('Specifications:\n', 'User has not added their specifications.\nTo add your own specs use !specs')
+                            .addField('Specifications:\n', `User has not added their specifications.\nTo add your own specs use ${prefix}specs`)
                             .setFooter(`ID: ${user.id}`)
                             .setTimestamp();
                         message.channel.send({

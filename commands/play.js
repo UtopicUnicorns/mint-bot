@@ -13,20 +13,6 @@ module.exports = {
     description: '[music] Play a song!',
     async execute(message) {
         let args = message.content.slice(6).split(' ');
-        if (message.content.startsWith("!play https://www.youtube.com/playlist?list=")) {
-            youtube.getPlaylist(`${args}`)
-                .then(playlist => {
-                    playlist.getVideos()
-                        .then(videos => {
-                            for (let i in videos) {
-                                console.log(videos[i].url);
-                            }
-                        })
-                        .catch(console.log);
-                })
-                .catch(console.log);
-            return
-        }
         let openmusicurl2 = await youtube.searchVideos(`${args}`, 4);
         let openmusicurl = openmusicurl2[0].url;
         const queue = message.client.queue;

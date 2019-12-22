@@ -1,5 +1,6 @@
 const Discord = module.require('discord.js');
-const fs = require("fs");
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'guide',
     description: '[general] Request a guide',
@@ -10,8 +11,8 @@ module.exports = {
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
-            if (message.content == "!guide mint") {
-                array = ["0", "1", "2", "3", "4", "5", "6", "7"];
+            if (message.content == `${prefix}guide mint`) {
+                array = [`0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`];
                 for (let i in array) {
                     await sleep(1000);
                     let g1 = fs.readFileSync(`./guide/6/${i}.txt`).toString();
@@ -23,7 +24,7 @@ module.exports = {
                         embed: embed
                     });
                 }
-                return message.delete();
+                return 
             }
             fs.stat(`./guide/${args[0]}/${args[1]}.txt`, function(err, fileStat) {
                 if (err) {
@@ -35,7 +36,6 @@ module.exports = {
                         message.author.send({
                             embed: embed
                         });
-                        message.delete();
                         return;
                     }
                 } else {
@@ -47,13 +47,12 @@ module.exports = {
                     message.author.send({
                         embed: embed
                     });
-                    message.delete();
                     return;
                 }
             });
         } else {
             message.delete();
-            message.reply("You may use this command in <#648911771624538112>");
+            message.reply(`You may use this command in <#648911771624538112>`);
         }
     },
 };

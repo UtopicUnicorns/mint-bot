@@ -1,9 +1,11 @@
+const fs = require(`fs`);
+let prefix = fs.readFileSync(`./set/prefix.txt`).toString();
 module.exports = {
-    name: 'rolegive',
-    description: '[mod] Give a role to a member. !rolegive @USER ROLENAME',
+    name: `rolegive`,
+    description: `[mod] Give a role to a member. ${prefix}rolegive @USER ROLENAME`,
     execute(message) {
-        if (message.member.hasPermission('KICK_MEMBERS')) {
-            let args = message.content.slice().split(' ');
+        if (message.member.hasPermission(`KICK_MEMBERS`)) {
+            let args = message.content.slice().split(` `);
             let rolegive = message.guild.roles.find(r => r.name === `${args[2]}`);
             let member = message.mentions.members.first();
             let check = message.mentions.members.first().roles.some(r => [`${args[2]}`].includes(r.name));

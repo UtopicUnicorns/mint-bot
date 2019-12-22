@@ -1,4 +1,6 @@
 const Discord = module.require('discord.js');
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'ban',
     description: '[mod] Ban a user',
@@ -9,7 +11,7 @@ module.exports = {
                 return message.reply('You need to mention the member you want to ban him');
             }
             const modembed = new Discord.RichEmbed()
-                .setTitle("The command !ban was used")
+                .setTitle(`The command ${prefix}ban was used`)
                 .setColor('RANDOM')
                 .addField(`${message.author.tag} banned: \n`, `${member.user.tag}`, true)
             message.guild.channels.get('646672806033227797').send({

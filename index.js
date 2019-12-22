@@ -6,7 +6,6 @@ const translate = require('translate-google');
 const moment = require('moment');
 const Client = require('./client/Client');
 const {
-    prefix,
     token,
     yandex,
     rolemoteconf,
@@ -32,7 +31,6 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-//console.log(client.commands);
 client.once('ready', () => {
     let nowtime = new Date();
     console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\n\n`);
@@ -112,7 +110,7 @@ client.on("guildMemberAdd", async (guildMember) => {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
         return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite youw own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
-    let muteevade = fs.readFileSync('mute.txt').toString().split("\n");
+    let muteevade = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (muteevade.includes(guildMember.id)) {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
         return client.channels.get('641301287144521728').send(guildMember.user + "\nYou succesfully evaded your mute!\nSYKE!\nMUTED!");
@@ -231,6 +229,7 @@ client.on('message', async message => {
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
+    let prefix = fs.readFileSync('./set/prefix.txt').toString();
     //Reaction roles
     if (message.content.startsWith(prefix + "reaction")) {
         if (!message.channel.guild) return;
@@ -248,7 +247,7 @@ client.on('message', async message => {
         }
     }
     //Mute filter
-    let filtermute = fs.readFileSync('mute.txt').toString().split("\n");
+    let filtermute = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (filtermute.includes(message.author.id)) {
         if (message.channel.id === '641301287144521728') {
             return
@@ -290,15 +289,15 @@ client.on('message', async message => {
         }
     }
     //restart
-    if (message.content === '!restart') {
+    if (message.content === prefix + 'restart') {
         if (message.author.id !== '127708549118689280') return;
         message.channel.send('Restarting').then(() => {
             process.exit(1);
         })
     };
     //reload commands
-    if (message.content === '!reload') {
-        if (message.author.id !== '127708549118689280') return;
+    if (message.content === prefix + 'reload') {
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
         let commandFiless = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
         for (let file of commandFiless) {
             delete require.cache[require.resolve(`./commands/${file}`)];
@@ -312,7 +311,7 @@ client.on('message', async message => {
         }
         message.channel.send("Done");
     };
-    if (message.content === "!ping") {
+    if (message.content === prefix + "ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
     }
@@ -336,7 +335,8 @@ client.on('message', async message => {
         }
     }
     //memes
-/*     if (message.channel.id === '628992595393118208') {
+    let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
+     if (uwufilter.includes(message.channel.id)) {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
         v = message.content;
         if (!message.content) return;
@@ -357,17 +357,17 @@ client.on('message', async message => {
         return message.channel.send({
             embed: uwutext
         });
-    } */
+    }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
         if (message.author.id !== "440892659264126997") {
             let cargs = message.content.slice(5);
-            if (message.content.startsWith("!channel")) {
+            if (message.content.startsWith(prefix + "channel")) {
                 let readname = fs.readFileSync('channelset.txt').toString().split("\n");
                 let channelname = client.channels.get(`${readname}`);
                 return message.channel.send(channelname.name);
             }
-            if (message.content.startsWith("!set")) {
+            if (message.content.startsWith(prefix + "set")) {
                 fs.writeFile('channelset.txt', cargs, function(err) {
                     if (err) throw err;
                 });
@@ -382,26 +382,18 @@ client.on('message', async message => {
         }
     }
     //chatgiffilter
-    if (message.channel.id === '628984660298563584') {
+    let giffilter = fs.readFileSync('./set/gif.txt').toString().split("\n");
+    if (giffilter.includes(message.channel.id)) {
         if (message.content.includes("https://tenor.com")) {
-            message.delete()
-        }
-    }
-    if (message.channel.id === '628984660298563584') {
-        if (message.content.includes(".gif")) {
             message.delete();
         }
-    }
-    if (message.channel.id === '640949324829818914') {
         if (message.content.includes(".gif")) {
             message.delete();
         }
     }
     //guide channel
     if (message.channel.id === '648911771624538112') {
-        if (!message.content.startsWith("!guide")) {
             message.delete();
-        }
     }
     //Direct Message handle
     if (message.channel.type == "dm") {
@@ -409,7 +401,7 @@ client.on('message', async message => {
         return
     }
     //Simulate guild member join
-    if (message.content === '!join') {
+    if (message.content === prefix + 'join') {
         if (message.author.id === "127708549118689280") {
             client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
         }
@@ -448,7 +440,7 @@ client.on('message', async message => {
     //Do not respond to self
     if (message.author.bot) return;
     //agree
-    if (message.content.startsWith("^")) {
+    if (message.content == "^") {
         message.channel.send("I agree!");
     }
     //set points
@@ -548,7 +540,7 @@ client.on('message', async message => {
         }
     }
     //Show user points
-    if (message.content.startsWith("!points")) {
+    if (message.content.startsWith(prefix + "points")) {
         const user = message.mentions.users.first() || message.author;
         let userscore = client.getScore.get(user.id, message.guild.id);
         if (!userscore) return message.reply("This user does not have a database index yet.");
@@ -558,7 +550,7 @@ client.on('message', async message => {
         return message.channel.send(user + " got " + userscore.points + " points\nand is level " + userscore.level);
     }
     //Point give command
-    if (message.content.startsWith("!add")) {
+    if (message.content.startsWith(prefix + "add")) {
         if (message.author.id !== '127708549118689280') return;
         const user = message.mentions.users.first() || client.users.get(args[0]);
         if (!user) return message.reply("You must mention someone or give their ID!");
@@ -603,7 +595,7 @@ client.on('message', async message => {
         }
     }
     //show top10 points
-    if (message.content.startsWith("!top")) {
+    if (message.content.startsWith(prefix + "top")) {
         const top10 = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
         const embed = new Discord.RichEmbed()
             .setTitle("Leaderboard")
@@ -619,7 +611,7 @@ client.on('message', async message => {
         });
     }
     //Clean Database
-    if (message.content.startsWith("!clean")) {
+    if (message.content.startsWith(prefix + "clean")) {
         if (message.author.id !== '127708549118689280') return;
         let guildlist = client.guilds.get("628978428019736619");
         let guildlistcollect = [];
@@ -637,7 +629,7 @@ client.on('message', async message => {
         message.channel.send("Done!");
     }
     //game
-    if (message.content.startsWith("!gamble")) {
+    if (message.content.startsWith(prefix + "gamble")) {
         if (talkedRecently.has(message.author.id)) {
             message.reply("You may only gamble once every 30 seconds!");
         } else {
@@ -737,6 +729,7 @@ client.on('message', async message => {
     }
 });
 //logs
+/*
 client.on('messageDelete', function(message, channel) {
     if (message.channel.id === '628992595393118208') return;
     if (message.author.username == "Artemis") return;
@@ -755,7 +748,7 @@ client.on('messageDelete', function(message, channel) {
         embed: delmessage
     });
 });
-/*
+
 client.on('messageUpdate', (oldMessage, newMessage) => {
     if (oldMessage.author.username == "Artemis") return;
     let editauthor = oldMessage.author;

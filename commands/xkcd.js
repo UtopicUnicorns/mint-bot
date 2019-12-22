@@ -1,13 +1,15 @@
 const Discord = require('discord.js');
-const request = require("request");
+const request = require(`request`);
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'xkcd',
     description: '[fun] Xkcd images',
     execute(message) {
-        if (message.content == "!xkcd random") {
-            let baseurl = "https://xkcd.com/";
+        if (message.content == `${prefix}xkcd random`) {
+            let baseurl = `https://xkcd.com/`;
             let num = Math.floor(Math.random() * 2200) + 1;
-            let end = "/info.0.json";
+            let end = `/info.0.json`;
             let url = baseurl + num + end;
             request(url, {
                 json: true
@@ -25,9 +27,9 @@ module.exports = {
             });
             return
         }
-        let args = message.content.slice().split(" ");
+        let args = message.content.slice().split(` `);
         if (!args[1]) {
-            let url = "https://xkcd.com/info.0.json";
+            let url = `https://xkcd.com/info.0.json`;
             request(url, {
                 json: true
             }, (err, res, body) => {
@@ -43,9 +45,9 @@ module.exports = {
                 });
             });
         }
-        let baseurl = "https://xkcd.com/";
+        let baseurl = `https://xkcd.com/`;
         let num = args[1];
-        let end = "/info.0.json";
+        let end = `/info.0.json`;
         let url = baseurl + num + end;
         request(url, {
             json: true

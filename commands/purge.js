@@ -1,4 +1,6 @@
 const Discord = module.require('discord.js');
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'purge',
     description: '[mod] Purge a mentioned user or a specified ammount',
@@ -9,7 +11,7 @@ module.exports = {
             if (!amount) return message.reply('Must specify an amount to delete!');
             if (!amount && !user) return message.reply('Must specify a user and amount, or just an amount, of messages to purge!');
             const modembed = new Discord.RichEmbed()
-                .setTitle("The command !purge was used")
+                .setTitle(`The command ${prefix}purge was used`)
                 .setColor('RANDOM')
                 .addField(`${message.author.tag} purged: \n`, `${message.content}`, true)
             message.guild.channels.get('646672806033227797').send({
