@@ -1,7 +1,0 @@
-3 1 Barrier KVM is a program that llows you to use your mouse and keyboard on different systems and even other operating systems.
-To install this app on Mint just use:
-sudo snap install barrier-kvm
-
-If you do not have snap installed then install it first with:
-sudo apt update
-sudo apt install snapd

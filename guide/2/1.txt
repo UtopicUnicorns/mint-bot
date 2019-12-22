@@ -1,4 +1,0 @@
-2 1 press esc, type :q and press enter
-if this doesn't work, press esc a few more times and try again
-if you made changes to the file and want to exit, you'll have to replace :q with :q!
-if you made changes to the file and want to save and exit, you'll have to replace :q with :wq
