@@ -32,7 +32,6 @@ for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
 }
-//console.log(client.commands);
 client.once('ready', () => {
     let nowtime = new Date();
     console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\n\n`);
@@ -248,7 +247,7 @@ client.on('message', async message => {
         }
     }
     //Mute filter
-    let filtermute = fs.readFileSync('mute.txt').toString().split("\n");
+    let filtermute = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (filtermute.includes(message.author.id)) {
         if (message.channel.id === '641301287144521728') {
             return
@@ -336,7 +335,8 @@ client.on('message', async message => {
         }
     }
     //memes
-/*     if (message.channel.id === '628992595393118208') {
+    let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
+     if (uwufilter.includes(message.channel.id)) {
         var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
         v = message.content;
         if (!message.content) return;
@@ -357,7 +357,7 @@ client.on('message', async message => {
         return message.channel.send({
             embed: uwutext
         });
-    } */
+    }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
         if (message.author.id !== "440892659264126997") {
@@ -382,17 +382,13 @@ client.on('message', async message => {
         }
     }
     //chatgiffilter
-    if (message.channel.id === '628984660298563584') {
+    let giffilter = fs.readFileSync('./set/gif.txt').toString().split("\n");
+    if (giffilter.includes(message.channel.id)) {
         if (message.content.includes("https://tenor.com")) {
-            message.delete()
-        }
-    }
-    if (message.channel.id === '628984660298563584') {
-        if (message.content.includes(".gif")) {
             message.delete();
         }
     }
-    if (message.channel.id === '640949324829818914') {
+    if (giffilter.includes(message.channel.id)) {
         if (message.content.includes(".gif")) {
             message.delete();
         }
@@ -737,6 +733,7 @@ client.on('message', async message => {
     }
 });
 //logs
+/*
 client.on('messageDelete', function(message, channel) {
     if (message.channel.id === '628992595393118208') return;
     if (message.author.username == "Artemis") return;
@@ -755,7 +752,7 @@ client.on('messageDelete', function(message, channel) {
         embed: delmessage
     });
 });
-/*
+
 client.on('messageUpdate', (oldMessage, newMessage) => {
     if (oldMessage.author.username == "Artemis") return;
     let editauthor = oldMessage.author;
