@@ -792,35 +792,36 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
         if (reaction.message.author.id == '440892659264126997') return;
         client.channels.get('646672806033227797').send("@everyone");
-        const image = reaction.message.attachments.size > 0 ? await this.extension(reaction, message.attachments.array()[0].url) : '';
-        if (image === '') {
-        const editmessage = new Discord.RichEmbed()
-            .setTitle("A message got reported!")
-            .setDescription("Message by: " + reaction.message.author)
-            .setURL(reaction.message.url)
-            .setColor('RANDOM')
-            .addField('Reported Message:\n', reaction.message.content, true)
-            .addField('Channel', reaction.message.channel, true)
-            .setFooter("Message ID: " + reaction.message.id)
-            .setTimestamp();
-        return client.channels.get('646672806033227797').send({
-            embed: editmessage
-        });
+        if (!reaction.message.attachments.size > 0) {
+            const editmessage = new Discord.RichEmbed()
+                .setTitle("A message got reported!")
+                .setDescription("Message by: " + reaction.message.author)
+                .setURL(reaction.message.url)
+                .setColor('RANDOM')
+                .addField('Reported Message:\n', reaction.message.content, true)
+                .addField('Channel', reaction.message.channel, true)
+                .setFooter("Message ID: " + reaction.message.id)
+                .setTimestamp();
+            return client.channels.get('646672806033227797').send({
+                embed: editmessage
+            });
         }
         if (reaction.message.content === '') {
+            const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
-            .setTitle("A message got reported!")
-            .setDescription("Message by: " + reaction.message.author)
-            .setURL(reaction.message.url)
-            .setColor('RANDOM')
-            .addField('Channel', reaction.message.channel, true)
-            .setFooter("Message ID: " + reaction.message.id)
-            .setImage(image)
-            .setTimestamp();
-        return client.channels.get('646672806033227797').send({
-            embed: editmessage
-        });
+                .setTitle("A message got reported!")
+                .setDescription("Message by: " + reaction.message.author)
+                .setURL(reaction.message.url)
+                .setColor('RANDOM')
+                .addField('Channel', reaction.message.channel, true)
+                .setFooter("Message ID: " + reaction.message.id)
+                .setImage(image)
+                .setTimestamp();
+            return client.channels.get('646672806033227797').send({
+                embed: editmessage
+            });
         }
+        const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
@@ -859,6 +860,38 @@ client.on("messageReactionAdd", async (reaction, user) => {
     let limit = 3;
     if (reaction.emoji.name == '🍵' && reaction.count == limit) {
         if (reaction.message.author.id == '440892659264126997') return;
+        if (!reaction.message.attachments.size > 0) {
+            const editmessage = new Discord.RichEmbed()
+                .setTitle("A message got highlighted!")
+                .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
+                .setDescription("Message by: " + reaction.message.author)
+                .setURL(reaction.message.url)
+                .setColor('RANDOM')
+                .addField('Mintiest Message:\n', reaction.message.content, true)
+                .addField('Channel', reaction.message.channel, true)
+                .setFooter("Message ID: " + reaction.message.id)
+                .setTimestamp();
+            return client.channels.get('654447738070761505').send({
+                embed: editmessage
+            });
+        }
+        if (reaction.message.content === '') {
+            const image = reaction.message.attachments.array()[0].url;
+            const editmessage = new Discord.RichEmbed()
+                .setTitle("A message got highlighted!")
+                .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
+                .setDescription("Message by: " + reaction.message.author)
+                .setURL(reaction.message.url)
+                .setColor('RANDOM')
+                .addField('Channel', reaction.message.channel, true)
+                .setFooter("Message ID: " + reaction.message.id)
+                .setImage(image)
+                .setTimestamp();
+            return client.channels.get('654447738070761505').send({
+                embed: editmessage
+            });
+        }
+        const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got highlighted!")
             .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
@@ -868,6 +901,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .addField('Mintiest Message:\n', reaction.message.content, true)
             .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
+            .setImage(image)
             .setTimestamp();
         return client.channels.get('654447738070761505').send({
             embed: editmessage
