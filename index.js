@@ -792,6 +792,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
         if (reaction.message.author.id == '440892659264126997') return;
         client.channels.get('646672806033227797').send("@everyone");
+        const image = reaction.message.attachments.size > 0 ? await this.extension(reaction, message.attachments.array()[0].url) : '';
+        if (image === '') {
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setDescription("Message by: " + reaction.message.author)
@@ -804,6 +806,34 @@ client.on("messageReactionAdd", async (reaction, user) => {
         return client.channels.get('646672806033227797').send({
             embed: editmessage
         });
+        }
+        if (reaction.message.content === '') {
+            const editmessage = new Discord.RichEmbed()
+            .setTitle("A message got reported!")
+            .setDescription("Message by: " + reaction.message.author)
+            .setURL(reaction.message.url)
+            .setColor('RANDOM')
+            .addField('Channel', reaction.message.channel, true)
+            .setFooter("Message ID: " + reaction.message.id)
+            .setImage(image)
+            .setTimestamp();
+        return client.channels.get('646672806033227797').send({
+            embed: editmessage
+        });
+        }
+        const editmessage = new Discord.RichEmbed()
+            .setTitle("A message got reported!")
+            .setDescription("Message by: " + reaction.message.author)
+            .setURL(reaction.message.url)
+            .setColor('RANDOM')
+            .addField('Reported Message:\n', reaction.message.content, true)
+            .addField('Channel', reaction.message.channel, true)
+            .setFooter("Message ID: " + reaction.message.id)
+            .setImage(image)
+            .setTimestamp();
+        return client.channels.get('646672806033227797').send({
+            embed: editmessage
+        });
     }
     //reportdelete
     let limit2 = 3;
@@ -811,6 +841,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         if (reaction.message.author.id == '440892659264126997') return;
         if (reaction.message.author.id == '127708549118689280') return;
         reaction.message.delete();
+        if (reaction.message.content === '') return;
         client.channels.get('646672806033227797').send("@everyone");
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message that was reported got deleted!")
@@ -827,6 +858,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //Highlights
     let limit = 3;
     if (reaction.emoji.name == '🍵' && reaction.count == limit) {
+        if (reaction.message.author.id == '440892659264126997') return;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got highlighted!")
             .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
