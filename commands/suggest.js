@@ -1,4 +1,4 @@
-const search = require('node-ddg').default;
+const Discord = module.require('discord.js');
 const fs = require('fs');
 let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
@@ -6,17 +6,13 @@ module.exports = {
     description: '[general] Suggest an idea',
     execute(message) {
         if (message.content === `${prefix}suggest`) {
-            return message.channel.send(`Feel free to give me some search terms.`);
+            return message.channel.send(`!suggest <suggestion>`);
         }
-        let args = message.content.slice(7).split(' ');
-        search({
-                query: `${args}`,
-                maxResults: 1
-            })
-            .then((results) => {
-                for (i = 0; i < results.length; i++) {
-                    message.channel.send(`>>> ` + results[i].title + `\n` + results[i].body + results[i].url + `\n`);
-                }
-            })
+        const embed = new Discord.RichEmbed()
+            .setDescription('Your suggestion')
+            .setImage('https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/SUGGESTIONS.gif')
+            message.channel.send({
+                embed: embed
+            });
     },
 };
