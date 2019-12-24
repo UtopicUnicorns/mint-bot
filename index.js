@@ -324,7 +324,7 @@ client.on('message', async message => {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/dSCqtqj')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw')
             .setTimestamp()
         return message.channel.send({
             embed: whoartemis
@@ -791,7 +791,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     let limit1 = 1;
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
         if (reaction.message.author.id == '440892659264126997') return;
-        client.channels.get('646672806033227797').send("@everyone");
+        if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
         if (!reaction.message.attachments.size > 0) {
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got reported!")
@@ -800,6 +800,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setColor('RANDOM')
                 .addField('Reported Message:\n', reaction.message.content, true)
                 .addField('Channel', reaction.message.channel, true)
+                .addField('Reported by: ', reaction.users.first())
                 .setFooter("Message ID: " + reaction.message.id)
                 .setTimestamp();
             return client.channels.get('646672806033227797').send({
@@ -814,6 +815,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setURL(reaction.message.url)
                 .setColor('RANDOM')
                 .addField('Channel', reaction.message.channel, true)
+                .addField('Reported by: ', reaction.users.first())
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
@@ -828,6 +830,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setURL(reaction.message.url)
             .setColor('RANDOM')
             .addField('Reported Message:\n', reaction.message.content, true)
+            .addField('Reported by: ', reaction.users.first())
             .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
@@ -841,14 +844,15 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (reaction.emoji.name == '❌' && reaction.count == limit2) {
         if (reaction.message.author.id == '440892659264126997') return;
         if (reaction.message.author.id == '127708549118689280') return;
+        if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
         reaction.message.delete();
         if (reaction.message.content === '') return;
-        client.channels.get('646672806033227797').send("@everyone");
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message that was reported got deleted!")
             .setDescription("Message by: " + reaction.message.author)
             .setColor('RANDOM')
             .addField('Reported Message:\n', reaction.message.content, true)
+            .addField('Deleted by: ', reaction.users.last())
             .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
