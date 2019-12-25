@@ -396,7 +396,61 @@ client.on('message', async message => {
             if (!client.channels.get(`${channelcheck}`)) {
                 return message.channel.send("Enter a valid channel ID first!\n!set ChannelID");
             }
-            client.channels.get(`${channelcheck}`).send(message.content);
+            //herewego
+            aaa = message.content;
+            aaa = aaa.replace(/a/g, "₳");
+            aaa = aaa.replace(/b/g, "฿");
+            aaa = aaa.replace(/c/g, "₵");
+            aaa = aaa.replace(/d/g, "Đ");
+            aaa = aaa.replace(/e/g, "Ɇ");
+            aaa = aaa.replace(/f/g, "₣");
+            aaa = aaa.replace(/g/g, "₲");
+            aaa = aaa.replace(/h/g, "Ⱨ");
+            aaa = aaa.replace(/i/g, "ł");
+            aaa = aaa.replace(/j/g, "J");
+            aaa = aaa.replace(/k/g, "₭");
+            aaa = aaa.replace(/l/g, "Ⱡ");
+            aaa = aaa.replace(/m/g, "₥");
+            aaa = aaa.replace(/n/g, "₦");
+            aaa = aaa.replace(/o/g, "Ø");
+            aaa = aaa.replace(/p/g, "₱");
+            aaa = aaa.replace(/q/g, "Q");
+            aaa = aaa.replace(/r/g, "Ɽ");
+            aaa = aaa.replace(/s/g, "₴");
+            aaa = aaa.replace(/t/g, "₮");
+            aaa = aaa.replace(/u/g, "Ʉ");
+            aaa = aaa.replace(/v/g, "V");
+            aaa = aaa.replace(/w/g, "₩");
+            aaa = aaa.replace(/x/g, "Ӿ");
+            aaa = aaa.replace(/y/g, "Ɏ");
+            aaa = aaa.replace(/z/g, "Ⱬ");
+            aaa = aaa.replace(/A/g, "₳");
+            aaa = aaa.replace(/B/g, "฿");
+            aaa = aaa.replace(/C/g, "₵");
+            aaa = aaa.replace(/D/g, "Đ");
+            aaa = aaa.replace(/E/g, "Ɇ");
+            aaa = aaa.replace(/F/g, "₣");
+            aaa = aaa.replace(/G/g, "₲");
+            aaa = aaa.replace(/H/g, "Ⱨ");
+            aaa = aaa.replace(/I/g, "ł");
+            aaa = aaa.replace(/J/g, "J");
+            aaa = aaa.replace(/K/g, "₭");
+            aaa = aaa.replace(/L/g, "Ⱡ");
+            aaa = aaa.replace(/M/g, "₥");
+            aaa = aaa.replace(/N/g, "₦");
+            aaa = aaa.replace(/O/g, "Ø");
+            aaa = aaa.replace(/P/g, "₱");
+            aaa = aaa.replace(/Q/g, "Q");
+            aaa = aaa.replace(/R/g, "Ɽ");
+            aaa = aaa.replace(/S/g, "₴");
+            aaa = aaa.replace(/T/g, "₮");
+            aaa = aaa.replace(/U/g, "Ʉ");
+            aaa = aaa.replace(/V/g, "V");
+            aaa = aaa.replace(/W/g, "₩");
+            aaa = aaa.replace(/X/g, "Ӿ");
+            aaa = aaa.replace(/Y/g, "Ɏ");
+            aaa = aaa.replace(/Z/g, "Ⱬ");
+            client.channels.get(`${channelcheck}`).send(aaa);
             return;
         }
     }
