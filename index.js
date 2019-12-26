@@ -76,7 +76,6 @@ client.once('ready', () => {
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
             type: 'LISTENING'
         });
-
     }, 60000);
     //preload messages on reconnect
     let testchannel = client.channels.get('645033708860211206');
@@ -537,79 +536,81 @@ client.on('message', async message => {
         }
         client.setScore.run(score);
     }
-    //5  
+    //start level rewards
+    const lvl5 = message.guild.roles.find(r => r.name === `Minty Messenger`);
+    const lvl10 = message.guild.roles.find(r => r.name === `Ruler of Messages`);
+    const lvl15 = message.guild.roles.find(r => r.name === `Fresh Messenger`);
+    const lvl20 = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
+    const lvl30 = message.guild.roles.find(r => r.name === `Basically a Cheater`);
+    const lvl50 = message.guild.roles.find(r => r.name === `Sage of Messages`);
+    const lvl85 = message.guild.roles.find(r => r.name === `Godlike Messenger`);
+    //lvl5
     if (score.level > 4 && score.level < 9) {
-        let checking2 = message.member.roles.find(r => r.name === `Minty Messenger`);
-        if (!checking2) {
-            let freshnew = message.guild.roles.find(r => r.name === `Minty Messenger`);
-            if (!freshnew) return;
-            message.member.addRole(freshnew);
-            message.reply("You earned the title " + freshnew);
+        let checking = message.member.roles.find(r => r.name === lvl5.name);
+        if (!checking) {
+            if(!lvl5) return;
+            message.member.addRole(lvl5);
+            message.reply("You earned the title " + lvl5);
         }
     }
-    //10
+    //lvl10
     if (score.level > 9 && score.level < 14) {
-        let checking3 = message.member.roles.find(r => r.name === `Ruler of Messages`);
-        if (!checking3) {
-            let freshnew = message.guild.roles.find(r => r.name === `Minty Messenger`);
-            if (!freshnew) return;
-            let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
-            if (!rulerofmessages) return;
-            message.member.addRole(rulerofmessages);
-            message.member.removeRole(freshnew);
-            message.reply("You earned the title " + rulerofmessages);
+        let checking = message.member.roles.find(r => r.name === lvl10.name);
+        if (!checking) {
+            if(!lvl10) return;
+            message.member.addRole(lvl10);
+            message.member.removeRole(lvl5);
+            message.reply("You earned the title " + lvl10);
         }
     }
-    //15
+    //lvl15
     if (score.level > 14 && score.level < 19) {
-        let checking4 = message.member.roles.find(r => r.name === `Fresh Messenger`);
-        if (!checking4) {
-            let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
-            if (!freshmessenger) return;
-            let rulerofmessages = message.guild.roles.find(r => r.name === `Ruler of Messages`);
-            if (!rulerofmessages) return;
-            message.member.addRole(freshmessenger);
-            message.member.removeRole(rulerofmessages);
-            message.reply("You earned the title " + freshmessenger);
+        let checking = message.member.roles.find(r => r.name === lvl15.name);
+        if (!checking) {
+            if(!lvl15) return;
+            message.member.addRole(lvl15);
+            message.member.removeRole(lvl10);
+            message.reply("You earned the title " + lvl15);
         }
     }
-    //20
+    //lvl20
     if (score.level > 19 && score.level < 29) {
-        let checking5 = message.member.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
-        if (!checking5) {
-            let freshmessenger = message.guild.roles.find(r => r.name === `Fresh Messenger`);
-            if (!freshmessenger) return;
-            let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
-            if (!rhkw) return;
-            message.member.addRole(rhkw);
-            message.member.removeRole(freshmessenger);
-            message.reply("You earned the title " + rhkw);
+        let checking = message.member.roles.find(r => r.name === lvl20.name);
+        if (!checking) {
+            if(!lvl20) return;
+            message.member.addRole(lvl20);
+            message.member.removeRole(lvl15);
+            message.reply("You earned the title " + lvl20);
         }
     }
-    //30
+    //lvl30
     if (score.level > 29 && score.level < 49) {
-        let checking6 = message.member.roles.find(r => r.name === `Basically a Cheater`);
-        if (!checking6) {
-            let rhkw = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
-            if (!rhkw) return;
-            let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
-            if (!bac) return;
-            message.member.addRole(bac);
-            message.member.removeRole(rhkw);
-            message.reply("You earned the title " + bac);
+        let checking = message.member.roles.find(r => r.name === lvl30.name);
+        if (!checking) {
+            if(!lvl30) return;
+            message.member.addRole(lvl30);
+            message.member.removeRole(lvl20);
+            message.reply("You earned the title " + lvl30);
         }
     }
-    //50
-    if (score.level > 49 && score.level < 99) {
-        let checking7 = message.member.roles.find(r => r.name === `Sage of Messages`);
-        if (!checking7) {
-            let bac = message.guild.roles.find(r => r.name === `Basically a Cheater`);
-            if (!bac) return;
-            let sageom = message.guild.roles.find(r => r.name === `Sage of Messages`);
-            if (!sageom) return;
-            message.member.addRole(sageom);
-            message.member.removeRole(bac);
-            message.reply("You earned the title " + sageom);
+    //lvl50
+    if (score.level > 49 && score.level < 84) {
+        let checking = message.member.roles.find(r => r.name === lvl50.name);
+        if (!checking) {
+            if(!lvl50) return;
+            message.member.addRole(lvl50);
+            message.member.removeRole(lvl30);
+            message.reply("You earned the title " + lvl50);
+        }
+    }
+    //lvl85
+    if (score.level > 84 && score.level < 99) {
+        let checking = message.member.roles.find(r => r.name === lvl85.name);
+        if (!checking) {
+            if(!lvl85) return;
+            message.member.addRole(lvl85);
+            message.member.removeRole(lvl50);
+            message.reply("You earned the title " + lvl85);
         }
     }
     //Show user points
@@ -620,7 +621,15 @@ client.on('message', async message => {
         let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
         userscore.level = userLevel;
         client.setScore.run(userscore);
-        return message.channel.send(user + " got " + userscore.points + " points\nand is level " + userscore.level);
+        const pointemb = new Discord.RichEmbed()
+        .setColor('RANDOM')
+        .addField('Name: ', user)
+        .addField('Points: ', userscore.points)
+        .addField('Level: ', userscore.level)
+        .setTimestamp()
+    return message.channel.send({
+        embed: pointemb
+    });
     }
     //Point give command
     if (message.content.startsWith(prefix + "add")) {
@@ -673,7 +682,7 @@ client.on('message', async message => {
         const embed = new Discord.RichEmbed()
             .setTitle("Leaderboard")
             .setDescription("Top 10 chatters")
-            .setColor(0x00AE86);
+            .setColor('RANDOM');
         for (const data of top10) {
             if (client.users.get(data.user)) {
                 embed.addField(client.users.get(data.user).tag, `${data.points} points (level ${data.level})`);
