@@ -335,7 +335,7 @@ client.on('message', async message => {
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
     }
     //EVENT
-    let eventnumber = 50
+/*     let eventnumber = 50
     let eventnumber2 = Math.floor(Math.random() * 100);
     if (eventnumber2 == eventnumber) {
         let eventcheck = message.member.roles.find(r => r.name === `256Mb`);
@@ -352,7 +352,7 @@ client.on('message', async message => {
                 embed: eventembed
             });
         }
-    }
+    } */
     //memes
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
     if (uwufilter.includes(message.channel.id)) {
