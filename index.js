@@ -53,24 +53,11 @@ client.once('ready', () => {
             embed: dadembed
         });
     }, 21600000);
-    //change description
-    setInterval(() => {
-        client.channels.get('640949324829818914').setTopic('Chatter and off-topic here | ' + client.users.size + ' users ');
-    }, 600000);
-    //change description
-    setInterval(() => {
-        let totalSeconds = (client.uptime / 1000);
-        let days = Math.floor(totalSeconds / 86400);
-        let hours = Math.floor(totalSeconds / 3600);
-        totalSeconds %= 3600;
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = Math.ceil(totalSeconds % 60);
-        client.channels.get('628992550836895744').setTopic(`${client.users.size} users | bot uptime | ${days} days | ${hours} hours, ${minutes} minutes and ${seconds} seconds`);
-    }, 600000);
     //change bot Status
     setInterval(() => {
+        let prefixstatus = fs.readFileSync('./set/prefix.txt').toString();
         var RAN = [
-            `!help`,
+            `${prefixstatus}help`,
             `${client.users.size} total users`
         ];
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
@@ -193,7 +180,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             }
         }
         if (`${newMember.presence.status}` === "online") {
-            client.channels.get('628984660298563584').setTopic(`${newMember.user.username} has enlightened us with their presence!`);
+            client.channels.get('628984660298563584').setTopic(`${newMember.user.username} just came online!`);
         }
     }
 });
@@ -239,20 +226,14 @@ client.on('message', async message => {
             }
         }
     }
-    //ignore bots other than Apollo
-    if (message.author.bot) {
-        if (message.author.id == '654361253413781537') {} else {
-            return
-        }
-    }
+    //ignore bots
+    if (message.author.bot) return;
     //Mute filter
     let filtermute = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (filtermute.includes(message.author.id)) {
         if (message.channel.id === '641301287144521728') {
             return
         }
-        let nowtime = new Date();
-        console.log(`${nowtime} \n` + message.author.username + '\n' + message.content + '\n\n');
         message.delete()
         return
     }
@@ -333,25 +314,6 @@ client.on('message', async message => {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
     }
-    //EVENT
-/*     let eventnumber = 50
-    let eventnumber2 = Math.floor(Math.random() * 100);
-    if (eventnumber2 == eventnumber) {
-        let eventcheck = message.member.roles.find(r => r.name === `256Mb`);
-        if (!eventcheck) {
-            let eventr = message.guild.roles.find(r => r.name === `256Mb`);
-            if (!eventr) return;
-            message.member.addRole(eventr);
-            const eventembed = new Discord.RichEmbed()
-                .setTitle('EVENT')
-                .setColor('RANDOM')
-                .setDescription(message.author + '\n earned the event title:\n256mb\nCongratulations!')
-                .setTimestamp()
-            client.channels.get(`628984660298563584`).send({
-                embed: eventembed
-            });
-        }
-    } */
     //memes
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
     if (uwufilter.includes(message.channel.id)) {
@@ -509,8 +471,6 @@ client.on('message', async message => {
             if (err) return message.channel.send(err);
         });
     }
-    //Do not respond to self
-    if (message.author.bot) return;
     //agree
     if (message.content == "^") {
         message.channel.send("I agree!");
@@ -810,45 +770,6 @@ client.on('message', async message => {
         //console.error(error);
     }
 });
-//logs
-/*
-client.on('messageDelete', function(message, channel) {
-    if (message.channel.id === '628992595393118208') return;
-    if (message.author.username == "Artemis") return;
-    if (!message.content) return;
-    let delauthor = message.author;
-    if (message.content.length > 2000) return;
-    let delcontent = message.content;
-    const delmessage = new Discord.RichEmbed()
-        .setTitle("A message got deleted!")
-        .setDescription(delauthor)
-        .setColor('RANDOM')
-        .addField('Deleted message:\n', `${delcontent}\n`, true)
-        .addField('Channel', message.channel, true)
-        .setTimestamp()
-    return client.channels.get('646672806033227797').send({
-        embed: delmessage
-    });
-});
-
-client.on('messageUpdate', (oldMessage, newMessage) => {
-    if (oldMessage.author.username == "Artemis") return;
-    let editauthor = oldMessage.author;
-    if (!oldMessage.content) return;
-    let oldmsg = oldMessage.content;
-    let newmsg = newMessage.content;
-    if (oldmsg == newmsg) return;
-    const editmessage = new Discord.RichEmbed()
-        .setTitle("A message got edited!")
-        .setDescription(editauthor)
-        .setColor('RANDOM')
-        .addField('Old Message:\n', `${oldmsg}\n`, true)
-        .addField('New Message:\n', `${newmsg}\n`, true)
-        .setTimestamp();
-    return client.channels.get('646672806033227797').send({
-        embed: editmessage
-    });
-});  */
 client.on("messageReactionAdd", async (reaction, user) => {
     //report
     let limit1 = 1;
@@ -1003,6 +924,4 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 });
-
-
 client.login(token);
