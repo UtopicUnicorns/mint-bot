@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const db = require('better-sqlite3')('../scores.sqlite');
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'board',
     description: '[general] Show leaderboard',
@@ -10,8 +10,9 @@ module.exports = {
             .setDescription("Top 10 chatters")
             .setColor('RANDOM');
         for (const data of top10) {
-            if (message.users.get(data.user)) {
-                embed.addField(message.users.get(data.user).tag, `${data.points} points (level ${data.level})`);
+            if (message.guild.members.get(data.user)) {
+                let user = message.guild.members.get(data.user);
+                embed.addField(user.user.username, `${data.points} points (level ${data.level})`);
             }
         }
         message.channel.send({

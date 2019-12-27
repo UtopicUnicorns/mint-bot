@@ -17,7 +17,6 @@ const sql = new SQLite('./scores.sqlite');
 const client = new Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const talkedRecently = new Set();
 const thankedRecently = new Set();
 const queue = new Map();
 const {
@@ -573,47 +572,6 @@ client.on('message', async message => {
             message.reply("You earned the title " + lvl85);
         }
     }
-    //Show user points
-    if (message.content.startsWith(prefix + "points")) {
-        const user = message.mentions.users.first() || message.author;
-        let userscore = client.getScore.get(user.id, message.guild.id);
-        if (!userscore) return message.reply("This user does not have a database index yet.");
-        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-        userscore.level = userLevel;
-        client.setScore.run(userscore);
-        const pointemb = new Discord.RichEmbed()
-        .setColor('RANDOM')
-        .addField('Name: ', user)
-        .addField('Points: ', userscore.points)
-        .addField('Level: ', userscore.level)
-        .setTimestamp()
-    return message.channel.send({
-        embed: pointemb
-    });
-    }
-    //Point give command
-    if (message.content.startsWith(prefix + "add")) {
-        if (message.author.id !== '127708549118689280') return;
-        const user = message.mentions.users.first() || client.users.get(args[0]);
-        if (!user) return message.reply("You must mention someone or give their ID!");
-        const pointsToAdd = parseInt(args[1], 10);
-        if (!pointsToAdd) return message.reply("You didn't tell me how many points to give...")
-        let userscore = client.getScore.get(user.id, message.guild.id);
-        if (!userscore) {
-            userscore = {
-                id: `${message.guild.id}-${user.id}`,
-                user: user.id,
-                guild: message.guild.id,
-                points: 0,
-                level: 1
-            }
-        }
-        userscore.points += pointsToAdd;
-        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-        userscore.level = userLevel;
-        client.setScore.run(userscore);
-        return message.channel.send(`${user.tag} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
-    }
     //thanks
     if (message.content.toLowerCase().includes("thank")) {
         const user = message.mentions.users.first() || client.users.get(args[0]);
@@ -636,22 +594,6 @@ client.on('message', async message => {
             return message.reply("thanked " + user.username + "\n" + user.username + " has gotten 20 points for their effort!");
         }
     }
-    //show top10 points
-    if (message.content.startsWith(prefix + "top")) {
-        const top10 = sql.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
-        const embed = new Discord.RichEmbed()
-            .setTitle("Leaderboard")
-            .setDescription("Top 10 chatters")
-            .setColor('RANDOM');
-        for (const data of top10) {
-            if (client.users.get(data.user)) {
-                embed.addField(client.users.get(data.user).tag, `${data.points} points (level ${data.level})`);
-            }
-        }
-        message.channel.send({
-            embed
-        });
-    }
     //Clean Database
     if (message.content.startsWith(prefix + "clean")) {
         if (message.author.id !== '127708549118689280') return;
@@ -669,98 +611,6 @@ client.on('message', async message => {
             }
         }
         message.channel.send("Done!");
-    }
-    //game
-    if (message.content.startsWith(prefix + "gamble")) {
-        if (talkedRecently.has(message.author.id)) {
-            message.reply("You may only gamble once every 30 seconds!");
-        } else {
-            talkedRecently.add(message.author.id);
-            setTimeout(() => {
-                talkedRecently.delete(message.author.id);
-            }, 30000);
-            let number1 = 5;
-            message.reply("\nBetween (0-9)\nWill the next number be Higher or Lower than: " + number1 + "?\nhigher/lower Amount_to_bet");
-            const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
-                time: 20000
-            });
-            collector.on('collect', message => {
-                let number2 = Math.floor(Math.random() * 10);
-                if (number2 == number1) return message.channel.send("Both numbers were the same, it's a tie!");
-                if (message.content.toLowerCase().startsWith("higher")) {
-                    if (number2 > number1) {
-                        const user = message.author;
-                        const gargs = message.content.slice(7).split(" ");
-                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
-                        let pointsToAdd = parseInt(gargs[0], 10);
-                        if (gargs[0].startsWith("-")) return;
-                        if (!pointsToAdd) {
-                            pointsToAdd = parseInt(0, 10);
-                        }
-                        let userscore = client.getScore.get(user.id, message.guild.id);
-                        if (userscore.points < pointsToAdd) return message.channel.send("Looks like you tried to bet more points than you actually have!");
-                        userscore.points += pointsToAdd;
-                        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-                        userscore.level = userLevel;
-                        client.setScore.run(userscore);
-                        message.channel.send(number2 + `\nYou won ${pointsToAdd} points!\nYou have ${userscore.points} points!`);
-                    }
-                    if (number2 < number1) {
-                        const user = message.author;
-                        const gargs = message.content.slice(7).split(" ");
-                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
-                        if (gargs[0].startsWith("-")) return;
-                        let pointsToAdd = parseInt("-" + gargs[0], 10);
-                        if (!pointsToAdd) {
-                            pointsToAdd = 0;
-                        }
-                        let userscore = client.getScore.get(user.id, message.guild.id);
-                        userscore.points += pointsToAdd;
-                        if (userscore.points < "0") return message.channel.send("Looks like you tried to bet more points than you actually have!");
-                        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-                        userscore.level = userLevel;
-                        client.setScore.run(userscore);
-                        message.channel.send(number2 + `\nYou lost ${pointsToAdd} points!\nYou have ${userscore.points} points!`);
-                    }
-                }
-                if (message.content.toLowerCase().startsWith("lower")) {
-                    if (number2 > number1) {
-                        const user = message.author;
-                        const gargs = message.content.slice(6).split(" ");
-                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
-                        if (gargs[0].startsWith("-")) return;
-                        let pointsToAdd = parseInt("-" + gargs[0], 10);
-                        if (!pointsToAdd) {
-                            pointsToAdd = parseInt(0, 10);
-                        }
-                        let userscore = client.getScore.get(user.id, message.guild.id);
-                        userscore.points += pointsToAdd;
-                        if (userscore.points < "0") return message.channel.send("Looks like you tried to bet more points than you actually have!");
-                        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-                        userscore.level = userLevel;
-                        client.setScore.run(userscore);
-                        message.channel.send(number2 + `\nYou lost ${pointsToAdd} points!\nYou have ${userscore.points} points!`);
-                    }
-                    if (number2 < number1) {
-                        const user = message.author;
-                        const gargs = message.content.slice(6).split(" ");
-                        if (gargs[0] > 100) return message.channel.send("You may only bet up to 100 points!");
-                        if (gargs[0].startsWith("-")) return;
-                        let pointsToAdd = parseInt(gargs[0], 10);
-                        if (!pointsToAdd) {
-                            pointsToAdd = parseInt(0, 10);
-                        }
-                        let userscore = client.getScore.get(user.id, message.guild.id);
-                        if (userscore.points < pointsToAdd) return message.channel.send("Looks like you tried to bet more points than you actually have!");
-                        userscore.points += pointsToAdd;
-                        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-                        userscore.level = userLevel;
-                        client.setScore.run(userscore);
-                        message.channel.send(number2 + `\nYou won ${pointsToAdd} points!\nYou have ${userscore.points} points!`);
-                    }
-                }
-            })
-        }
     }
     //require prefix
     if (!message.content.startsWith(prefix)) return;

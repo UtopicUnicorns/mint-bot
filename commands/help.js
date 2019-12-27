@@ -17,7 +17,7 @@ module.exports = {
                 let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
                 .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-                .setDescription(`${str}\n${prefix}add, Give a user X points or take them\n${prefix}restart, well restart the bot\n${prefix}channel, Display sentient channelname\n${prefix}set, Set sentient channel ID\n${prefix}join, simulate a guildmemberjoin`)
+                .setDescription(`${str}${prefix}restart, [admin] well restart the bot\n${prefix}channel, [admin] Display sentient channelname\n${prefix}set, [admin] Set sentient channel ID\n${prefix}join, [admin] simulate a guildmemberjoin`)
                 .setTimestamp();
                 return message.channel.send({
                     embed: embed
@@ -36,7 +36,7 @@ module.exports = {
                 let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
                 .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-                .setDescription(`${str}\nforceprefix (without a prefix) to reset the prefix!`)
+                .setDescription(`${str}\n[mod] forceprefix (without a prefix) to reset the prefix!`)
                 .setTimestamp();
                 return message.channel.send({
                     embed: embed
@@ -54,7 +54,7 @@ module.exports = {
             let embed = new Discord.RichEmbed()
             .setColor(`RANDOM`)
             .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-            .setDescription(`${str}\n!points, Display your own points\n!top, Show the point leaderboard\n!ping, display bot/server ping`)
+            .setDescription(`${str}[general] !ping, display bot/server ping`)
             .setTimestamp();
             return message.channel.send({
                 embed: embed
@@ -71,7 +71,7 @@ module.exports = {
             let embed = new Discord.RichEmbed()
             .setColor(`RANDOM`)
             .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
-            .setDescription(`${str}\n!gamble, Get rid of those points`)
+            .setDescription(`${str}`)
             .setTimestamp();
             return message.channel.send({
                 embed: embed
