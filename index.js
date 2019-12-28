@@ -225,6 +225,20 @@ client.on('message', async message => {
             }
         }
     }
+    //Anti-mention
+    if (message.mentions.users.size > 3) {
+        message.delete();
+        const member = message.author;
+        let member2 = member.id;
+        fs.appendFile('./set/mute.txt', '\n' + member2, function(err) {
+            if (err) throw err;
+            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+            message.member.removeRole(memberrole).catch(console.error);
+            message.member.addRole(mutedrole).catch(console.error);
+            message.guild.channels.get('641301287144521728').send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
+        })
+    }
     //ignore bots
     if (message.author.bot) return;
     //Mute filter
@@ -507,7 +521,7 @@ client.on('message', async message => {
     if (score.level > 4 && score.level < 9) {
         let checking = message.member.roles.find(r => r.name === lvl5.name);
         if (!checking) {
-            if(!lvl5) return;
+            if (!lvl5) return;
             message.member.addRole(lvl5);
             message.reply("You earned the title " + lvl5);
         }
@@ -516,7 +530,7 @@ client.on('message', async message => {
     if (score.level > 9 && score.level < 14) {
         let checking = message.member.roles.find(r => r.name === lvl10.name);
         if (!checking) {
-            if(!lvl10) return;
+            if (!lvl10) return;
             message.member.addRole(lvl10);
             message.member.removeRole(lvl5);
             message.reply("You earned the title " + lvl10);
@@ -526,7 +540,7 @@ client.on('message', async message => {
     if (score.level > 14 && score.level < 19) {
         let checking = message.member.roles.find(r => r.name === lvl15.name);
         if (!checking) {
-            if(!lvl15) return;
+            if (!lvl15) return;
             message.member.addRole(lvl15);
             message.member.removeRole(lvl10);
             message.reply("You earned the title " + lvl15);
@@ -536,7 +550,7 @@ client.on('message', async message => {
     if (score.level > 19 && score.level < 29) {
         let checking = message.member.roles.find(r => r.name === lvl20.name);
         if (!checking) {
-            if(!lvl20) return;
+            if (!lvl20) return;
             message.member.addRole(lvl20);
             message.member.removeRole(lvl15);
             message.reply("You earned the title " + lvl20);
@@ -546,7 +560,7 @@ client.on('message', async message => {
     if (score.level > 29 && score.level < 49) {
         let checking = message.member.roles.find(r => r.name === lvl30.name);
         if (!checking) {
-            if(!lvl30) return;
+            if (!lvl30) return;
             message.member.addRole(lvl30);
             message.member.removeRole(lvl20);
             message.reply("You earned the title " + lvl30);
@@ -556,7 +570,7 @@ client.on('message', async message => {
     if (score.level > 49 && score.level < 84) {
         let checking = message.member.roles.find(r => r.name === lvl50.name);
         if (!checking) {
-            if(!lvl50) return;
+            if (!lvl50) return;
             message.member.addRole(lvl50);
             message.member.removeRole(lvl30);
             message.reply("You earned the title " + lvl50);
@@ -566,7 +580,7 @@ client.on('message', async message => {
     if (score.level > 84 && score.level < 99) {
         let checking = message.member.roles.find(r => r.name === lvl85.name);
         if (!checking) {
-            if(!lvl85) return;
+            if (!lvl85) return;
             message.member.addRole(lvl85);
             message.member.removeRole(lvl50);
             message.reply("You earned the title " + lvl85);
