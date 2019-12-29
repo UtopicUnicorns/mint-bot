@@ -35,13 +35,13 @@ client.once('ready', () => {
     console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\n\n`);
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
-        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
         const dadembed = new Discord.RichEmbed()
@@ -244,11 +244,14 @@ client.on('message', async message => {
     //Mute filter
     let filtermute = fs.readFileSync('./set/mute.txt').toString().split("\n");
     if (filtermute.includes(message.author.id)) {
-        if (message.channel.id === '641301287144521728') {
+        if (message.member.hasPermission('KICK_MEMBERS')) {
+        } else {
+            if (message.channel.id === '641301287144521728') {
+                return
+            }
+            message.delete()
             return
         }
-        message.delete()
-        return
     }
     if (message.channel.id === '641301287144521728') {
         if (filtermute.includes(message.author.id)) return;
@@ -498,7 +501,8 @@ client.on('message', async message => {
                 user: message.author.id,
                 guild: message.guild.id,
                 points: 0,
-                level: 1
+                level: 1,
+                warning: 0
             };
         }
         score.points++;

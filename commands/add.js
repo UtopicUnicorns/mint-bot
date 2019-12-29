@@ -5,7 +5,7 @@ module.exports = {
     description: '[admin] Give a user points or take them',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
         if (message.author.id !== '127708549118689280') return;
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone or give their ID!");

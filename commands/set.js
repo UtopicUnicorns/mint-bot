@@ -1,5 +1,6 @@
 const Discord = module.require('discord.js');
 const fs = require('fs');
+const db = require('better-sqlite3')('./scores.sqlite');
 let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'set',
@@ -57,6 +58,23 @@ module.exports = {
                         let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                         member.addRole(memberrole).catch(console.error);
                         member.removeRole(mutedrole).catch(console.error);
+                        const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+                        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
+                        const user = message.mentions.users.first();
+                        const pointsToAdd = parseInt(0, 10);
+                        let userscore = getScore.get(user.id, message.guild.id);
+                        if (!userscore) {
+                            userscore = {
+                                id: `${message.guild.id}-${user.id}`,
+                                user: user.id,
+                                guild: message.guild.id,
+                                points: 0,
+                                level: 1,
+                                warning: 0
+                            }
+                        }
+                        userscore.warning = pointsToAdd;
+                        setScore.run(userscore);
                         const modembed = new Discord.RichEmbed()
                             .setTitle(`The command ${prefix}set unmute was used`)
                             .setColor('RANDOM')
@@ -79,7 +97,7 @@ module.exports = {
                     fs.appendFile('./set/uwu.txt', '\n' + element, function(err) {
                         if (err) throw err;
                     })
-                    return message.channel.send(element+` is now UwU!`);
+                    return message.channel.send(element + ` is now UwU!`);
                 } else {
                     message.channel.send(args[2] + ` is already UwU`);
                 }
@@ -99,7 +117,7 @@ module.exports = {
                     fs.writeFile(`./set/uwu.txt`, str, (error) => {
                         if (error) throw error;
                     })
-                    return message.channel.send(element+` is now not UwU!`);
+                    return message.channel.send(element + ` is now not UwU!`);
                 } else {
                     message.channel.send(args[2] + ` is not UwU`);
                 }
@@ -113,7 +131,7 @@ module.exports = {
                     fs.appendFile('./set/gif.txt', '\n' + element, function(err) {
                         if (err) throw err;
                     })
-                    return message.channel.send(element+` now has a gif filter!`);
+                    return message.channel.send(element + ` now has a gif filter!`);
                 } else {
                     message.channel.send(args[2] + ` already has a gif filter in place!`);
                 }
@@ -133,7 +151,7 @@ module.exports = {
                     fs.writeFile(`./set/gif.txt`, str, (error) => {
                         if (error) throw error;
                     })
-                    return message.channel.send(element+` has no gif filter now!`);
+                    return message.channel.send(element + ` has no gif filter now!`);
                 } else {
                     message.channel.send(args[2] + ` does not have a gif filter!`);
                 }
@@ -145,7 +163,7 @@ module.exports = {
                 fs.writeFile(`./set/prefix.txt`, element, (error) => {
                     if (error) throw error;
                 })
-                message.channel.send('Prefix set to '+ element + '\nUse the following command:\n' + element + 'reload');
+                message.channel.send('Prefix set to ' + element + '\nUse the following command:\n' + element + 'reload');
             }
             //
         }

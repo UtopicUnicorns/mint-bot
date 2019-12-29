@@ -5,8 +5,7 @@ module.exports = {
     description: '[general] Show your points and level',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-       const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
-       const user = message.mentions.users.first() || message.author;
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");       const user = message.mentions.users.first() || message.author;
        let userscore = getScore.get(user.id, message.guild.id);
        if (!userscore) return message.reply("This user does not have a database index yet.");
        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
@@ -17,6 +16,7 @@ module.exports = {
        .addField('Name: ', user)
        .addField('Points: ', userscore.points)
        .addField('Level: ', userscore.level)
+       .addField('Warning points: ', userscore.warning)
        .setTimestamp()
    return message.channel.send({
        embed: pointemb
