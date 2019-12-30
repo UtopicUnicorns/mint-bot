@@ -87,10 +87,18 @@ client.once('disconnect', () => {
     console.log('Disconnect!');
 });
 client.on("guildMemberAdd", async (guildMember) => {
-    const thisguild = client.guilds.get('628978428019736619');
+    //load shit
+    console.log(guildMember.guild.id);
+    const guildChannels = client.getGuild.get(guildMember.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
     if (thisguild) {
-        var generalChannel = client.channels.get('628984660298563584');
-        var muteChannel = client.channels.get('641301287144521728');
+        var generalChannel1 = client.channels.get(guildChannels.generalChannel);
+        var muteChannel1 = client.channels.get(guildChannels.muteChannel);
+    } else {
+        var generalChannel1 = '0';
+        var muteChannel1 = '0';
     }
     //account age check
     let user = guildMember.user;
@@ -99,15 +107,15 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "day") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     //make nice image for welcoming
     var ReBeL = guildMember.user.username;
@@ -131,7 +139,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
     ctx.drawImage(avatar, 600, 25, 50, 50);
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-    generalChannel.send(attachment);
+    generalChannel1.send(attachment);
     guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
 });
 client.on("guildMemberRemove", async (guildMember) => {
@@ -221,10 +229,16 @@ emitter.on("item:new", (item) => {
 emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
     //load shit
-    const thisguild = client.guilds.get('628978428019736619');
+    const guildChannels = client.getGuild.get(message.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
     if (thisguild) {
-        var generalChannel = message.guild.channels.get('628984660298563584');
-        var muteChannel = message.guild.channels.get('641301287144521728');
+        var generalChannel1 = message.guild.channels.get(guildChannels.generalChannel);
+        var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
+    } else {
+        var generalChannel1 = '0';
+        var muteChannel1 = '0';
     }
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -268,20 +282,26 @@ client.on('message', async message => {
     if (message.mentions.users.size > 3) {
         message.delete();
         const member = message.author;
-        let member2 = member.id;
-        fs.appendFile('./set/mute.txt', '\n' + member2, function(err) {
-            if (err) throw err;
-            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
-            message.member.removeRole(memberrole).catch(console.error);
-            message.member.addRole(mutedrole).catch(console.error);
-            muteChannel.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
+        message.guild.channels.forEach(async (channel, id) => {
+            if (id == guildChannels.muteChannel) return;
+            await channel.overwritePermissions(member, {
+                VIEW_CHANNEL: false,
+                READ_MESSAGES: false,
+                SEND_MESSAGES: false,
+                READ_MESSAGE_HISTORY: false,
+                ADD_REACTIONS: false
+            });
         })
+        let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+        let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+        message.member.removeRole(memberrole).catch(console.error);
+        message.member.addRole(mutedrole).catch(console.error);
+        muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
     }
     //ignore bots
     if (message.author.bot) return;
     //Mute filter
-    if (message.channel.id === '641301287144521728') {
+    if (message.channel.id === muteChannel1.id) {
         if (message.content == message.author.username + "1337") {
             let roleadd = message.guild.roles.find(r => r.name === "~/Members");
             let roledel = message.guild.roles.find(r => r.name === "Muted");
@@ -307,7 +327,7 @@ client.on('message', async message => {
             ctx.fillStyle = '#ffffff';
             ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-            generalChannel.send(attachment);
+            generalChannel1.send(attachment);
             return message.channel.send(`${member} has been approved.`);
         }
     }
@@ -620,10 +640,17 @@ client.on('message', async message => {
     }
 });
 client.on("messageReactionAdd", async (reaction, user) => {
-    const thisguild = client.guilds.get('628978428019736619');
+    //load shit
+    const guildChannels = client.getGuild.get(reaction.message.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
     if (thisguild) {
-        var logsChannel = client.channels.get('646672806033227797');
-        var highlightChannel = client.channels.get('654447738070761505');
+        var logsChannel1 = client.channels.get(guildChannels.logsChannel);
+        var highlightChannel1 = client.channels.get(guildChannels.highlightChannel);
+    } else {
+        var logsChannel1 = '0';
+        var highlightChannel1 = '0';
     }
     //report
     let limit1 = 1;
@@ -641,7 +668,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .addField('Reported by: ', reaction.users.first())
                 .setFooter("Message ID: " + reaction.message.id)
                 .setTimestamp();
-            return logsChannel.send({
+            return logsChannel1.send({
                 embed: editmessage
             });
         }
@@ -657,7 +684,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
-            return logsChannel.send({
+            return logsChannel1.send({
                 embed: editmessage
             });
         }
@@ -673,7 +700,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
             .setTimestamp();
-        return logsChannel.send({
+        return logsChannel1.send({
             embed: editmessage
         });
     }
@@ -694,7 +721,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
-        return logsChannel.send({
+        return logsChannel1.send({
             embed: editmessage
         });
     }
@@ -713,7 +740,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .addField('Channel', reaction.message.channel, true)
                 .setFooter("Message ID: " + reaction.message.id)
                 .setTimestamp();
-            return highlightChannel.send({
+            return highlightChannel1.send({
                 embed: editmessage
             });
         }
@@ -729,7 +756,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
-            return highlightChannel.send({
+            return highlightChannel1.send({
                 embed: editmessage
             });
         }
@@ -745,7 +772,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
             .setTimestamp();
-        return highlightChannel.send({
+        return highlightChannel1.send({
             embed: editmessage
         });
     }
