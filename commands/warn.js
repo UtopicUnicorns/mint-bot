@@ -40,14 +40,6 @@ module.exports = {
             let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
             member.removeRole(memberrole).catch(console.error);
             member.addRole(mutedrole).catch(console.error);
-            message.guild.channels.id('641301287144521728')
-                   .overwritePermissions(member, {
-                    VIEW_CHANNEL: true,
-                    READ_MESSAGES: true,
-                    SEND_MESSAGES: true,
-                    READ_MESSAGE_HISTORY: true,
-                    ATTACH_FILES: false
-                });
         }
         setScore.run(userscore);
         return message.channel.send(`${user} has been warned!\nYou have ${userscore.warning} warning(s)`);

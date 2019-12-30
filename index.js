@@ -42,6 +42,16 @@ client.once('ready', () => {
     }
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
     client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+    const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
+    if (!table2['count(*)']) {
+        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+    client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
+    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel);");
+
     //Linux tips, no longer dad jokes
     setInterval(() => {
         const dadembed = new Discord.RichEmbed()
@@ -77,7 +87,11 @@ client.once('disconnect', () => {
     console.log('Disconnect!');
 });
 client.on("guildMemberAdd", async (guildMember) => {
-    if (!client.guilds.get('628978428019736619')) return;
+    const thisguild = client.guilds.get('628978428019736619');
+    if (thisguild) {
+        var generalChannel = client.channels.get('628984660298563584');
+        var muteChannel = client.channels.get('641301287144521728');
+    }
     //account age check
     let user = guildMember.user;
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
@@ -85,15 +99,15 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "day") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     if (ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     //make nice image for welcoming
     var ReBeL = guildMember.user.username;
@@ -117,7 +131,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
     ctx.drawImage(avatar, 600, 25, 50, 50);
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-    client.channels.get('628984660298563584').send(attachment);
+    generalChannel.send(attachment);
     guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
 });
 client.on("guildMemberRemove", async (guildMember) => {
@@ -206,6 +220,12 @@ emitter.on("item:new", (item) => {
 });
 emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
+    //load shit
+    const thisguild = client.guilds.get('628978428019736619');
+    if (thisguild) {
+        var generalChannel = message.guild.channels.get('628984660298563584');
+        var muteChannel = message.guild.channels.get('641301287144521728');
+    }
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
@@ -220,6 +240,30 @@ client.on('message', async message => {
             }
         }
     }
+    //Welcome new guild?
+    if (message.content.startsWith("setup")) {
+        newGuild = client.getGuild.get(message.guild.id);
+        if (!newGuild) {
+            if (message.author.id !== message.guild.owner.id) return message.channel.send("Only the server owner may set me up!");
+            if (message.content == "setup") {
+                return message.channel.send("setup\nGeneralChannelID\nHighlightChannelID\nMuteChannelID\nLogsChannelID");
+            }
+            let newGuildArgs = message.content.slice().split('\n');
+            if (!newGuildArgs[1]) return message.channel.send("Provide a generalChannel ID!");
+            if (!newGuildArgs[2]) return message.channel.send("Provide a highlightChannel ID!");
+            if (!newGuildArgs[3]) return message.channel.send("Provide a muteChannel ID!");
+            if (!newGuildArgs[4]) return message.channel.send("Provide a logsChannel ID!");
+            newGuild = {
+                guild: message.guild.id,
+                generalChannel: newGuildArgs[1],
+                highlightChannel: newGuildArgs[2],
+                muteChannel: newGuildArgs[3],
+                logsChannel: newGuildArgs[4]
+            };
+        }
+        client.setGuild.run(newGuild);
+        return message.channel.send("Looks like we're done");
+    }
     //Anti-mention
     if (message.mentions.users.size > 3) {
         message.delete();
@@ -231,7 +275,7 @@ client.on('message', async message => {
             let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
             message.member.removeRole(memberrole).catch(console.error);
             message.member.addRole(mutedrole).catch(console.error);
-            message.guild.channels.get('641301287144521728').send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
+            muteChannel.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
         })
     }
     //ignore bots
@@ -263,7 +307,7 @@ client.on('message', async message => {
             ctx.fillStyle = '#ffffff';
             ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-            message.guild.channels.get('628984660298563584').send(attachment);
+            generalChannel.send(attachment);
             return message.channel.send(`${member} has been approved.`);
         }
     }
@@ -453,71 +497,78 @@ client.on('message', async message => {
     const lvl85 = message.guild.roles.find(r => r.id === `659902101098594304`);
     //lvl5
     if (score.level > 4 && score.level < 9) {
-        if (!lvl5) return;
-        let checking = message.member.roles.find(r => r.name === lvl5.name);
-        if (!checking) {
-            message.member.addRole(lvl5);
-            message.reply("You earned the title " + lvl5);
+        if (lvl5) {
+            let checking = message.member.roles.find(r => r.name === lvl5.name);
+            if (!checking) {
+                message.member.addRole(lvl5);
+                message.reply("You earned the title " + lvl5);
+            }
         }
     }
     //lvl10
     if (score.level > 9 && score.level < 14) {
-        if (!lvl10) return;
-        let checking = message.member.roles.find(r => r.name === lvl10.name);
-        if (!checking) {
-            message.member.addRole(lvl10);
-            message.member.removeRole(lvl5);
-            message.reply("You earned the title " + lvl10);
+        if (lvl10) {
+            let checking = message.member.roles.find(r => r.name === lvl10.name);
+            if (!checking) {
+                message.member.addRole(lvl10);
+                message.member.removeRole(lvl5);
+                message.reply("You earned the title " + lvl10);
+            }
         }
     }
     //lvl15
     if (score.level > 14 && score.level < 19) {
-        if (!lvl15) return;
-        let checking = message.member.roles.find(r => r.name === lvl15.name);
-        if (!checking) {
-            message.member.addRole(lvl15);
-            message.member.removeRole(lvl10);
-            message.reply("You earned the title " + lvl15);
+        if (lvl15) {
+            let checking = message.member.roles.find(r => r.name === lvl15.name);
+            if (!checking) {
+                message.member.addRole(lvl15);
+                message.member.removeRole(lvl10);
+                message.reply("You earned the title " + lvl15);
+            }
         }
     }
     //lvl20
     if (score.level > 19 && score.level < 29) {
-        if (!lvl20) return;
-        let checking = message.member.roles.find(r => r.name === lvl20.name);
-        if (!checking) {
-            message.member.addRole(lvl20);
-            message.member.removeRole(lvl15);
-            message.reply("You earned the title " + lvl20);
+        if (lvl20) {
+            let checking = message.member.roles.find(r => r.name === lvl20.name);
+            if (!checking) {
+                message.member.addRole(lvl20);
+                message.member.removeRole(lvl15);
+                message.reply("You earned the title " + lvl20);
+            }
         }
     }
     //lvl30
     if (score.level > 29 && score.level < 49) {
-        if (!lvl30) return;
-        let checking = message.member.roles.find(r => r.name === lvl30.name);
-        if (!checking) {
-            message.member.addRole(lvl30);
-            message.member.removeRole(lvl20);
-            message.reply("You earned the title " + lvl30);
+        if (lvl30) {
+            let checking = message.member.roles.find(r => r.name === lvl30.name);
+            if (!checking) {
+                message.member.addRole(lvl30);
+                message.member.removeRole(lvl20);
+                message.reply("You earned the title " + lvl30);
+            }
         }
     }
     //lvl50
     if (score.level > 49 && score.level < 84) {
-        if (!lvl50) return;
-        let checking = message.member.roles.find(r => r.name === lvl50.name);
-        if (!checking) {
-            message.member.addRole(lvl50);
-            message.member.removeRole(lvl30);
-            message.reply("You earned the title " + lvl50);
+        if (lvl50) {
+            let checking = message.member.roles.find(r => r.name === lvl50.name);
+            if (!checking) {
+                message.member.addRole(lvl50);
+                message.member.removeRole(lvl30);
+                message.reply("You earned the title " + lvl50);
+            }
         }
     }
     //lvl85
     if (score.level > 84 && score.level < 99) {
-        if (!lvl85) return;
-        let checking = message.member.roles.find(r => r.name === lvl85.name);
-        if (!checking) {
-            message.member.addRole(lvl85);
-            message.member.removeRole(lvl50);
-            message.reply("You earned the title " + lvl85);
+        if (lvl85) {
+            let checking = message.member.roles.find(r => r.name === lvl85.name);
+            if (!checking) {
+                message.member.addRole(lvl85);
+                message.member.removeRole(lvl50);
+                message.reply("You earned the title " + lvl85);
+            }
         }
     }
     //thanks
@@ -569,6 +620,11 @@ client.on('message', async message => {
     }
 });
 client.on("messageReactionAdd", async (reaction, user) => {
+    const thisguild = client.guilds.get('628978428019736619');
+    if (thisguild) {
+        var logsChannel = client.channels.get('646672806033227797');
+        var highlightChannel = client.channels.get('654447738070761505');
+    }
     //report
     let limit1 = 1;
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
@@ -585,7 +641,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .addField('Reported by: ', reaction.users.first())
                 .setFooter("Message ID: " + reaction.message.id)
                 .setTimestamp();
-            return client.channels.get('646672806033227797').send({
+            return logsChannel.send({
                 embed: editmessage
             });
         }
@@ -601,7 +657,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
-            return client.channels.get('646672806033227797').send({
+            return logsChannel.send({
                 embed: editmessage
             });
         }
@@ -617,7 +673,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
             .setTimestamp();
-        return client.channels.get('646672806033227797').send({
+        return logsChannel.send({
             embed: editmessage
         });
     }
@@ -638,7 +694,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .addField('Channel', reaction.message.channel, true)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
-        return client.channels.get('646672806033227797').send({
+        return logsChannel.send({
             embed: editmessage
         });
     }
@@ -657,7 +713,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .addField('Channel', reaction.message.channel, true)
                 .setFooter("Message ID: " + reaction.message.id)
                 .setTimestamp();
-            return client.channels.get('654447738070761505').send({
+            return highlightChannel.send({
                 embed: editmessage
             });
         }
@@ -673,7 +729,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
-            return client.channels.get('654447738070761505').send({
+            return highlightChannel.send({
                 embed: editmessage
             });
         }
@@ -689,7 +745,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
             .setTimestamp();
-        return client.channels.get('654447738070761505').send({
+        return highlightChannel.send({
             embed: editmessage
         });
     }

@@ -30,7 +30,7 @@ module.exports = {
                 member.removeRole(memberrole).catch(console.error);
                 member.addRole(mutedrole).catch(console.error);
                 message.guild.channels.id('641301287144521728')
-                       channel.overwritePermissions(member, {
+                       .overwritePermissions(member, {
                         VIEW_CHANNEL: true,
                         READ_MESSAGES: true,
                         SEND_MESSAGES: true,
@@ -51,14 +51,6 @@ module.exports = {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 member.addRole(memberrole).catch(console.error);
                 member.removeRole(mutedrole).catch(console.error);
-                message.guild.channels.id('641301287144521728')
-                       channel.overwritePermissions(member, {
-                        VIEW_CHANNEL: true,
-                        READ_MESSAGES: true,
-                        SEND_MESSAGES: true,
-                        READ_MESSAGE_HISTORY: true,
-                        ATTACH_FILES: false
-                    })
                 const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
                         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
                         const user = message.mentions.users.first();
@@ -77,7 +69,6 @@ module.exports = {
                         }
                         userscore.warning = pointsToAdd;
                         setScore.run(userscore);
-                return
             }
             //uwu
             if (args[1] == `uwu`) {
