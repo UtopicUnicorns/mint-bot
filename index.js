@@ -35,13 +35,13 @@ client.once('ready', () => {
     console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\n\n`);
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
-        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER);").run();
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
         const dadembed = new Discord.RichEmbed()
@@ -94,11 +94,6 @@ client.on("guildMemberAdd", async (guildMember) => {
     if (ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
         return client.channels.get('641301287144521728').send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
-    }
-    let muteevade = fs.readFileSync('./set/mute.txt').toString().split("\n");
-    if (muteevade.includes(guildMember.id)) {
-        guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return client.channels.get('641301287144521728').send(guildMember.user + "\nYou succesfully evaded your mute!\nSYKE!\nMUTED!");
     }
     //make nice image for welcoming
     var ReBeL = guildMember.user.username;
@@ -242,19 +237,7 @@ client.on('message', async message => {
     //ignore bots
     if (message.author.bot) return;
     //Mute filter
-    let filtermute = fs.readFileSync('./set/mute.txt').toString().split("\n");
-    if (filtermute.includes(message.author.id)) {
-        if (message.member.hasPermission('KICK_MEMBERS')) {
-        } else {
-            if (message.channel.id === '641301287144521728') {
-                return
-            }
-            message.delete()
-            return
-        }
-    }
     if (message.channel.id === '641301287144521728') {
-        if (filtermute.includes(message.author.id)) return;
         if (message.content == message.author.username + "1337") {
             let roleadd = message.guild.roles.find(r => r.name === "~/Members");
             let roledel = message.guild.roles.find(r => r.name === "Muted");
@@ -373,61 +356,7 @@ client.on('message', async message => {
             if (!client.channels.get(`${channelcheck}`)) {
                 return message.channel.send("Enter a valid channel ID first!\n!set ChannelID");
             }
-            //herewego
-            aaa = message.content;
-            aaa = aaa.replace(/a/g, "₳");
-            aaa = aaa.replace(/b/g, "฿");
-            aaa = aaa.replace(/c/g, "₵");
-            aaa = aaa.replace(/d/g, "Đ");
-            aaa = aaa.replace(/e/g, "Ɇ");
-            aaa = aaa.replace(/f/g, "₣");
-            aaa = aaa.replace(/g/g, "₲");
-            aaa = aaa.replace(/h/g, "Ⱨ");
-            aaa = aaa.replace(/i/g, "ł");
-            aaa = aaa.replace(/j/g, "J");
-            aaa = aaa.replace(/k/g, "₭");
-            aaa = aaa.replace(/l/g, "Ⱡ");
-            aaa = aaa.replace(/m/g, "₥");
-            aaa = aaa.replace(/n/g, "₦");
-            aaa = aaa.replace(/o/g, "Ø");
-            aaa = aaa.replace(/p/g, "₱");
-            aaa = aaa.replace(/q/g, "Q");
-            aaa = aaa.replace(/r/g, "Ɽ");
-            aaa = aaa.replace(/s/g, "₴");
-            aaa = aaa.replace(/t/g, "₮");
-            aaa = aaa.replace(/u/g, "Ʉ");
-            aaa = aaa.replace(/v/g, "V");
-            aaa = aaa.replace(/w/g, "₩");
-            aaa = aaa.replace(/x/g, "Ӿ");
-            aaa = aaa.replace(/y/g, "Ɏ");
-            aaa = aaa.replace(/z/g, "Ⱬ");
-            aaa = aaa.replace(/A/g, "₳");
-            aaa = aaa.replace(/B/g, "฿");
-            aaa = aaa.replace(/C/g, "₵");
-            aaa = aaa.replace(/D/g, "Đ");
-            aaa = aaa.replace(/E/g, "Ɇ");
-            aaa = aaa.replace(/F/g, "₣");
-            aaa = aaa.replace(/G/g, "₲");
-            aaa = aaa.replace(/H/g, "Ⱨ");
-            aaa = aaa.replace(/I/g, "ł");
-            aaa = aaa.replace(/J/g, "J");
-            aaa = aaa.replace(/K/g, "₭");
-            aaa = aaa.replace(/L/g, "Ⱡ");
-            aaa = aaa.replace(/M/g, "₥");
-            aaa = aaa.replace(/N/g, "₦");
-            aaa = aaa.replace(/O/g, "Ø");
-            aaa = aaa.replace(/P/g, "₱");
-            aaa = aaa.replace(/Q/g, "Q");
-            aaa = aaa.replace(/R/g, "Ɽ");
-            aaa = aaa.replace(/S/g, "₴");
-            aaa = aaa.replace(/T/g, "₮");
-            aaa = aaa.replace(/U/g, "Ʉ");
-            aaa = aaa.replace(/V/g, "V");
-            aaa = aaa.replace(/W/g, "₩");
-            aaa = aaa.replace(/X/g, "Ӿ");
-            aaa = aaa.replace(/Y/g, "Ɏ");
-            aaa = aaa.replace(/Z/g, "Ⱬ");
-            client.channels.get(`${channelcheck}`).send(aaa);
+            client.channels.get(`${channelcheck}`).send(message.content);
             return;
         }
     }
@@ -502,7 +431,8 @@ client.on('message', async message => {
                 guild: message.guild.id,
                 points: 0,
                 level: 1,
-                warning: 0
+                warning: 0,
+                muted: 0
             };
         }
         score.points++;
@@ -514,27 +444,27 @@ client.on('message', async message => {
         client.setScore.run(score);
     }
     //start level rewards
-    const lvl5 = message.guild.roles.find(r => r.name === `Minty Messenger`);
-    const lvl10 = message.guild.roles.find(r => r.name === `Ruler of Messages`);
-    const lvl15 = message.guild.roles.find(r => r.name === `Fresh Messenger`);
-    const lvl20 = message.guild.roles.find(r => r.name === `Red Hot Keyboard Warrior`);
-    const lvl30 = message.guild.roles.find(r => r.name === `Basically a Cheater`);
-    const lvl50 = message.guild.roles.find(r => r.name === `Sage of Messages`);
-    const lvl85 = message.guild.roles.find(r => r.name === `Godlike Messenger`);
+    const lvl5 = message.guild.roles.find(r => r.id === `636985632714915850`);
+    const lvl10 = message.guild.roles.find(r => r.id === `636985679544320021`);
+    const lvl15 = message.guild.roles.find(r => r.id === `637772574444617738`);
+    const lvl20 = message.guild.roles.find(r => r.id === `637772699367768095`);
+    const lvl30 = message.guild.roles.find(r => r.id === `637772745643524106`);
+    const lvl50 = message.guild.roles.find(r => r.id === `637772804724621322`);
+    const lvl85 = message.guild.roles.find(r => r.id === `659902101098594304`);
     //lvl5
     if (score.level > 4 && score.level < 9) {
+        if (!lvl5) return;
         let checking = message.member.roles.find(r => r.name === lvl5.name);
         if (!checking) {
-            if (!lvl5) return;
             message.member.addRole(lvl5);
             message.reply("You earned the title " + lvl5);
         }
     }
     //lvl10
     if (score.level > 9 && score.level < 14) {
+        if (!lvl10) return;
         let checking = message.member.roles.find(r => r.name === lvl10.name);
         if (!checking) {
-            if (!lvl10) return;
             message.member.addRole(lvl10);
             message.member.removeRole(lvl5);
             message.reply("You earned the title " + lvl10);
@@ -542,9 +472,9 @@ client.on('message', async message => {
     }
     //lvl15
     if (score.level > 14 && score.level < 19) {
+        if (!lvl15) return;
         let checking = message.member.roles.find(r => r.name === lvl15.name);
         if (!checking) {
-            if (!lvl15) return;
             message.member.addRole(lvl15);
             message.member.removeRole(lvl10);
             message.reply("You earned the title " + lvl15);
@@ -552,9 +482,9 @@ client.on('message', async message => {
     }
     //lvl20
     if (score.level > 19 && score.level < 29) {
+        if (!lvl20) return;
         let checking = message.member.roles.find(r => r.name === lvl20.name);
         if (!checking) {
-            if (!lvl20) return;
             message.member.addRole(lvl20);
             message.member.removeRole(lvl15);
             message.reply("You earned the title " + lvl20);
@@ -562,9 +492,9 @@ client.on('message', async message => {
     }
     //lvl30
     if (score.level > 29 && score.level < 49) {
+        if (!lvl30) return;
         let checking = message.member.roles.find(r => r.name === lvl30.name);
         if (!checking) {
-            if (!lvl30) return;
             message.member.addRole(lvl30);
             message.member.removeRole(lvl20);
             message.reply("You earned the title " + lvl30);
@@ -572,9 +502,9 @@ client.on('message', async message => {
     }
     //lvl50
     if (score.level > 49 && score.level < 84) {
+        if (!lvl50) return;
         let checking = message.member.roles.find(r => r.name === lvl50.name);
         if (!checking) {
-            if (!lvl50) return;
             message.member.addRole(lvl50);
             message.member.removeRole(lvl30);
             message.reply("You earned the title " + lvl50);
@@ -582,9 +512,9 @@ client.on('message', async message => {
     }
     //lvl85
     if (score.level > 84 && score.level < 99) {
+        if (!lvl85) return;
         let checking = message.member.roles.find(r => r.name === lvl85.name);
         if (!checking) {
-            if (!lvl85) return;
             message.member.addRole(lvl85);
             message.member.removeRole(lvl50);
             message.reply("You earned the title " + lvl85);

@@ -1,7 +1,7 @@
 const Discord = module.require('discord.js');
 const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'set',
     description: `[mod] ${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
@@ -15,51 +15,52 @@ module.exports = {
                 if (message.author.id == member.id) {
                     return message.channel.send(`You can't mute yourself`);
                 }
-                let filter = fs.readFileSync('./set/mute.txt').toString().split(`\n`);
-                let member2 = member.id;
-                if (!filter.includes(member2)) {
-                    fs.appendFile('./set/mute.txt', '\n' + member2, function(err) {
-                        if (err) throw err;
-                        let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-                        let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
-                        member.removeRole(memberrole).catch(console.error);
-                        member.addRole(mutedrole).catch(console.error);
-                        message.guild.channels.get('641301287144521728').send(member.user + `\nYou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
-                        const modembed1 = new Discord.RichEmbed()
-                            .setTitle(`The command ${prefix}set mute was used`)
-                            .setColor('RANDOM')
-                            .addField(`${message.author.tag} muted: \n`, `${member.user.username}`, true)
-                        message.guild.channels.get('646672806033227797').send({
-                            embed: modembed1
-                        })
-                        return message.channel.send(member.user.username + ` was muted`);
+                message.guild.channels.forEach(async (channel, id) => {
+                    if (id == '641301287144521728') return;
+                    await channel.overwritePermissions(member, {
+                        VIEW_CHANNEL: false,
+                        READ_MESSAGES: false,
+                        SEND_MESSAGES: false,
+                        READ_MESSAGE_HISTORY: false,
+                        ADD_REACTIONS: false
+                    });
+                })
+                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                member.removeRole(memberrole).catch(console.error);
+                member.addRole(mutedrole).catch(console.error);
+                message.guild.channels.id('641301287144521728')
+                       channel.overwritePermissions(member, {
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGES: true,
+                        SEND_MESSAGES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        ATTACH_FILES: false
                     })
-                } else {
-                    message.channel.send(member.user.username + ` is already muted!`);
-                }
             }
             //unmute
             if (args[1] == `unmute`) {
                 const member = message.mentions.members.first();
                 if (!member) return message.channel.send(`Mention a user!`);
-                let filter = fs.readFileSync('./set/mute.txt').toString().split(`\n`);
                 let member2 = member.id;
-                if (filter.includes(member2)) {
-                    let array = fs.readFileSync('./set/mute.txt').toString().split(`\n`);
-                    let element = member2;
-                    let str = ``;
-                    for (let i of array) {
-                        if (i != element)
-                            str += i + '\n';
-                    }
-                    fs.writeFile(`./set/mute.txt`, str, (error) => {
-                        if (error) throw error;
-                        let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-                        let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
-                        member.addRole(memberrole).catch(console.error);
-                        member.removeRole(mutedrole).catch(console.error);
-                        const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-                        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
+                message.guild.channels.forEach(async (channel, id) => {
+                    if (id == '641301287144521728') return;
+                    await channel.permissionOverwrites.get(member2).delete()
+                });
+                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                member.addRole(memberrole).catch(console.error);
+                member.removeRole(mutedrole).catch(console.error);
+                message.guild.channels.id('641301287144521728')
+                       channel.overwritePermissions(member, {
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGES: true,
+                        SEND_MESSAGES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        ATTACH_FILES: false
+                    })
+                const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+                        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
                         const user = message.mentions.users.first();
                         const pointsToAdd = parseInt(0, 10);
                         let userscore = getScore.get(user.id, message.guild.id);
@@ -70,23 +71,13 @@ module.exports = {
                                 guild: message.guild.id,
                                 points: 0,
                                 level: 1,
-                                warning: 0
+                                warning: 0,
+                                muted: 0
                             }
                         }
                         userscore.warning = pointsToAdd;
                         setScore.run(userscore);
-                        const modembed = new Discord.RichEmbed()
-                            .setTitle(`The command ${prefix}set unmute was used`)
-                            .setColor('RANDOM')
-                            .addField(`${message.author.tag} unmuted: \n`, `${member.user.username}`, true)
-                        message.guild.channels.get('646672806033227797').send({
-                            embed: modembed
-                        })
-                        return message.channel.send(member.user.username + ` was unmuted`);
-                    })
-                } else {
-                    message.channel.send(member.user.username + ` is not muted!`);
-                }
+                return
             }
             //uwu
             if (args[1] == `uwu`) {

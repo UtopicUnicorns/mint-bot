@@ -6,7 +6,7 @@ module.exports = {
     description: '[mod] Warn a user',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning) VALUES (@id, @user, @guild, @points, @level, @warning);");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone!");
@@ -19,20 +19,35 @@ module.exports = {
                 guild: message.guild.id,
                 points: 0,
                 level: 1,
-                warning: 0
+                warning: 0,
+                muted: 0
             }
         }
         userscore.warning += pointsToAdd;
         if (userscore.warning > 3) {
-            fs.appendFile('./set/mute.txt', '\n' + user.id, function(err) {
-                const member = message.mentions.members.first();
-                if (err) throw err;
-                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
-                member.removeRole(memberrole).catch(console.error);
-                member.addRole(mutedrole).catch(console.error);
-                message.guild.channels.get('641301287144521728').send(member.user + `\nYou collected 3 warning points, so\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
-            });
+            const member = message.mentions.members.first();
+            message.guild.channels.forEach(async (channel, id) => {
+                if (id == '641301287144521728') return;
+                await channel.overwritePermissions(member, {
+                    VIEW_CHANNEL: false,
+                    READ_MESSAGES: false,
+                    SEND_MESSAGES: false,
+                    READ_MESSAGE_HISTORY: false,
+                    ADD_REACTIONS: false
+                });
+            })
+            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+            member.removeRole(memberrole).catch(console.error);
+            member.addRole(mutedrole).catch(console.error);
+            message.guild.channels.id('641301287144521728')
+                   .overwritePermissions(member, {
+                    VIEW_CHANNEL: true,
+                    READ_MESSAGES: true,
+                    SEND_MESSAGES: true,
+                    READ_MESSAGE_HISTORY: true,
+                    ATTACH_FILES: false
+                });
         }
         setScore.run(userscore);
         return message.channel.send(`${user} has been warned!\nYou have ${userscore.warning} warning(s)`);
