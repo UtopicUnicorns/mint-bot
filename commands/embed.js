@@ -3,7 +3,7 @@ module.exports = {
     name: 'embed',
     description: '[mod] generate an embed',
     execute(message) {
-        if (message.member.hasPermission('KICK_MEMBERS')) {
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
             let args = message.content.slice(7).split('\n');
             let element = `${args[0]}`;
             let str = "";
@@ -19,6 +19,5 @@ module.exports = {
             return message.channel.send({
                 embed: embed
             });
-        }
     },
 };

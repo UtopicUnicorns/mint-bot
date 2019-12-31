@@ -5,8 +5,8 @@ module.exports = {
     description: '[admin] Give a user points or take them',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning);");
-        if (message.member.hasPermission('KICK_MEMBERS')) return;
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone or give their ID!");
         let args = message.content.slice(5).split(' ');

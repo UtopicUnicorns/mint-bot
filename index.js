@@ -274,9 +274,9 @@ client.on('message', async message => {
                 muteChannel: newGuildArgs[3],
                 logsChannel: newGuildArgs[4]
             };
+            return message.channel.send("Looks like we're done");
         }
         client.setGuild.run(newGuild);
-        return message.channel.send("Looks like we're done");
     }
     //Anti-mention
     if (message.mentions.users.size > 3) {

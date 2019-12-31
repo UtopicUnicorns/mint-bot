@@ -3,7 +3,7 @@ module.exports = {
     name: 'rules',
     description: '[mod] Show rules',
     execute(message) {
-        if (message.member.hasPermission('KICK_MEMBERS')) {
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
             let embed = new Discord.RichEmbed()
                 .setTitle('Server Rules')
                 .setColor(`RANDOM`)
@@ -25,6 +25,5 @@ module.exports = {
             return message.channel.send({
                 embed: embed
             });
-        }
     },
 };

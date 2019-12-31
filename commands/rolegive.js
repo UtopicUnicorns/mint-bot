@@ -4,7 +4,7 @@ module.exports = {
     name: `rolegive`,
     description: `[mod] Give a role to a member. ${prefix}rolegive @USER ROLENAME`,
     execute(message) {
-        if (message.member.hasPermission(`KICK_MEMBERS`)) {
+        if (!message.member.hasPermission(`KICK_MEMBERS`)) return;
             let args = message.content.slice().split(` `);
             let rolegive = message.guild.roles.find(r => r.name === `${args[2]}`);
             let member = message.mentions.members.first();
@@ -15,6 +15,5 @@ module.exports = {
             }
             member.removeRole(rolegive).catch(console.error);
             message.channel.send(`Took the following role: **${args[2]}** from: ${member}!`);
-        }
     },
 };
