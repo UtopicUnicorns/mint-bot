@@ -7,6 +7,9 @@ module.exports = {
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const guildChannels = getGuild.get(message.guild.id);
+        var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone!");
@@ -27,14 +30,22 @@ module.exports = {
         if (userscore.warning > 3) {
             const member = message.mentions.members.first();
             message.guild.channels.forEach(async (channel, id) => {
-                if (id == '641301287144521728') return;
                 await channel.overwritePermissions(member, {
                     VIEW_CHANNEL: false,
                     READ_MESSAGES: false,
                     SEND_MESSAGES: false,
                     READ_MESSAGE_HISTORY: false,
                     ADD_REACTIONS: false
-                });
+                })
+                setTimeout(() => {
+                    muteChannel1.overwritePermissions(member, {
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGES: true,
+                        SEND_MESSAGES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        ATTACH_FILES: false
+                    });
+                }, 2000);
             })
             let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
             let memberrole = message.guild.roles.find(r => r.name === `~/Members`);

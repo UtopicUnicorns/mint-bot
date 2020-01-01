@@ -7,6 +7,9 @@ module.exports = {
     description: `[mod] ${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
+            const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+            const guildChannels = getGuild.get(message.guild.id);
+            var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
             let args = message.content.split(` `);
             //mute
             if (args[1] == `mute`) {
@@ -16,7 +19,6 @@ module.exports = {
                     return message.channel.send(`You can't mute yourself`);
                 }
                 message.guild.channels.forEach(async (channel, id) => {
-                    if (id == '641301287144521728') return;
                     await channel.overwritePermissions(member, {
                         VIEW_CHANNEL: false,
                         READ_MESSAGES: false,
@@ -29,14 +31,15 @@ module.exports = {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 member.removeRole(memberrole).catch(console.error);
                 member.addRole(mutedrole).catch(console.error);
-                message.guild.channels.id('641301287144521728')
-                       .overwritePermissions(member, {
+                setTimeout(() => {
+                    muteChannel1.overwritePermissions(member, {
                         VIEW_CHANNEL: true,
                         READ_MESSAGES: true,
                         SEND_MESSAGES: true,
                         READ_MESSAGE_HISTORY: true,
                         ATTACH_FILES: false
                     })
+                }, 2000);
             }
             //unmute
             if (args[1] == `unmute`) {
@@ -44,7 +47,7 @@ module.exports = {
                 if (!member) return message.channel.send(`Mention a user!`);
                 let member2 = member.id;
                 message.guild.channels.forEach(async (channel, id) => {
-                    if (id == '641301287144521728') return;
+                    if (id == muteChannel1) return;
                     await channel.permissionOverwrites.get(member2).delete()
                 });
                 let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
