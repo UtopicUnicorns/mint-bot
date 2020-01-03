@@ -4,7 +4,7 @@ const db = require('better-sqlite3')('./scores.sqlite');
 const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'set',
-    description: `[mod] ${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
+    description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
     execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");

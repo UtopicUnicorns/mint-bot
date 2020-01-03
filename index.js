@@ -247,9 +247,11 @@ client.on('message', async message => {
     if (thisguild) {
         var generalChannel1 = message.guild.channels.get(guildChannels.generalChannel);
         var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
+        var logsChannel1 = message.guild.channels.get(guildChannels.logsChannel);
     } else {
         var generalChannel1 = '0';
         var muteChannel1 = '0';
+        var logsChannel1 = '0';
     }
     const args = message.content.slice(1).split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -450,6 +452,27 @@ client.on('message', async message => {
         })
         message.channel.send("Forced prefix back to !");
     }
+    //Logs
+    const commandusage = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+    for (const file of commandusage) {
+        const commandlogger = require(`./commands/${file}`);
+        if (message.content.startsWith(`${prefix}`)) {
+            if (message.content.includes(`${prefix}`+commandlogger.name)) {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(commandlogger.name)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                     logsChannel1.send({
+                        embed: logsmessage
+                    });
+                }
+            }
+        }
     //WhoIsArtemis?
     if (message.content.toLowerCase().includes("who is artemis")) {
         const whoartemis = new Discord.RichEmbed()
