@@ -483,18 +483,20 @@ client.on('message', async message => {
         const commandlogger = require(`./commands/${file}`);
         if (message.content.startsWith(`${prefix}`)) {
             if (message.content.includes(`${prefix}` + commandlogger.name)) {
-                const logsmessage = new Discord.RichEmbed()
-                    .setTitle(commandlogger.name)
-                    .setDescription("Used by: " + message.author)
-                    .setURL(message.url)
-                    .setColor('RANDOM')
-                    .addField('Usage:\n', message.content, true)
-                    .addField('Channel', message.channel, true)
-                    .setFooter("Message ID: " + message.id)
-                    .setTimestamp();
-                logsChannel1.send({
-                    embed: logsmessage
-                });
+                if (commandlogger.description.includes(`[mod]`) || commandlogger.description.includes(`[admin]`)) {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(commandlogger.name)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logsChannel1.send({
+                        embed: logsmessage
+                    });
+                }
             }
         }
     }
@@ -794,6 +796,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         if (reaction.message.author.id == '440892659264126997') return;
         if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
         if (!reaction.message.attachments.size > 0) {
+            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got reported!")
                 .setDescription("Message by: " + reaction.message.author)
@@ -809,6 +812,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             });
         }
         if (reaction.message.content === '') {
+            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
             const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got reported!")
@@ -824,6 +828,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 embed: editmessage
             });
         }
+        logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
         const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
@@ -843,6 +848,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //reportdelete
     let limit2 = 3;
     if (reaction.emoji.name == '❌' && reaction.count == limit2) {
+        logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
         if (reaction.message.author.id == '440892659264126997') return;
         if (reaction.message.author.id == '127708549118689280') return;
         if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
