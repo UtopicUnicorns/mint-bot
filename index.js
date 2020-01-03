@@ -57,8 +57,8 @@ client.once('ready', () => {
     //role DB
     const table3 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';").get();
     if (!table3['count(*)']) {
-        sql.prepare("CREATE TABLE roles (guild TEXT PRIMARY KEY, roles TEXT);").run();
-        sql.prepare("CREATE UNIQUE INDEX idx_roles_id ON roles (guild);").run();
+        sql.prepare("CREATE TABLE roles (guild TEXT, roles TEXT PRIMARY KEY);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_roles_id ON roles (roles);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
@@ -116,15 +116,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
-    if (ageA[1] == "hours") {
-        guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
-    }
-    if (ageA[1] == "day") {
-        guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
-        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
-    }
-    if (ageA[1] == "days") {
+    if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
         guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
         return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
@@ -154,8 +146,17 @@ client.on("guildMemberAdd", async (guildMember) => {
     guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
 });
 client.on("guildMemberRemove", async (guildMember) => {
-    if (!client.guilds.get('628978428019736619')) return;
-    client.channels.get('646672806033227797').send(guildMember.user.username + ' left the server!');
+    //load shit
+    const guildChannels = client.getGuild.get(guildMember.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
+    if (thisguild) {
+        var logsChannel1 = client.channels.get(guildChannels.logsChannel);
+    } else {
+        var logsChannel1 = '0';
+    }
+    logsChannel1.send(guildMember.user.username + ' left the server!');
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
     //Twitch notifications
@@ -457,22 +458,22 @@ client.on('message', async message => {
     for (const file of commandusage) {
         const commandlogger = require(`./commands/${file}`);
         if (message.content.startsWith(`${prefix}`)) {
-            if (message.content.includes(`${prefix}`+commandlogger.name)) {
-                    const logsmessage = new Discord.RichEmbed()
-                        .setTitle(commandlogger.name)
-                        .setDescription("Used by: " + message.author)
-                        .setURL(message.url)
-                        .setColor('RANDOM')
-                        .addField('Usage:\n', message.content, true)
-                        .addField('Channel', message.channel, true)
-                        .setFooter("Message ID: " + message.id)
-                        .setTimestamp();
-                     logsChannel1.send({
-                        embed: logsmessage
-                    });
-                }
+            if (message.content.includes(`${prefix}` + commandlogger.name)) {
+                const logsmessage = new Discord.RichEmbed()
+                    .setTitle(commandlogger.name)
+                    .setDescription("Used by: " + message.author)
+                    .setURL(message.url)
+                    .setColor('RANDOM')
+                    .addField('Usage:\n', message.content, true)
+                    .addField('Channel', message.channel, true)
+                    .setFooter("Message ID: " + message.id)
+                    .setTimestamp();
+                logsChannel1.send({
+                    embed: logsmessage
+                });
             }
         }
+    }
     //WhoIsArtemis?
     if (message.content.toLowerCase().includes("who is artemis")) {
         const whoartemis = new Discord.RichEmbed()
@@ -892,9 +893,14 @@ client.on("messageReactionAdd", async (reaction, user) => {
         if (!user) return;
         if (user.bot) return;
         if (!reaction.message.channel.guild) return;
-        for (let n in emojiname) {
-            if (reaction.emoji.name == emojiname[n]) {
-                const role = reaction.message.guild.roles.find(r => r.name == rolename[n]);
+        const allroles = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(reaction.message.guild.id);
+        let array2 = [];
+        for (const data of allroles) {
+            array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
+        }
+        for (let n in array2) {
+            if (reaction.emoji.name == array2[n]) {
+                const role = reaction.message.guild.roles.find(r => r.name == array2[n]);
                 const guildMember = reaction.message.guild.members.get(user.id);
                 let haverole = guildMember.roles.has(role.id);
                 if (!haverole) {

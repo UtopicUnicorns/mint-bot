@@ -2,8 +2,6 @@
     "token": "TOKEN/KEY",
     "yandex": "TOKEN/KEY",
     "youtubekey": "TOKEN/KEY",
-    "rolemoteconf": ["gentoo", "void", "fedora", "popos", "arch", "mint", "suse", "solus", "centos", "debian", "alpine", "ubuntu", "manjaro", "freebsd", "windows", "macos", "orange", "blue", "black", "yellow", "magenta", "cyan", "18", "programmer", "politics", "new", "distrohopper"],
-    "rolenameconf": ["Gentoo", "Void", "Fedora", "PopOS", "Arch", "Mint", "openSUSE", "Solus", "CentOS", "Debian", "Alpine", "Ubuntu", "Manjaro", "freeBSD", "Windows", "MacOS", "Orange", "Blue", "Black", "Yellow", "Magenta", "Cyan", "18+", "Programmer", "Politics", "New", "Distrohopper"],
     "dadjokes": ["You can use *mv* to rename a file trough your terminal.\nmv old-file-name new-file-name",
          "Linux has a photoshop alternative that's free.\nsudo apt install gimp",
          "You can get a readable machine specification output with Neofetch!\nsudo apt install neofetch",
