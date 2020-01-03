@@ -349,7 +349,19 @@ client.on('message', async message => {
                         muteChannel: mcheck,
                         logsChannel: lcheck
                     };
-                    message.channel.send("I have set up the channels for you.\nDo not forget to set up proper permissions for these new channels!");
+                    const hellothereguilder = new Discord.RichEmbed()
+                        .setTitle('Channels have been set up!')
+                        .setDescription('Here is a list of commands')
+                        .setURL('https://discord.gg/EVVtPpw')
+                        .setColor('RANDOM')
+                        .addField('!join !leave\n', 'Are the main ways to join/leave a role')
+                        .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
+                        .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
+                        .setFooter('Artemis has more commands, check them out with !help')
+                        .setTimestamp();
+                    message.channel.send({
+                        embed: hellothereguilder
+                    });
                     return client.setGuild.run(newGuild);
                 }, 5000);
             }
@@ -365,7 +377,19 @@ client.on('message', async message => {
                 muteChannel: newGuildArgs[3],
                 logsChannel: newGuildArgs[4]
             };
-            message.channel.send("You have set up the channels.\nDo not forget to set up proper permissions for these new channels!");
+            const hellothereguilder = new Discord.RichEmbed()
+                .setTitle('Channels have been set up!')
+                .setDescription('Here is a list of commands')
+                .setURL('https://discord.gg/EVVtPpw')
+                .setColor('RANDOM')
+                .addField('!join !leave\n', 'Are the main ways to join/leave a role')
+                .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
+                .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
+                .setFooter('Artemis has more commands, check them out with !help')
+                .setTimestamp();
+            message.channel.send({
+                embed: hellothereguilder
+            });
         }
         client.setGuild.run(newGuild);
     }
