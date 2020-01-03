@@ -18,10 +18,10 @@ module.exports = {
                 guild: message.guild.id,
                 roles: rolechecker.id
             }
-            message.channel.send('+ ' + message.guild.id + ' ' + rolechecker);
+            message.channel.send('+Added role to self assignable list ' + message.guild.id + ' ' + rolechecker);
         } else {
             db.prepare(`DELETE FROM roles WHERE roles = ${rolechecker.id}`).run();
-            return message.channel.send('- ' + message.guild.id + ' ' + rolechecker);
+            return message.channel.send('-Removed role from self assignable list ' + message.guild.id + ' ' + rolechecker);
         }
         setRoles.run(rolecheck);
 

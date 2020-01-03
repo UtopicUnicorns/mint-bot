@@ -556,7 +556,7 @@ client.on('message', async message => {
         return
     }
     //Simulate guild member join
-    if (message.content === prefix + 'join') {
+    if (message.content === prefix + 'guildmemberadd') {
         if (message.author.id === "127708549118689280") {
             client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
         }
