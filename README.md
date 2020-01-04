@@ -1,5 +1,5 @@
 # mint-bot
-bot for discord mint server
+A bot created for the Linux-Mint Discord server.
 https://discord.gg/dSCqtqj
 
 node.js
@@ -10,6 +10,6 @@ python2.7
 
 set NPM to python 2.7
 
-Follow the module errors and install everything trough npm
+Follow the module errors and install everything through `npm`
 
-Also install node-opus trough NPM and ffmpeg trough your linux distribution's package manager
+Also install `node-opus` through NPM and `ffmpeg` through your Linux distribution's package manager
