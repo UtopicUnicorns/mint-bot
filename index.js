@@ -19,6 +19,7 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const thankedRecently = new Set();
 const welcomeRecently = new Set();
+const streamedRecently = new Set();
 const queue = new Map();
 const {
     FeedEmitter
@@ -111,6 +112,8 @@ client.on("guildMemberAdd", async (guildMember) => {
         var generalChannel1 = '0';
         var muteChannel1 = '0';
     }
+    if (generalChannel1 == '0') return;
+    if (muteChannel1 == '0') return;
     //account age check
     let user = guildMember.user;
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
@@ -156,6 +159,7 @@ client.on("guildMemberRemove", async (guildMember) => {
     } else {
         var logsChannel1 = '0';
     }
+    if (logsChannel1 == '0') return;
     logsChannel1.send(guildMember.user.username + ' left the server!');
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
@@ -168,8 +172,13 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             return;
         }
         if (newMember.presence.game.url.includes("twitch")) {
-            //mint
-            if (client.guilds.get('628978428019736619')) {
+                if (streamedRecently.has(newMember.user.id)) {
+
+                } else {
+                    streamedRecently.add(newMember.user.id);
+                    setTimeout(() => {
+                        streamedRecently.delete(newMember.user.id);
+                    }, 6000);
                 request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                     json: true
                 }, function(err, res, body) {
@@ -178,7 +187,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                             .setTitle(newMember.presence.game.state)
                             .setColor(`RANDOM`)
                             .setURL(newMember.presence.game.url)
-                            .setDescription('@everyone ' + newMember.user.username + ' went live!')
+                            .setDescription('@everyone ' + newMember.user + ' went live!')
                             .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                             .setTimestamp();
                         return client.channels.get('650822971996241970').send({
@@ -190,7 +199,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                         .setColor(`RANDOM`)
                         .setURL(newMember.presence.game.url)
                         .setThumbnail(`${body.results[0].background_image}`)
-                        .setDescription(newMember.user.username + ' went live!')
+                        .setDescription(newMember.user + ' went live!')
                         .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                         .setTimestamp();
                     client.channels.get('650822971996241970').send({
@@ -228,7 +237,7 @@ emitter.on("item:new", (item) => {
     let reddittext2 = reddittext.replace('[link]', '').replace('[comments]', '');
     let reddittext3 = reddittext2.substr(0, 1000);
     const redditmessage = new Discord.RichEmbed()
-        .setTitle(item.title)
+        .setTitle(item.title.substr(0, 100))
         .setURL(item.link)
         .setColor('RANDOM')
         .setDescription(reddittext3)
@@ -396,6 +405,7 @@ client.on('message', async message => {
     //Anti-mention
     if (message.mentions.users.size > 3) {
         message.delete();
+        if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         const member = message.author;
         message.guild.channels.forEach(async (channel, id) => {
             if (id == guildChannels.muteChannel) return;
@@ -417,6 +427,7 @@ client.on('message', async message => {
     if (message.author.bot) return;
     //Mute filter
     if (message.channel.id === muteChannel1.id) {
+        if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         if (message.content == message.author.username + "1337") {
             let roleadd = message.guild.roles.find(r => r.name === "~/Members");
             let roledel = message.guild.roles.find(r => r.name === "Muted");
@@ -484,6 +495,7 @@ client.on('message', async message => {
         if (message.content.startsWith(`${prefix}`)) {
             if (message.content.includes(`${prefix}` + commandlogger.name)) {
                 if (commandlogger.description.includes(`[mod]`) || commandlogger.description.includes(`[admin]`)) {
+                    if (logsChannel1 == '0') return message.channel.send("You have not set up a logs channel!");
                     const logsmessage = new Discord.RichEmbed()
                         .setTitle(commandlogger.name)
                         .setDescription("Used by: " + message.author)
@@ -790,6 +802,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         var logsChannel1 = '0';
         var highlightChannel1 = '0';
     }
+    if (logsChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
     //report
     let limit1 = 1;
     if (reaction.emoji.name == '❌' && reaction.count == limit1) {
@@ -868,6 +881,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         });
     }
     //Highlights
+    if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
     let limit = 3;
     if (reaction.emoji.name == '🍵' && reaction.count == limit) {
         if (reaction.message.author.id == '440892659264126997') return;
