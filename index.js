@@ -297,6 +297,7 @@ client.on('message', async message => {
                 .setColor('RANDOM')
                 .addField('Welcome new guild!\n', 'I see that you have not yet set me up properly.')
                 .addField('Setting me up is rather simple.', 'just speak the words\n`setup auto`\nand I will do the work for you')
+                .addField('You can choose to skip the setup process by speaking the words `setup skip` you can then manually set the channels with `!channelmanage`')
                 .addField('What does the setup do you ask?', 'I will look for 4 channels:\ngeneral\nmute\nlogs\nhighlights\n\nIf these are not there I will create them for you.')
                 .setFooter('Artemis is not perfect and is created by a noob called UtopicUnicorn#0383')
                 .setTimestamp();
@@ -310,11 +311,36 @@ client.on('message', async message => {
         newGuild = client.getGuild.get(message.guild.id);
         if (!newGuild) {
             //Deny setup by any other than owner
-            if (message.author.id !== message.guild.owner.id) return message.channel.send("Only the server owner may set me up!");
+            if (message.author.id !== message.guild.owner.id) {
+                return message.channel.send("Only the server owner may set me up!");
+            }
             //start setups
             if (message.content == "setup") {
                 return message.channel.send("setup\nGeneralChannelID\nHighlightChannelID\nMuteChannelID\nLogsChannelID");
             }
+            //skip setup setup channels to 0
+            if (message.content == "setup skip") {
+                newGuild = {
+                    guild: message.guild.id,
+                    generalChannel: `0`,
+                    highlightChannel: `0`,
+                    muteChannel: `0`,
+                    logsChannel: `0`
+                };
+                const hellothereguilders = new Discord.RichEmbed()
+                        .setTitle('Setup skipped!')
+                        .setDescription('No worries, you can manually setup your channels')
+                        .setURL('https://discord.gg/EVVtPpw')
+                        .setColor('RANDOM')
+                        .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
+                        .setFooter('Artemis has more commands, check them out with !help')
+                        .setTimestamp();
+                    message.channel.send({
+                        embed: hellothereguilders
+                    });
+                return client.setGuild.run(newGuild);
+            }
+            //setup auto, create channels sets channels ID
             if (message.content == "setup auto") {
                 if (!message.guild.roles.find(r => r.name === `Muted`)) {
                     message.guild.createRole({
@@ -374,6 +400,7 @@ client.on('message', async message => {
                     return client.setGuild.run(newGuild);
                 }, 5000);
             }
+            //Manually setup all channels if present
             let newGuildArgs = message.content.slice().split('\n');
             if (!newGuildArgs[1]) return;
             if (!newGuildArgs[2]) return message.channel.send("Provide a highlightChannel ID!");

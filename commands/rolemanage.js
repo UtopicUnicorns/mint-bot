@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
+const fs = require('fs');
+const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'rolemanage',
     description: '[admin] Manage self assignable roles',
@@ -7,6 +9,9 @@ module.exports = {
         const getRoles = db.prepare("SELECT * FROM roles WHERE roles = ?");
         const setRoles = db.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        if (message.content === `${prefix}rolemanage`) {
+            return message.channel.send("I will need an argument!");
+        }
         const args = message.content.slice(12).split(" ");
         const rolechecker = message.guild.roles.find(r => r.name === (`${args}`));
         if (!rolechecker) {
