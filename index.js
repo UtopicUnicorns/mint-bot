@@ -48,13 +48,13 @@ client.once('ready', () => {
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
-        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT);").run();
+        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
-    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel);");
+    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel);");
     //role DB
     const table3 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';").get();
     if (!table3['count(*)']) {
@@ -172,12 +172,24 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             return;
         }
         if (newMember.presence.game.url.includes("twitch")) {
-            if (streamedRecently.has(newMember.user.id)) {
+            //load shit
+            const guildChannels = client.getGuild.get(newMember.guild.id);
+            if (guildChannels) {
+                var thisguild = client.guilds.get(guildChannels.guild);
+            }
+            if (thisguild) {
+                var streamChannel1 = client.channels.get(guildChannels.streamChannel);
+            } else {
+                var streamChannel1 = '0';
+            }
+            if (streamChannel1) {
+            //no double posts
+            if (streamedRecently.has(newMember.user.id+newMember.guild.id)) {
 
             } else {
-                streamedRecently.add(newMember.user.id);
+                streamedRecently.add(newMember.user.id+newMember.guild.id);
                 setTimeout(() => {
-                    streamedRecently.delete(newMember.user.id);
+                    streamedRecently.delete(newMember.user.id+newMember.guild.id);
                 }, 6000);
                 request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                     json: true
@@ -190,7 +202,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                             .setDescription('@everyone ' + newMember.user + ' went live!')
                             .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                             .setTimestamp();
-                        return client.channels.get('650822971996241970').send({
+                        return streamChannel1.send({
                             embed
                         });
                     }
@@ -202,11 +214,12 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                         .setDescription(newMember.user + ' went live!')
                         .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
                         .setTimestamp();
-                    client.channels.get('650822971996241970').send({
+                        return streamChannel1.send({
                         embed
                     });
                 });
             }
+        }
         }
     }
     //Change topic based on user activity
@@ -325,7 +338,8 @@ client.on('message', async message => {
                     generalChannel: `0`,
                     highlightChannel: `0`,
                     muteChannel: `0`,
-                    logsChannel: `0`
+                    logsChannel: `0`,
+                    streamChannel: `0`
                 };
                 const hellothereguilders = new Discord.RichEmbed()
                     .setTitle('Setup skipped!')
@@ -382,7 +396,8 @@ client.on('message', async message => {
                         generalChannel: gcheck,
                         highlightChannel: hcheck,
                         muteChannel: mcheck,
-                        logsChannel: lcheck
+                        logsChannel: lcheck,
+                        streamChannel: `0`
                     };
                     const hellothereguilder = new Discord.RichEmbed()
                         .setTitle('Channels have been set up!')
@@ -411,7 +426,8 @@ client.on('message', async message => {
                 generalChannel: newGuildArgs[1],
                 highlightChannel: newGuildArgs[2],
                 muteChannel: newGuildArgs[3],
-                logsChannel: newGuildArgs[4]
+                logsChannel: newGuildArgs[4],
+                streamChannel: `0`
             };
             const hellothereguilder = new Discord.RichEmbed()
                 .setTitle('Channels have been set up!')
