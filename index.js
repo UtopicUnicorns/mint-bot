@@ -283,13 +283,25 @@ client.on('message', async message => {
     //Reaction roles
     if (message.content.startsWith(prefix + "reaction")) {
         if (!message.channel.guild) return;
-        for (let n in emojiname) {
-            var emoji = [message.guild.emojis.find(r => r.name == emojiname[n])];
-            for (let i in emoji) {
-                message.react(emoji[i]);
+        message.channel.send("Available roles");
+        const allroles2 = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
+        let array3 = [];
+            for (const data of allroles2) {
+                array3.push(message.guild.roles.find(r => r.id == data.roles).name);
             }
+            let channelstuff = client.channels.get(message.channel.id);
+                channelstuff.fetchMessages({ limit: 1 }).then(messages => {
+            for (let n in array3) {
+                if (n > 19) return;
+                var emoji3 = [message.guild.emojis.find(r => r.name == array3[n])];
+                for (let i in emoji3) {
+                   let lastMessage = messages.first();
+                  lastMessage.react(emoji3[i]);
+                }
+            }
+        })
+        .catch(console.error);
         }
-    }
     //Artemis welcome
     newGuild1 = client.getGuild.get(message.guild.id);
     if (!newGuild1) {
