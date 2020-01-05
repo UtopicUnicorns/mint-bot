@@ -172,13 +172,13 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             return;
         }
         if (newMember.presence.game.url.includes("twitch")) {
-                if (streamedRecently.has(newMember.user.id)) {
+            if (streamedRecently.has(newMember.user.id)) {
 
-                } else {
-                    streamedRecently.add(newMember.user.id);
-                    setTimeout(() => {
-                        streamedRecently.delete(newMember.user.id);
-                    }, 6000);
+            } else {
+                streamedRecently.add(newMember.user.id);
+                setTimeout(() => {
+                    streamedRecently.delete(newMember.user.id);
+                }, 6000);
                 request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                     json: true
                 }, function(err, res, body) {
@@ -328,16 +328,16 @@ client.on('message', async message => {
                     logsChannel: `0`
                 };
                 const hellothereguilders = new Discord.RichEmbed()
-                        .setTitle('Setup skipped!')
-                        .setDescription('No worries, you can manually setup your channels')
-                        .setURL('https://discord.gg/EVVtPpw')
-                        .setColor('RANDOM')
-                        .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
-                        .setFooter('Artemis has more commands, check them out with !help')
-                        .setTimestamp();
-                    message.channel.send({
-                        embed: hellothereguilders
-                    });
+                    .setTitle('Setup skipped!')
+                    .setDescription('No worries, you can manually setup your channels')
+                    .setURL('https://discord.gg/EVVtPpw')
+                    .setColor('RANDOM')
+                    .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
+                    .setFooter('Artemis has more commands, check them out with !help')
+                    .setTimestamp();
+                message.channel.send({
+                    embed: hellothereguilders
+                });
                 return client.setGuild.run(newGuild);
             }
             //setup auto, create channels sets channels ID
@@ -515,6 +515,31 @@ client.on('message', async message => {
         })
         message.channel.send("Forced prefix back to !");
     }
+    //update
+    if (message.content.startsWith(prefix + "update")) {
+        if (message.author.id !== '127708549118689280') return;
+        const logslist = sql.prepare("SELECT * FROM guildhub").all();
+        const logschannels = []
+        for (const data of logslist) {
+            logschannels.push(data.logsChannel);
+        }
+        for (let i of logschannels) {
+            if (client.channels.get(`${i}`)) {
+                const updatetext = new Discord.RichEmbed()
+                    .setTitle("Update")
+                    .setDescription(message.author)
+                    .setURL('https://discord.gg/EVVtPpw')
+                    .setColor('RANDOM')
+                    .addField('Update text:\n', message.content.slice(8))
+                    .addField('Channel', message.channel, true)
+                    .setFooter("Message ID: " + message.id)
+                    .setTimestamp();
+                client.channels.get(`${i}`).send({
+                    embed: updatetext
+                });
+            }
+        }
+    }
     //Logs
     const commandusage = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
     for (const file of commandusage) {
@@ -523,18 +548,20 @@ client.on('message', async message => {
             if (message.content.includes(`${prefix}` + commandlogger.name)) {
                 if (commandlogger.description.includes(`[mod]`) || commandlogger.description.includes(`[admin]`)) {
                     if (logsChannel1 == '0') return message.channel.send("You have not set up a logs channel!");
-                    const logsmessage = new Discord.RichEmbed()
-                        .setTitle(commandlogger.name)
-                        .setDescription("Used by: " + message.author)
-                        .setURL(message.url)
-                        .setColor('RANDOM')
-                        .addField('Usage:\n', message.content, true)
-                        .addField('Channel', message.channel, true)
-                        .setFooter("Message ID: " + message.id)
-                        .setTimestamp();
-                    logsChannel1.send({
-                        embed: logsmessage
-                    });
+                    if (message.member.hasPermission('KICK_MEMBERS')) {
+                        const logsmessage = new Discord.RichEmbed()
+                            .setTitle(commandlogger.name)
+                            .setDescription("Used by: " + message.author)
+                            .setURL(message.url)
+                            .setColor('RANDOM')
+                            .addField('Usage:\n', message.content, true)
+                            .addField('Channel', message.channel, true)
+                            .setFooter("Message ID: " + message.id)
+                            .setTimestamp();
+                        logsChannel1.send({
+                            embed: logsmessage
+                        });
+                    }
                 }
             }
         }
