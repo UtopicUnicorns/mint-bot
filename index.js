@@ -48,13 +48,13 @@ client.once('ready', () => {
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
-        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT);").run();
+        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
-    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel);");
+    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel);");
     //role DB
     const table3 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';").get();
     if (!table3['count(*)']) {
@@ -67,12 +67,12 @@ client.once('ready', () => {
     client.setRoles = sql.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
-        const dadembed = new Discord.RichEmbed()
+        const linuxhints = new Discord.RichEmbed()
             .setTitle("Hint:")
             .setColor('RANDOM')
-            .setDescription(dadjokes[~~(Math.random() * dadjokes.length)])
+            .setDescription(linuxhints[~~(Math.random() * linuxhints.length)])
         client.channels.get('628984660298563584').send({
-            embed: dadembed
+            embed: linuxhints
         });
     }, 21600000);
     //change bot Status
@@ -87,10 +87,14 @@ client.once('ready', () => {
         });
     }, 60000);
     //preload messages on reconnect
-    let testchannel = client.channels.get('645033708860211206');
-    testchannel.fetchMessage('645034653652090880');
-    testchannel.fetchMessage('645035108306255883');
-    testchannel.fetchMessage('645035668447297568');
+    const fetch2 = sql.prepare("SELECT * FROM guildhub").all();
+    let array4 = [];
+    for (const data of fetch2) {
+        if (data.reactionChannel > 1) {
+            array4.push(data.reactionChannel);
+            client.channels.get(data.reactionChannel).fetchMessages();
+        }
+    }
 });
 client.once('reconnecting', () => {
     let nowtime = new Date();
@@ -183,43 +187,43 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                 var streamChannel1 = '0';
             }
             if (streamChannel1) {
-            //no double posts
-            if (streamedRecently.has(newMember.user.id+newMember.guild.id)) {
+                //no double posts
+                if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
 
-            } else {
-                streamedRecently.add(newMember.user.id+newMember.guild.id);
-                setTimeout(() => {
-                    streamedRecently.delete(newMember.user.id+newMember.guild.id);
-                }, 6000);
-                request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
-                    json: true
-                }, function(err, res, body) {
-                    if (!body.results[0].background_image) {
+                } else {
+                    streamedRecently.add(newMember.user.id + newMember.guild.id);
+                    setTimeout(() => {
+                        streamedRecently.delete(newMember.user.id + newMember.guild.id);
+                    }, 6000);
+                    request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
+                        json: true
+                    }, function (err, res, body) {
+                        if (!body.results[0].background_image) {
+                            const embed = new Discord.RichEmbed()
+                                .setTitle(newMember.presence.game.state)
+                                .setColor(`RANDOM`)
+                                .setURL(newMember.presence.game.url)
+                                .setDescription(newMember.user + ' went live!')
+                                .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                .setTimestamp();
+                            return streamChannel1.send({
+                                embed
+                            });
+                        }
                         const embed = new Discord.RichEmbed()
                             .setTitle(newMember.presence.game.state)
                             .setColor(`RANDOM`)
                             .setURL(newMember.presence.game.url)
-                            .setDescription('@everyone ' + newMember.user + ' went live!')
-                            .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
+                            .setThumbnail(`${body.results[0].background_image}`)
+                            .setDescription(newMember.user + ' went live!')
+                            .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
                             .setTimestamp();
                         return streamChannel1.send({
                             embed
                         });
-                    }
-                    const embed = new Discord.RichEmbed()
-                        .setTitle(newMember.presence.game.state)
-                        .setColor(`RANDOM`)
-                        .setURL(newMember.presence.game.url)
-                        .setThumbnail(`${body.results[0].background_image}`)
-                        .setDescription(newMember.user + ' went live!')
-                        .addField(newMember.presence.game.details + '\n' + newMember.presence.game.url)
-                        .setTimestamp();
-                        return streamChannel1.send({
-                        embed
                     });
-                });
+                }
             }
-        }
         }
     }
     //Change topic based on user activity
@@ -286,22 +290,24 @@ client.on('message', async message => {
         message.channel.send("Available roles");
         const allroles2 = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
         let array3 = [];
-            for (const data of allroles2) {
-                array3.push(message.guild.roles.find(r => r.id == data.roles).name);
-            }
-            let channelstuff = client.channels.get(message.channel.id);
-                channelstuff.fetchMessages({ limit: 1 }).then(messages => {
-            for (let n in array3) {
-                if (n > 19) return;
-                var emoji3 = [message.guild.emojis.find(r => r.name == array3[n])];
-                for (let i in emoji3) {
-                   let lastMessage = messages.first();
-                  lastMessage.react(emoji3[i]);
-                }
-            }
-        })
-        .catch(console.error);
+        for (const data of allroles2) {
+            array3.push(message.guild.roles.find(r => r.id == data.roles).name);
         }
+        let channelstuff = client.channels.get(message.channel.id);
+        channelstuff.fetchMessages({
+                limit: 1
+            }).then(messages => {
+                for (let n in array3) {
+                    if (n > 19) return;
+                    var emoji3 = [message.guild.emojis.find(r => r.name == array3[n])];
+                    for (let i in emoji3) {
+                        let lastMessage = messages.first();
+                        lastMessage.react(emoji3[i]);
+                    }
+                }
+            })
+            .catch(console.error);
+    }
     //Artemis welcome
     newGuild1 = client.getGuild.get(message.guild.id);
     if (!newGuild1) {
@@ -351,7 +357,8 @@ client.on('message', async message => {
                     highlightChannel: `0`,
                     muteChannel: `0`,
                     logsChannel: `0`,
-                    streamChannel: `0`
+                    streamChannel: `0`,
+                    reactionChannel: `0`
                 };
                 const hellothereguilders = new Discord.RichEmbed()
                     .setTitle('Setup skipped!')
@@ -409,7 +416,8 @@ client.on('message', async message => {
                         highlightChannel: hcheck,
                         muteChannel: mcheck,
                         logsChannel: lcheck,
-                        streamChannel: `0`
+                        streamChannel: `0`,
+                        reactionChannel: `0`
                     };
                     const hellothereguilder = new Discord.RichEmbed()
                         .setTitle('Channels have been set up!')
@@ -439,7 +447,8 @@ client.on('message', async message => {
                 highlightChannel: newGuildArgs[2],
                 muteChannel: newGuildArgs[3],
                 logsChannel: newGuildArgs[4],
-                streamChannel: `0`
+                streamChannel: `0`,
+                reactionChannel: `0`
             };
             const hellothereguilder = new Discord.RichEmbed()
                 .setTitle('Channels have been set up!')
@@ -643,7 +652,7 @@ client.on('message', async message => {
                 return message.channel.send(channelname.name);
             }
             if (message.content.startsWith(prefix + "set")) {
-                fs.writeFile('channelset.txt', cargs, function(err) {
+                fs.writeFile('channelset.txt', cargs, function (err) {
                     if (err) throw err;
                 });
                 return message.channel.send('Set channel id to: ' + client.channels.get(`${cargs}`));
@@ -880,9 +889,11 @@ client.on("messageReactionAdd", async (reaction, user) => {
     if (thisguild) {
         var logsChannel1 = client.channels.get(guildChannels.logsChannel);
         var highlightChannel1 = client.channels.get(guildChannels.highlightChannel);
+        var reactionChannel1 = client.channels.get(guildChannels.reactionChannel);
     } else {
         var logsChannel1 = '0';
         var highlightChannel1 = '0';
+        var reactionChannel1 = '0';
     }
     if (logsChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
     //report
@@ -963,9 +974,9 @@ client.on("messageReactionAdd", async (reaction, user) => {
         });
     }
     //Highlights
-    if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
     let limit = 3;
     if (reaction.emoji.name == '🍵' && reaction.count == limit) {
+        if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
         if (reaction.message.author.id == '440892659264126997') return;
         if (!reaction.message.attachments.size > 0) {
             const editmessage = new Discord.RichEmbed()
@@ -983,6 +994,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             });
         }
         if (reaction.message.content === '') {
+            if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
             const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got highlighted!")
@@ -998,6 +1010,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 embed: editmessage
             });
         }
+        if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
         const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got highlighted!")
@@ -1015,34 +1028,36 @@ client.on("messageReactionAdd", async (reaction, user) => {
         });
     }
     //reaction roles
-    if (reaction.message.channel.id === '645033708860211206') {
-        if (!user) return;
-        if (user.bot) return;
-        if (!reaction.message.channel.guild) return;
-        const allroles = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(reaction.message.guild.id);
-        let array2 = [];
-        for (const data of allroles) {
-            array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
-        }
-        for (let n in array2) {
-            if (reaction.emoji.name == array2[n]) {
-                const role = reaction.message.guild.roles.find(r => r.name == array2[n]);
-                const guildMember = reaction.message.guild.members.get(user.id);
-                let haverole = guildMember.roles.has(role.id);
-                if (!haverole) {
-                    guildMember.addRole(role).catch(console.error);
-                    reaction.remove(user.id);
-                    client.channels.get('645033708860211206').send(user + " Joined " + role)
-                        .then(message => {
-                            message.delete(5000)
-                        });
-                } else {
-                    guildMember.removeRole(role).catch(console.error);
-                    reaction.remove(user.id);
-                    client.channels.get('645033708860211206').send(user + " Left " + role)
-                        .then(message => {
-                            message.delete(5000)
-                        });
+    if (!reactionChannel1 == '0') {
+        if (reaction.message.channel.id === reactionChannel1.id) {
+            if (!user) return;
+            if (user.bot) return;
+            if (!reaction.message.channel.guild) return;
+            const allroles = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(reaction.message.guild.id);
+            let array2 = [];
+            for (const data of allroles) {
+                array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
+            }
+            for (let n in array2) {
+                if (reaction.emoji.name == array2[n]) {
+                    const role = reaction.message.guild.roles.find(r => r.name == array2[n]);
+                    const guildMember = reaction.message.guild.members.get(user.id);
+                    let haverole = guildMember.roles.has(role.id);
+                    if (!haverole) {
+                        guildMember.addRole(role).catch(console.error);
+                        reaction.remove(user.id);
+                        client.channels.get(reactionChannel1.id).send(user + " Joined " + role)
+                            .then(message => {
+                                message.delete(5000)
+                            });
+                    } else {
+                        guildMember.removeRole(role).catch(console.error);
+                        reaction.remove(user.id);
+                        client.channels.get(reactionChannel1.id).send(user + " Left " + role)
+                            .then(message => {
+                                message.delete(5000)
+                            });
+                    }
                 }
             }
         }
