@@ -8,9 +8,7 @@ const Client = require('./client/Client');
 const {
     token,
     yandex,
-    rolemoteconf,
-    rolenameconf,
-    dadjokes
+    linuxhints
 } = require('./config.json');
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./scores.sqlite');
@@ -26,8 +24,6 @@ const {
 } = require("rss-emitter-ts");
 const emitter = new FeedEmitter();
 const htmlToText = require('html-to-text');
-let emojiname = rolemoteconf;
-let rolename = rolenameconf;
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
@@ -67,12 +63,12 @@ client.once('ready', () => {
     client.setRoles = sql.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
-        const linuxhints = new Discord.RichEmbed()
+        const linuxhint = new Discord.RichEmbed()
             .setTitle("Hint:")
             .setColor('RANDOM')
             .setDescription(linuxhints[~~(Math.random() * linuxhints.length)])
         client.channels.get('628984660298563584').send({
-            embed: linuxhints
+            embed: linuxhint
         });
     }, 21600000);
     //change bot Status
@@ -119,12 +115,14 @@ client.on("guildMemberAdd", async (guildMember) => {
     if (generalChannel1 == '0') return;
     if (muteChannel1 == '0') return;
     //account age check
+    let roleadd1 = guildMember.guild.roles.find(r => r.name === "~/Members");
+    let roledel1 = guildMember.guild.roles.find(r => r.name === "Muted");
     let user = guildMember.user;
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
-        guildMember.addRole(guildMember.guild.roles.get("640535533457637386"));
+        guildMember.addRole(roledel1);
         return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
     }
     //make nice image for welcoming
@@ -150,7 +148,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     ctx.drawImage(avatar, 600, 25, 50, 50);
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
     generalChannel1.send(attachment);
-    guildMember.addRole(guildMember.guild.roles.get("628979872466993153"));
+    guildMember.addRole(roleadd1);
 });
 client.on("guildMemberRemove", async (guildMember) => {
     //load shit
