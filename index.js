@@ -146,6 +146,12 @@ client.on("guildMemberAdd", async (guildMember) => {
     ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
     const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
     ctx.drawImage(avatar, 600, 25, 50, 50);
+    ctx.beginPath();
+	ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.clip();
+    const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
+	ctx.drawImage(guildlogo, 25, 25, 200, 200);
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
     generalChannel1.send(attachment);
     guildMember.addRole(roleadd1);
