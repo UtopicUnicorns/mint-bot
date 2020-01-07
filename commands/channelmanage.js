@@ -10,7 +10,21 @@ module.exports = {
         const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         if (message.content === `${prefix}channelmanage`) {
-            return message.channel.send(`${prefix}channelmanage mute/general/highlight/logs/stream chanID/chanNAME`);
+            let channelget = getGuild.get(message.guild.id);
+            const hellothereguilde = new Discord.RichEmbed()
+                .setTitle('Manage Channels')
+                .setColor('RANDOM')
+                .addField('Command usage:\n', `${prefix}channelmanage mute/general/highlight/logs/stream chanID/chanNAME`)
+                .addField('General Channel: ', message.guild.channels.find(channel => channel.id === channelget.generalChannel))
+                .addField('Mute Channel: ', message.guild.channels.find(channel => channel.id === channelget.muteChannel))
+                .addField('Logs Channel: ', message.guild.channels.find(channel => channel.id === channelget.logsChannel))
+                .addField('Highlight Channel: ', message.guild.channels.find(channel => channel.id === channelget.highlightChannel))
+                .addField('Reaction Roles Channel: ', message.guild.channels.find(channel => channel.id === channelget.reactionChannel))
+                .addField('Stream Notification Channel: ', message.guild.channels.find(channel => channel.id === channelget.streamChannel))
+                .setTimestamp();
+            return message.channel.send({
+                embed: hellothereguilde
+            });
         }
         const args = message.content.slice(15).split(" ");
         if (args[0] == 'mute') {

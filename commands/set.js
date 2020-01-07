@@ -143,6 +143,7 @@ module.exports = {
             }
             //prefix
             if (args[1] == `prefix`) {
+                if (message.author.id !== '127708549118689280') return;
                 if (!args[2]) return message.channel.send(`Specify a prefix!!`);
                 let element = args[2];
                 fs.writeFile(`./set/prefix.txt`, element, (error) => {

@@ -147,11 +147,11 @@ client.on("guildMemberAdd", async (guildMember) => {
     const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
     ctx.drawImage(avatar, 600, 25, 50, 50);
     ctx.beginPath();
-	ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-	ctx.closePath();
-	ctx.clip();
+    ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
     const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
-	ctx.drawImage(guildlogo, 25, 25, 200, 200);
+    ctx.drawImage(guildlogo, 25, 25, 200, 200);
     const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
     generalChannel1.send(attachment);
     guildMember.addRole(roleadd1);
@@ -625,26 +625,28 @@ client.on('message', async message => {
     //memes
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
     if (uwufilter.includes(message.channel.id)) {
-        var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
-        v = message.content;
-        if (!message.content) return;
-        if (message.content.startsWith("http")) return;
-        v = v.replace(/(?:r|l)/g, "w");
-        v = v.replace(/(?:R|L)/g, "W");
-        v = v.replace(/n([aeiou])/g, 'ny$1');
-        v = v.replace(/N([aeiou])/g, 'Ny$1');
-        v = v.replace(/N([AEIOU])/g, 'Ny$1');
-        v = v.replace(/ove/g, "uv");
-        v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
-        message.delete();
-        const uwutext = new Discord.RichEmbed()
-            .setTitle(message.author.username)
-            .setColor('RANDOM')
-            .setDescription(v)
-            .setTimestamp()
-        return message.channel.send({
-            embed: uwutext
-        });
+        if (!message.content.startsWith(prefix)) {
+            var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
+            v = message.content;
+            if (!message.content) return;
+            if (message.content.startsWith("http")) return;
+            v = v.replace(/(?:r|l)/g, "w");
+            v = v.replace(/(?:R|L)/g, "W");
+            v = v.replace(/n([aeiou])/g, 'ny$1');
+            v = v.replace(/N([aeiou])/g, 'Ny$1');
+            v = v.replace(/N([AEIOU])/g, 'Ny$1');
+            v = v.replace(/ove/g, "uv");
+            v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
+            message.delete();
+            const uwutext = new Discord.RichEmbed()
+                .setTitle(message.author.username)
+                .setColor('RANDOM')
+                .setDescription(v)
+                .setTimestamp()
+            return message.channel.send({
+                embed: uwutext
+            });
+        }
     }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {
