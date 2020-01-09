@@ -19,6 +19,7 @@ const thankedRecently = new Set();
 const welcomeRecently = new Set();
 const streamedRecently = new Set();
 const queue = new Map();
+const botInfo = JSON.parse(fs.readFileSync("botinfo.json", "utf8"));
 const {
     FeedEmitter
 } = require("rss-emitter-ts");
@@ -352,7 +353,7 @@ client.on('message', async message => {
             //Hello I am Artemis!
             const hellothereguilde = new Discord.RichEmbed()
                 .setTitle('Thanks for choosing Artemis')
-                .setDescription('V 1.1')
+                .setDescription(botInfo.version)
                 .setURL('https://discord.gg/EVVtPpw')
                 .setColor('RANDOM')
                 .addField('Welcome new guild!\n', 'I see that you have not yet set me up properly.')
