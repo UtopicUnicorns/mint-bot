@@ -30,7 +30,7 @@ for (const file of commandFiles) {
 }
 client.once('ready', () => {
     let nowtime = new Date();
-    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\n\n`);
+    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name).join(', ') + '\n\n');
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
@@ -86,7 +86,7 @@ client.once('ready', () => {
         let prefixstatus = fs.readFileSync('./set/prefix.txt').toString();
         var RAN = [
             `${prefixstatus}help`,
-            `${client.users.size} total users`
+            `${client.guilds.size} servers`
         ];
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
             type: 'LISTENING'
@@ -104,7 +104,7 @@ client.once('ready', () => {
 });
 client.once('reconnecting', () => {
     let nowtime = new Date();
-    console.log(`${nowtime} \nBot has reconnected, with ${client.users.size} users.\n\n`);
+    console.log(`${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name).join(', ') + '\n\n');
 });
 client.once('disconnect', () => {
     console.log('Disconnect!');
