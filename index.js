@@ -61,6 +61,16 @@ client.once('ready', () => {
     }
     client.getRoles = sql.prepare("SELECT * FROM roles WHERE guild = ?");
     client.setRoles = sql.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
+    //levelup DB
+    const table4 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'level';").get();
+    if (!table4['count(*)']) {
+        sql.prepare("CREATE TABLE level (guild TEXT PRIMARY KEY, lvl5 TEXT, lvl10 TEXT, lvl15 TEXT, lvl20 TEXT, lvl30 TEXT, lvl50 TEXT, lvl85 TEXT);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_level_id ON level (guild);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+    client.getLevel = sql.prepare("SELECT * FROM level WHERE guild = ?");
+    client.setLevel = sql.prepare("INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
         const linuxhint = new Discord.RichEmbed()
@@ -311,6 +321,21 @@ client.on('message', async message => {
                 }
             })
             .catch(console.error);
+    }
+    //levelupstuff
+    newLevel = client.getLevel.get(message.guild.id);
+    if (!newLevel) {
+        newLevel = {
+            guild: message.guild.id,
+            lvl5: `0`,
+            lvl10: `0`,
+            lvl15: `0`,
+            lvl20: `0`,
+            lvl30: `0`,
+            lvl50: `0`,
+            lvl85: `0`
+        };
+        client.setLevel.run(newLevel);
     }
     //Artemis welcome
     newGuild1 = client.getGuild.get(message.guild.id);
@@ -755,13 +780,14 @@ client.on('message', async message => {
         client.setScore.run(score);
     }
     //start level rewards
-    const lvl5 = message.guild.roles.find(r => r.id === `636985632714915850`);
-    const lvl10 = message.guild.roles.find(r => r.id === `636985679544320021`);
-    const lvl15 = message.guild.roles.find(r => r.id === `637772574444617738`);
-    const lvl20 = message.guild.roles.find(r => r.id === `637772699367768095`);
-    const lvl30 = message.guild.roles.find(r => r.id === `637772745643524106`);
-    const lvl50 = message.guild.roles.find(r => r.id === `637772804724621322`);
-    const lvl85 = message.guild.roles.find(r => r.id === `659902101098594304`);
+    const levelups = client.getLevel.get(message.guild.id);
+    const lvl5 = message.guild.roles.find(r => r.id === levelups.lvl5);
+    const lvl10 = message.guild.roles.find(r => r.id === levelups.lvl10);
+    const lvl15 = message.guild.roles.find(r => r.id === levelups.lvl15);
+    const lvl20 = message.guild.roles.find(r => r.id === levelups.lvl20);
+    const lvl30 = message.guild.roles.find(r => r.id === levelups.lvl30);
+    const lvl50 = message.guild.roles.find(r => r.id === levelups.lvl50);
+    const lvl85 = message.guild.roles.find(r => r.id === levelups.lvl85);
     //lvl5
     if (score.level > 4 && score.level < 9) {
         if (lvl5) {
