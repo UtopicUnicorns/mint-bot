@@ -27,7 +27,7 @@ module.exports = {
             }
         }
         userscore.warning += pointsToAdd;
-        if (userscore.warning > 3) {
+        if (userscore.warning > 2) {
             const member = message.mentions.members.first();
             message.guild.channels.forEach(async (channel, id) => {
                 await channel.overwritePermissions(member, {
@@ -51,6 +51,8 @@ module.exports = {
             let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
             member.removeRole(memberrole).catch(console.error);
             member.addRole(mutedrole).catch(console.error);
+            userscore.muted = `1`;
+            muteChannel1.send(user + ", You have collected 3 warnings, you have been muted by our system.");
         }
         setScore.run(userscore);
         return message.channel.send(`${user} has been warned!\nYou have ${userscore.warning} warning(s)`);

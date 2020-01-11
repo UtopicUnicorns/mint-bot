@@ -128,6 +128,15 @@ client.on("guildMemberAdd", async (guildMember) => {
     let roleadd1 = guildMember.guild.roles.find(r => r.name === "~/Members");
     let roledel1 = guildMember.guild.roles.find(r => r.name === "Muted");
     let user = guildMember.user;
+    let userscore2 = client.getScore.get(user.id, guildMember.guild.id);
+    if (!userscore2) {
+
+    } else {
+        if (userscore2.muted == '1') {
+            guildMember.addRole(roledel1);
+            return muteChannel1.send(user + ", You have been muted by our system due to breaking rules, trying to leave and rejoin will not work!");
+        }
+    }
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
@@ -522,6 +531,8 @@ client.on('message', async message => {
     if (message.channel.id === muteChannel1.id) {
         if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         if (message.content == message.author.username + "1337") {
+            let userscore1 = client.getScore.get(message.author.id, message.guild.id);
+            if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
             let roleadd = message.guild.roles.find(r => r.name === "~/Members");
             let roledel = message.guild.roles.find(r => r.name === "Muted");
             let member = message.member;

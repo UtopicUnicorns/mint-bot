@@ -6,6 +6,8 @@ module.exports = {
     name: 'set',
     description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
     execute(message) {
+        const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
             const guildChannels = getGuild.get(message.guild.id);
@@ -31,6 +33,22 @@ module.exports = {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 member.removeRole(memberrole).catch(console.error);
                 member.addRole(mutedrole).catch(console.error);
+                const user = message.mentions.users.first();
+                let userscore = getScore.get(user.id, message.guild.id);
+                if (!userscore) {
+                    userscore = {
+                        id: `${message.guild.id}-${user.id}`,
+                        user: user.id,
+                        guild: message.guild.id,
+                        points: 0,
+                        level: 1,
+                        warning: 0,
+                        muted: 1
+                    }
+                }
+                userscore.muted = `1`;
+                setScore.run(userscore);
+                muteChannel1.send(user + ', You have been muted!');
                 setTimeout(() => {
                     muteChannel1.overwritePermissions(member, {
                         VIEW_CHANNEL: true,
@@ -54,24 +72,23 @@ module.exports = {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 member.addRole(memberrole).catch(console.error);
                 member.removeRole(mutedrole).catch(console.error);
-                const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-                        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
-                        const user = message.mentions.users.first();
-                        const pointsToAdd = parseInt(0, 10);
-                        let userscore = getScore.get(user.id, message.guild.id);
-                        if (!userscore) {
-                            userscore = {
-                                id: `${message.guild.id}-${user.id}`,
-                                user: user.id,
-                                guild: message.guild.id,
-                                points: 0,
-                                level: 1,
-                                warning: 0,
-                                muted: 0
-                            }
-                        }
-                        userscore.warning = pointsToAdd;
-                        setScore.run(userscore);
+                const user = message.mentions.users.first();
+                const pointsToAdd = parseInt(0, 10);
+                let userscore = getScore.get(user.id, message.guild.id);
+                if (!userscore) {
+                    userscore = {
+                        id: `${message.guild.id}-${user.id}`,
+                        user: user.id,
+                        guild: message.guild.id,
+                        points: 0,
+                        level: 1,
+                        warning: 0,
+                        muted: 0
+                    }
+                }
+                userscore.muted = `0`;
+                userscore.warning = pointsToAdd;
+                setScore.run(userscore);
             }
             //uwu
             if (args[1] == `uwu`) {
@@ -79,7 +96,7 @@ module.exports = {
                 let element = args[2];
                 let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
                 if (!filter.includes(element)) {
-                    fs.appendFile('./set/uwu.txt', '\n' + element, function(err) {
+                    fs.appendFile('./set/uwu.txt', '\n' + element, function (err) {
                         if (err) throw err;
                     })
                     return message.channel.send(element + ` is now UwU!`);
@@ -113,7 +130,7 @@ module.exports = {
                 let element = args[2];
                 let filter = fs.readFileSync('./set/gif.txt').toString().split(`\n`);
                 if (!filter.includes(element)) {
-                    fs.appendFile('./set/gif.txt', '\n' + element, function(err) {
+                    fs.appendFile('./set/gif.txt', '\n' + element, function (err) {
                         if (err) throw err;
                     })
                     return message.channel.send(element + ` now has a gif filter!`);
