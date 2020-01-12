@@ -760,7 +760,14 @@ client.on('message', async message => {
             }).then(res => {
                 if (message.content.includes("ツ")) return;
                 if (res == message.content) return;
-                message.channel.send(res);
+                const translationtext = new Discord.RichEmbed()
+                    .setColor('RANDOM')
+                    .setDescription(res)
+                    .setFooter('Translated from: ' + body.lang)
+                    .setTimestamp()
+                message.channel.send({
+                    embed: translationtext
+                });
             }).catch(err => {
                 console.error(err);
             });
