@@ -289,6 +289,21 @@ emitter.on("item:new", (item) => {
 });
 emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
+    //ignore bots
+    if (message.author.bot) return;
+    //Direct Message handle
+    if (message.channel.type == "dm") {
+        let nowtime = new Date();
+        console.log(nowtime + '\n' + message.author.username + '\n' + message.content);
+        const whoartemis = new Discord.RichEmbed()
+            .setTitle('Artemis')
+            .setColor('RANDOM')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw')
+            .setTimestamp()
+        return message.channel.send({
+            embed: whoartemis
+        });
+    }
     //load shit
     const guildChannels = client.getGuild.get(message.guild.id);
     if (guildChannels) {
@@ -525,8 +540,6 @@ client.on('message', async message => {
         message.member.addRole(mutedrole).catch(console.error);
         muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
     }
-    //ignore bots
-    if (message.author.bot) return;
     //Mute filter
     if (message.channel.id === muteChannel1.id) {
         if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
@@ -724,11 +737,6 @@ client.on('message', async message => {
     //guide channel
     if (message.channel.id === '648911771624538112') {
         message.delete();
-    }
-    //Direct Message handle
-    if (message.channel.type == "dm") {
-        console.log(message.author.username + '\n' + message.content + '\n');
-        return
     }
     //Simulate guild member join
     if (message.content === prefix + 'guildmemberadd') {
