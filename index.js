@@ -532,7 +532,11 @@ client.on('message', async message => {
         if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         if (message.content == message.author.username + "1337") {
             let userscore1 = client.getScore.get(message.author.id, message.guild.id);
-            if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+            if (!userscore) {
+
+            } else {
+                if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+            }
             let roleadd = message.guild.roles.find(r => r.name === "~/Members");
             let roledel = message.guild.roles.find(r => r.name === "Muted");
             let member = message.member;
