@@ -525,7 +525,6 @@ client.on('message', async message => {
         if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         const member = message.author;
         message.guild.channels.forEach(async (channel, id) => {
-            if (id == guildChannels.muteChannel) return;
             await channel.overwritePermissions(member, {
                 VIEW_CHANNEL: false,
                 READ_MESSAGES: false,
@@ -534,6 +533,30 @@ client.on('message', async message => {
                 ADD_REACTIONS: false
             });
         })
+        setTimeout(() => {
+            muteChannel1.overwritePermissions(member, {
+                VIEW_CHANNEL: true,
+                READ_MESSAGES: true,
+                SEND_MESSAGES: true,
+                READ_MESSAGE_HISTORY: true,
+                ATTACH_FILES: false
+            })
+        }, 2000);
+        const user = message.mentions.users.first();
+        let userscore = getScore.get(user.id, message.guild.id);
+        if (!userscore) {
+            userscore = {
+                id: `${message.guild.id}-${user.id}`,
+                user: user.id,
+                guild: message.guild.id,
+                points: 0,
+                level: 1,
+                warning: 0,
+                muted: 1
+            }
+        }
+        userscore.muted = `1`;
+        setScore.run(userscore);
         let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
         let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
         message.member.removeRole(memberrole).catch(console.error);
@@ -545,7 +568,7 @@ client.on('message', async message => {
         if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
         if (message.content == message.author.username + "1337") {
             let userscore1 = client.getScore.get(message.author.id, message.guild.id);
-            if (!userscore) {
+            if (!userscore1) {
 
             } else {
                 if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
