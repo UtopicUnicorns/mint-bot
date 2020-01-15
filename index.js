@@ -18,6 +18,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const thankedRecently = new Set();
 const welcomeRecently = new Set();
 const streamedRecently = new Set();
+const pirateSpeak = require('pirate-speak');
 const queue = new Map();
 const {
     FeedEmitter
@@ -702,22 +703,23 @@ client.on('message', async message => {
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
     if (uwufilter.includes(message.channel.id)) {
         if (!message.content.startsWith(prefix)) {
-            var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
+            //var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
             v = message.content;
             if (!message.content) return;
             if (message.content.startsWith("http")) return;
-            v = v.replace(/(?:r|l)/g, "w");
+
+            /* v = v.replace(/(?:r|l)/g, "w");
             v = v.replace(/(?:R|L)/g, "W");
             v = v.replace(/n([aeiou])/g, 'ny$1');
             v = v.replace(/N([aeiou])/g, 'Ny$1');
             v = v.replace(/N([AEIOU])/g, 'Ny$1');
             v = v.replace(/ove/g, "uv");
-            v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
+            v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " "); */
             message.delete();
             const uwutext = new Discord.RichEmbed()
                 .setAuthor(message.author.username, message.author.avatarURL)
                 .setColor('RANDOM')
-                .setDescription(v)
+                .setDescription(pirateSpeak.translate(v))
                 .setTimestamp()
             return message.channel.send({
                 embed: uwutext
