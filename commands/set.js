@@ -92,7 +92,18 @@ module.exports = {
             }
             //uwu
             if (args[1] == `uwu`) {
-                if (!args[2]) return message.channel.send(`Specify a channel name!`);
+                if (!args[2]) {
+                    let element = message.channel.id;
+                    let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
+                    if (!filter.includes(element)) {
+                        fs.appendFile('./set/uwu.txt', '\n' + element, function (err) {
+                            if (err) throw err;
+                        })
+                        return message.channel.send(element + ` is now UwU!`);
+                    } else {
+                        message.channel.send(args[2] + ` is already UwU`);
+                    }
+                }
                 let element = args[2];
                 let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
                 if (!filter.includes(element)) {
@@ -106,7 +117,24 @@ module.exports = {
             }
             //un-uwu
             if (args[1] == `unuwu`) {
-                if (!args[2]) return message.channel.send(`Specify a channel name!`);
+                if (!args[2]) {
+                    let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
+                    if (filter.includes(message.channel.id)) {
+                        let array = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
+                        let element = message.channel.id;
+                        let str = ``;
+                        for (let i of array) {
+                            if (i != element)
+                                str += i + '\n';
+                        }
+                        fs.writeFile(`./set/uwu.txt`, str, (error) => {
+                            if (error) throw error;
+                        })
+                        return message.channel.send(element + ` is now not UwU!`);
+                    } else {
+                        message.channel.send(message.channel.id + ` is not UwU`);
+                    }
+                }
                 let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
                 if (filter.includes(args[2])) {
                     let array = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);

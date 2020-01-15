@@ -715,7 +715,7 @@ client.on('message', async message => {
             v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
             message.delete();
             const uwutext = new Discord.RichEmbed()
-                .setTitle(message.author.username)
+                .setAuthor(message.author.username, message.author.avatarURL)
                 .setColor('RANDOM')
                 .setDescription(v)
                 .setTimestamp()
@@ -792,6 +792,7 @@ client.on('message', async message => {
                 if (message.content.includes("ツ")) return;
                 if (res == message.content) return;
                 const translationtext = new Discord.RichEmbed()
+                    .setAuthor(message.author.username, message.author.avatarURL)
                     .setColor('RANDOM')
                     .setDescription(res)
                     .setFooter('Translated from: ' + body.lang)
