@@ -18,8 +18,7 @@ The bot was created in response to Dyno-bot being down a lot.
 5. Configure `npm` and install the project dependencies
     ```sh 
     $ npm config set python python2.7
-    $ npm install discord.js fs canvas request node-opus simple-youtube-api ytdl-core node-ddg \
-                  translate-google moment better-sqlite3 rss-emitter-ts curl html-to-text 
+    $ npm install discord.js fs canvas request node-opus simple-youtube-api ytdl-core node-ddg translate-google moment better-sqlite3 rss-emitter-ts curl html-to-text pirate-speak
     ```
 
 6. Change `./set/prefix.txt` to
@@ -33,7 +32,7 @@ The bot was created in response to Dyno-bot being down a lot.
         "token": "DISCORD_BOT_TOKEN",
         "yandex": "YANDEX_KEY",
         "youtubekey": "YOUTUBE_API_KEY",
-        "dadjokes": [""]
+        "linuxhints": [""]
     }
     ```
 

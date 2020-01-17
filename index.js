@@ -645,6 +645,7 @@ client.on('message', async message => {
             if (client.channels.get(`${i}`)) {
                 const updatetext = new Discord.RichEmbed()
                     .setTitle("Update")
+                    .setAuthor(message.author.username, message.author.avatarURL)
                     .setDescription(message.author)
                     .setURL('https://discord.gg/EVVtPpw')
                     .setColor('RANDOM')
@@ -665,20 +666,22 @@ client.on('message', async message => {
         if (message.content.startsWith(`${prefix}`)) {
             if (message.content.includes(`${prefix}` + commandlogger.name)) {
                 if (commandlogger.description.includes(`[mod]`) || commandlogger.description.includes(`[admin]`)) {
-                    if (logsChannel1 == '0') return message.channel.send("You have not set up a logs channel!");
-                    if (message.member.hasPermission('KICK_MEMBERS')) {
-                        const logsmessage = new Discord.RichEmbed()
-                            .setTitle(commandlogger.name)
-                            .setDescription("Used by: " + message.author)
-                            .setURL(message.url)
-                            .setColor('RANDOM')
-                            .addField('Usage:\n', message.content, true)
-                            .addField('Channel', message.channel, true)
-                            .setFooter("Message ID: " + message.id)
-                            .setTimestamp();
-                        logsChannel1.send({
-                            embed: logsmessage
-                        });
+                    if (!logsChannel1 == '0') {
+                        if (message.member.hasPermission('KICK_MEMBERS')) {
+                            const logsmessage = new Discord.RichEmbed()
+                                .setTitle(commandlogger.name)
+                                .setAuthor(message.author.username, message.author.avatarURL)
+                                .setDescription("Used by: " + message.author)
+                                .setURL(message.url)
+                                .setColor('RANDOM')
+                                .addField('Usage:\n', message.content, true)
+                                .addField('Channel', message.channel, true)
+                                .setFooter("Message ID: " + message.id)
+                                .setTimestamp();
+                            logsChannel1.send({
+                                embed: logsmessage
+                            });
+                        }
                     }
                 }
             }
@@ -774,40 +777,38 @@ client.on('message', async message => {
         message.react("👀");
     }
     //translate
-    if (message.channel.id !== '637373805844496434') {
-        let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
-        let key = yandex;
-        let text = message.content;
-        let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
-        request(url, {
-            json: true
-        }, (err, res, body) => {
-            if (!body.text) {
-                return
-            }
-            if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
-                return;
-            }
-            translate(text, {
-                to: 'en'
-            }).then(res => {
-                if (message.content.includes("ツ")) return;
-                if (res == message.content) return;
-                const translationtext = new Discord.RichEmbed()
-                    .setAuthor(message.author.username, message.author.avatarURL)
-                    .setColor('RANDOM')
-                    .setDescription(res)
-                    .setFooter('Translated from: ' + body.lang)
-                    .setTimestamp()
-                message.channel.send({
-                    embed: translationtext
-                });
-            }).catch(err => {
-                console.error(err);
+    let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+    let key = yandex;
+    let text = message.content;
+    let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
+    request(url, {
+        json: true
+    }, (err, res, body) => {
+        if (!body.text) {
+            return
+        }
+        if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
+            return;
+        }
+        translate(text, {
+            to: 'en'
+        }).then(res => {
+            if (message.content.includes("ツ")) return;
+            if (res == message.content) return;
+            const translationtext = new Discord.RichEmbed()
+                .setAuthor(message.author.username, message.author.avatarURL)
+                .setColor('RANDOM')
+                .setDescription(res)
+                .setFooter('Translated from: ' + body.lang)
+                .setTimestamp()
+            message.channel.send({
+                embed: translationtext
             });
-            if (err) return message.channel.send(err);
+        }).catch(err => {
+            console.error(err);
         });
-    }
+        if (err) return message.channel.send(err);
+    });
     //agree
     if (message.content == "^") {
         message.channel.send("I agree!");
@@ -983,38 +984,58 @@ client.on("messageReactionAdd", async (reaction, user) => {
         var highlightChannel1 = '0';
         var reactionChannel1 = '0';
     }
-    if (logsChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
-    //report
-    let limit1 = 1;
-    if (reaction.emoji.name == '❌' && reaction.count == limit1) {
-        if (reaction.message.author.id == '440892659264126997') return;
-        if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
-        if (!reaction.message.attachments.size > 0) {
-            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-            const editmessage = new Discord.RichEmbed()
-                .setTitle("A message got reported!")
-                .setDescription("Message by: " + reaction.message.author)
-                .setURL(reaction.message.url)
-                .setColor('RANDOM')
-                .addField('Reported Message:\n', reaction.message.content, true)
-                .addField('Channel', reaction.message.channel, true)
-                .addField('Reported by: ', reaction.users.first())
-                .setFooter("Message ID: " + reaction.message.id)
-                .setTimestamp();
-            return logsChannel1.send({
-                embed: editmessage
-            });
-        }
-        if (reaction.message.content === '') {
+    if (!logsChannel1 == '0') {
+        //report
+        let limit1 = 1;
+        if (reaction.emoji.name == '❌' && reaction.count == limit1) {
+            if (reaction.message.author.id == '440892659264126997') return;
+            if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
+            if (!reaction.message.attachments.size > 0) {
+                logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+                const editmessage = new Discord.RichEmbed()
+                    .setTitle("A message got reported!")
+                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                    .setDescription("Message by: " + reaction.message.author)
+                    .setURL(reaction.message.url)
+                    .setColor('RANDOM')
+                    .addField('Reported Message:\n', reaction.message.content, true)
+                    .addField('Channel', reaction.message.channel, true)
+                    .addField('Reported by: ', reaction.users.first())
+                    .setFooter("Message ID: " + reaction.message.id)
+                    .setTimestamp();
+                return logsChannel1.send({
+                    embed: editmessage
+                });
+            }
+            if (reaction.message.content === '') {
+                logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+                const image = reaction.message.attachments.array()[0].url;
+                const editmessage = new Discord.RichEmbed()
+                    .setTitle("A message got reported!")
+                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                    .setDescription("Message by: " + reaction.message.author)
+                    .setURL(reaction.message.url)
+                    .setColor('RANDOM')
+                    .addField('Channel', reaction.message.channel, true)
+                    .addField('Reported by: ', reaction.users.first())
+                    .setFooter("Message ID: " + reaction.message.id)
+                    .setImage(image)
+                    .setTimestamp();
+                return logsChannel1.send({
+                    embed: editmessage
+                });
+            }
             logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
             const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got reported!")
+                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
                 .setDescription("Message by: " + reaction.message.author)
                 .setURL(reaction.message.url)
                 .setColor('RANDOM')
-                .addField('Channel', reaction.message.channel, true)
+                .addField('Reported Message:\n', reaction.message.content, true)
                 .addField('Reported by: ', reaction.users.first())
+                .addField('Channel', reaction.message.channel, true)
                 .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
@@ -1022,44 +1043,29 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 embed: editmessage
             });
         }
-        logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-        const image = reaction.message.attachments.array()[0].url;
-        const editmessage = new Discord.RichEmbed()
-            .setTitle("A message got reported!")
-            .setDescription("Message by: " + reaction.message.author)
-            .setURL(reaction.message.url)
-            .setColor('RANDOM')
-            .addField('Reported Message:\n', reaction.message.content, true)
-            .addField('Reported by: ', reaction.users.first())
-            .addField('Channel', reaction.message.channel, true)
-            .setFooter("Message ID: " + reaction.message.id)
-            .setImage(image)
-            .setTimestamp();
-        return logsChannel1.send({
-            embed: editmessage
-        });
-    }
-    //reportdelete
-    let limit2 = 3;
-    if (reaction.emoji.name == '❌' && reaction.count == limit2) {
-        logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-        if (reaction.message.author.id == '440892659264126997') return;
-        if (reaction.message.author.id == '127708549118689280') return;
-        if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
-        reaction.message.delete();
-        if (reaction.message.content === '') return;
-        const editmessage = new Discord.RichEmbed()
-            .setTitle("A message that was reported got deleted!")
-            .setDescription("Message by: " + reaction.message.author)
-            .setColor('RANDOM')
-            .addField('Reported Message:\n', reaction.message.content, true)
-            .addField('Deleted by: ', reaction.users.last())
-            .addField('Channel', reaction.message.channel, true)
-            .setFooter("Message ID: " + reaction.message.id)
-            .setTimestamp();
-        return logsChannel1.send({
-            embed: editmessage
-        });
+        //reportdelete
+        let limit2 = 3;
+        if (reaction.emoji.name == '❌' && reaction.count == limit2) {
+            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+            if (reaction.message.author.id == '440892659264126997') return;
+            if (reaction.message.author.id == '127708549118689280') return;
+            if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
+            reaction.message.delete();
+            if (reaction.message.content === '') return;
+            const editmessage = new Discord.RichEmbed()
+                .setTitle("A message that was reported got deleted!")
+                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                .setDescription("Message by: " + reaction.message.author)
+                .setColor('RANDOM')
+                .addField('Reported Message:\n', reaction.message.content, true)
+                .addField('Deleted by: ', reaction.users.last())
+                .addField('Channel', reaction.message.channel, true)
+                .setFooter("Message ID: " + reaction.message.id)
+                .setTimestamp();
+            return logsChannel1.send({
+                embed: editmessage
+            });
+        }
     }
     //Highlights
     let limit = 3;
@@ -1069,6 +1075,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         if (!reaction.message.attachments.size > 0) {
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got highlighted!")
+                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
                 .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
                 .setDescription("Message by: " + reaction.message.author)
                 .setURL(reaction.message.url)
@@ -1086,6 +1093,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got highlighted!")
+                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
                 .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
                 .setDescription("Message by: " + reaction.message.author)
                 .setURL(reaction.message.url)
@@ -1102,6 +1110,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
             .setTitle("A message got highlighted!")
+            .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
             .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
             .setDescription("Message by: " + reaction.message.author)
             .setURL(reaction.message.url)
