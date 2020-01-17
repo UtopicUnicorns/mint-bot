@@ -190,6 +190,12 @@ client.on("guildMemberRemove", async (guildMember) => {
     if (logsChannel1 == '0') return;
     logsChannel1.send(guildMember.user.username + ' left the server!');
 });
+client.on("guildCreate", guild => {
+    console.log("Joined a new guild: " + guild.name);
+});
+client.on("guildDelete", guild => {
+    console.log("Left a guild: " + guild.name);
+});
 client.on("presenceUpdate", (oldMember, newMember) => {
     //Twitch notifications
     if (oldMember.presence.game !== newMember.presence.game) {
@@ -299,7 +305,7 @@ client.on('message', async message => {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server.')
             .setTimestamp()
         return message.channel.send({
             embed: whoartemis
@@ -692,7 +698,7 @@ client.on('message', async message => {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server.')
             .setTimestamp()
         return message.channel.send({
             embed: whoartemis
