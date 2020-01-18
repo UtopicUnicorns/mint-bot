@@ -66,7 +66,9 @@ module.exports = {
                 let member2 = member.id;
                 message.guild.channels.forEach(async (channel, id) => {
                     if (id == muteChannel1) return;
+                    if (channel.permissionOverwrites.get(member2)) {
                     await channel.permissionOverwrites.get(member2).delete()
+                    }
                 });
                 let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
@@ -86,6 +88,7 @@ module.exports = {
                         muted: 0
                     }
                 }
+                if (userscore.muted == `0`) return message.channel.send(user + ' Is not muted!');
                 userscore.muted = `0`;
                 userscore.warning = pointsToAdd;
                 setScore.run(userscore);

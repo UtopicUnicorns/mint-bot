@@ -99,7 +99,19 @@ client.once('ready', () => {
     for (const data of fetch2) {
         if (data.reactionChannel > 1) {
             array4.push(data.reactionChannel);
-            client.channels.get(data.reactionChannel).fetchMessages();
+            if (client.channels.get(data.reactionChannel)) {
+                client.channels.get(data.reactionChannel).fetchMessages();
+            }
+        }
+    }
+    const fetch3 = sql.prepare("SELECT * FROM guildhub").all();
+    let array5 = [];
+    for (const data of fetch3) {
+        if (data.generalChannel > 1) {
+            array5.push(data.generalChannel);
+            if (client.channels.get(data.generalChannel)) {
+                client.channels.get(data.generalChannel).fetchMessages();
+            }
         }
     }
 });
@@ -600,6 +612,14 @@ client.on('message', async message => {
             ctx.shadowBlur = 5;
             ctx.fillStyle = '#FFFFFF';
             ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
+            const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
+            ctx.drawImage(avatar, 600, 25, 50, 50);
+            ctx.beginPath();
+            ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+            const guildlogo = await Canvas.loadImage(message.guild.iconURL);
+            ctx.drawImage(guildlogo, 25, 25, 200, 200);
             ctx.font = '21px sans-serif';
             ctx.fillStyle = '#ffffff';
             ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
