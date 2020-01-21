@@ -832,11 +832,15 @@ client.on('message', async message => {
     }
     client.setScore.run(translateopt);
     //check opt
-    if (translateopt.translate == `2`) {
+    if (translateopt.translate == `2` || message.content.startsWith(prefix + "tr")) {
         //commence translate if opt
         let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
         let key = yandex;
-        let text = message.content;
+        if (message.content.startsWith(prefix + "tr")) {
+            var text = message.content.slice(4);
+        } else {
+            var text = message.content;
+        }
         let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
         request(url, {
             json: true
