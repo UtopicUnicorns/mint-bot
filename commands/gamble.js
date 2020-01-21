@@ -6,7 +6,7 @@ module.exports = {
     description: '[fun] Lose those points!',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
         if (talkedRecently.has(message.author.id)) {
             message.reply("You may only gamble once every 30 seconds!");
         } else {

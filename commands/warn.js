@@ -6,7 +6,7 @@ module.exports = {
     description: '[mod] Warn a user',
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const guildChannels = getGuild.get(message.guild.id);
         var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);

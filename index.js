@@ -35,13 +35,13 @@ client.once('ready', () => {
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
-        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER);").run();
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER, translate INTEGER);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted) VALUES (@id, @user, @guild, @points, @level, @warning, @muted);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
@@ -155,7 +155,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
         guildMember.addRole(roledel1);
-        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nExample utopicunicorn1337");
+        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
     }
     //make nice image for welcoming
     var ReBeL = guildMember.user.username;
@@ -803,38 +803,56 @@ client.on('message', async message => {
         message.react("👀");
     }
     //translate
-    let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
-    let key = yandex;
-    let text = message.content;
-    let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
-    request(url, {
-        json: true
-    }, (err, res, body) => {
-        if (!body.text) {
-            return
-        }
-        if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
-            return;
-        }
-        translate(text, {
-            to: 'en'
-        }).then(res => {
-            if (message.content.includes("ツ")) return;
-            if (res == message.content) return;
-            const translationtext = new Discord.RichEmbed()
-                .setAuthor(message.author.username, message.author.avatarURL)
-                .setColor('RANDOM')
-                .setDescription(res)
-                .setFooter('Translated from: ' + body.lang)
-                .setTimestamp()
-            message.channel.send({
-                embed: translationtext
+    //Start db for opt
+    translateopt = client.getScore.get(message.author.id, message.guild.id);
+    if (!translateopt) {
+        translateopt = {
+            id: `${message.guild.id}-${message.author.id}`,
+            user: message.author.id,
+            guild: message.guild.id,
+            points: 0,
+            level: 1,
+            warning: 0,
+            muted: 0
+        };
+    }
+    client.setScore.run(translateopt);
+    //check opt
+    if (translateopt.translate == `2`) {
+        //commence translate if opt
+        let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
+        let key = yandex;
+        let text = message.content;
+        let url = baseurl + "?key=" + key + "&hint=en,de,nl,fr,tr&lang=en" + "&text=" + encodeURIComponent(text) + "&format=plain";
+        request(url, {
+            json: true
+        }, (err, res, body) => {
+            if (!body.text) {
+                return
+            }
+            if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
+                return;
+            }
+            translate(text, {
+                to: 'en'
+            }).then(res => {
+                if (message.content.includes("ツ")) return;
+                if (res == message.content) return;
+                const translationtext = new Discord.RichEmbed()
+                    .setAuthor(message.author.username, message.author.avatarURL)
+                    .setColor('RANDOM')
+                    .setDescription(res)
+                    .setFooter('Translated from: ' + body.lang)
+                    .setTimestamp()
+                message.channel.send({
+                    embed: translationtext
+                });
+            }).catch(err => {
+                console.error(err);
             });
-        }).catch(err => {
-            console.error(err);
+            if (err) return message.channel.send(err);
         });
-        if (err) return message.channel.send(err);
-    });
+    }
     //agree
     if (message.content == "^") {
         message.channel.send("I agree!");
