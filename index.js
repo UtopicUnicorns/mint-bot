@@ -131,12 +131,12 @@ client.on("guildMemberAdd", async (guildMember) => {
     if (thisguild) {
         var generalChannel1 = client.channels.get(guildChannels.generalChannel);
         var muteChannel1 = client.channels.get(guildChannels.muteChannel);
+        var logsChannel1 = client.channels.get(guildChannels.logsChannel);
     } else {
         var generalChannel1 = '0';
         var muteChannel1 = '0';
+        var logsChannel1 = '0';
     }
-    if (generalChannel1 == '0') return;
-    if (muteChannel1 == '0') return;
     //account age check
     let roleadd1 = guildMember.guild.roles.find(r => r.name === "~/Members");
     let roledel1 = guildMember.guild.roles.find(r => r.name === "Muted");
@@ -147,46 +147,61 @@ client.on("guildMemberAdd", async (guildMember) => {
     } else {
         if (userscore2.muted == '1') {
             guildMember.addRole(roledel1);
+            if (muteChannel1 == '0') return;
             return muteChannel1.send(user + ", You have been muted by our system due to breaking rules, trying to leave and rejoin will not work!");
         }
     }
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
+    //logs
+    if (logsChannel1 != `0`) {
+        const embed = new Discord.RichEmbed()
+            .setTitle(`User joined`)
+            .setColor(`RANDOM`)
+            .setDescription(guildMember.user)
+            .addField(`This user has joined us.`, '\n' + guildMember.user.id + '\nAccount age: ' + ageA)
+            .setTimestamp();
+         logsChannel1.send({
+            embed
+        });
+    }
     if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
         guildMember.addRole(roledel1);
         return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
     }
     //make nice image for welcoming
-    var ReBeL = guildMember.user.username;
-    var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
-    var moon = bel[~~(Math.random() * bel.length)];
-    moon = moon.replace('@', ReBeL)
-    const canvas = Canvas.createCanvas(700, 250);
-    const ctx = canvas.getContext('2d');
-    const background = await Canvas.loadImage('./mintwelcome.png');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#74037b';
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '30px Zelda';
-    ctx.shadowColor = "black";
-    ctx.shadowBlur = 5;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
-    ctx.font = '21px sans-serif';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-    const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
-    ctx.drawImage(avatar, 600, 25, 50, 50);
-    ctx.beginPath();
-    ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.clip();
-    const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
-    ctx.drawImage(guildlogo, 25, 25, 200, 200);
-    const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-    generalChannel1.send(attachment);
     guildMember.addRole(roleadd1);
+    if (generalChannel1 != '0') {
+        var ReBeL = guildMember.user.username;
+        var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+        var moon = bel[~~(Math.random() * bel.length)];
+        moon = moon.replace('@', ReBeL)
+        const canvas = Canvas.createCanvas(700, 250);
+        const ctx = canvas.getContext('2d');
+        const background = await Canvas.loadImage('./mintwelcome.png');
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#74037b';
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '30px Zelda';
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 5;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
+        ctx.font = '21px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+        const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
+        ctx.drawImage(avatar, 600, 25, 50, 50);
+        ctx.beginPath();
+        ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
+        ctx.drawImage(guildlogo, 25, 25, 200, 200);
+        const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+        generalChannel1.send(attachment);
+    }
 });
 client.on("guildMemberRemove", async (guildMember) => {
     //load shit
@@ -200,7 +215,15 @@ client.on("guildMemberRemove", async (guildMember) => {
         var logsChannel1 = '0';
     }
     if (logsChannel1 == '0') return;
-    logsChannel1.send(guildMember.user.username + ' left the server!');
+    const embed = new Discord.RichEmbed()
+        .setTitle(`User Left The Building`)
+        .setColor(`RANDOM`)
+        .setDescription(guildMember.user)
+        .addField(`This user has left us.`, '\n' + guildMember.user.id)
+        .setTimestamp();
+    return logsChannel1.send({
+        embed
+    });
 });
 client.on("guildCreate", guild => {
     console.log("Joined a new guild: " + guild.name);
@@ -236,7 +259,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     streamedRecently.add(newMember.user.id + newMember.guild.id);
                     setTimeout(() => {
                         streamedRecently.delete(newMember.user.id + newMember.guild.id);
-                    }, 6000);
+                    }, 600000);
                     request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                         json: true
                     }, function (err, res, body) {
@@ -732,18 +755,9 @@ client.on('message', async message => {
     let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
     if (uwufilter.includes(message.channel.id)) {
         if (!message.content.startsWith(prefix)) {
-            //var faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
             v = message.content;
             if (!message.content) return;
             if (message.content.startsWith("http")) return;
-
-            /* v = v.replace(/(?:r|l)/g, "w");
-            v = v.replace(/(?:R|L)/g, "W");
-            v = v.replace(/n([aeiou])/g, 'ny$1');
-            v = v.replace(/N([aeiou])/g, 'Ny$1');
-            v = v.replace(/N([AEIOU])/g, 'Ny$1');
-            v = v.replace(/ove/g, "uv");
-            v = v.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " "); */
             message.delete();
             const uwutext = new Discord.RichEmbed()
                 .setAuthor(message.author.username, message.author.avatarURL)
