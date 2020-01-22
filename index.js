@@ -160,9 +160,9 @@ client.on("guildMemberAdd", async (guildMember) => {
             .setTitle(`User joined`)
             .setColor(`RANDOM`)
             .setDescription(guildMember.user)
-            .addField(`This user has joined us.`, '\n' + guildMember.user.id + '\nAccount age: ' + ageA)
+            .addField(`This user has joined us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id + '\nAccount age: ' + ageA)
             .setTimestamp();
-         logsChannel1.send({
+        logsChannel1.send({
             embed
         });
     }
@@ -219,7 +219,7 @@ client.on("guildMemberRemove", async (guildMember) => {
         .setTitle(`User Left The Building`)
         .setColor(`RANDOM`)
         .setDescription(guildMember.user)
-        .addField(`This user has left us.`, '\n' + guildMember.user.id)
+        .addField(`This user has left us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id)
         .setTimestamp();
     return logsChannel1.send({
         embed
@@ -812,6 +812,12 @@ client.on('message', async message => {
             client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
         }
     }
+    //Simulate guild member leave
+    if (message.content === prefix + 'guildmemberremove') {
+        if (message.author.id === "127708549118689280") {
+            client.emit('guildMemberRemove', message.member || await message.guild.fetchMember(message.author));
+        }
+    }
     //bot reactions
     if (message.content.includes("Artemis")) {
         message.react("👀");
@@ -848,8 +854,10 @@ client.on('message', async message => {
             if (!body.text) {
                 return
             }
-            if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
-                return;
+            if (message.content.startsWith(prefix + "tr")) {} else {
+                if (JSON.stringify(body).startsWith('{"code":200,"lang":"en-en"')) {
+                    return;
+                }
             }
             translate(text, {
                 to: 'en'
