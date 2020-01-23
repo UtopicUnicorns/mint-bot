@@ -585,7 +585,7 @@ client.on('message', async message => {
             })
         }, 2000);
         const user = message.mentions.users.first();
-        let userscore = getScore.get(user.id, message.guild.id);
+        let userscore = client.getScore.get(user.id, message.guild.id);
         if (!userscore) {
             userscore = {
                 id: `${message.guild.id}-${user.id}`,
@@ -598,7 +598,7 @@ client.on('message', async message => {
             }
         }
         userscore.muted = `1`;
-        setScore.run(userscore);
+        client.setScore.run(userscore);
         let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
         let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
         message.member.removeRole(memberrole).catch(console.error);
