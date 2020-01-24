@@ -333,14 +333,17 @@ emitter.on("item:new", (item) => {
 emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
     if (message.author.id == `637408181315829770`) {
-        if (welcomeRecently.has(message.author.id)) {
+        if (borgRecently.has(message.author.id)) {
 
         } else {
             borgRecently.add(message.author.id);
             setTimeout(() => {
                 borgRecently.delete(message.author.id);
             }, 3600000);
-        
+            message.channel.send("TRAPBORG!", {
+                file: "https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/hug.gif"
+            });
+        }
     }
     //ignore bots
     if (message.author.bot) return;
