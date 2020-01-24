@@ -144,7 +144,17 @@ client.on("guildMemberAdd", async (guildMember) => {
     let user = guildMember.user;
     let userscore2 = client.getScore.get(user.id, guildMember.guild.id);
     if (!userscore2) {
-
+        userscore2 = {
+            id: `${guildMember.guild.id}-${user.id}`,
+            user: user.id,
+            guild: guildMember.guild.id,
+            points: 0,
+            level: 1,
+            warning: 0,
+            muted: 0,
+            translate: 0
+        };
+        client.setScore.run(userscore2);
     } else {
         if (userscore2.muted == '1') {
             guildMember.addRole(roledel1);
@@ -847,7 +857,8 @@ client.on('message', async message => {
             points: 0,
             level: 1,
             warning: 0,
-            muted: 0
+            muted: 0,
+            translate: 0
         };
     }
     client.setScore.run(translateopt);
