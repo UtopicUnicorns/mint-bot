@@ -350,9 +350,7 @@ client.on('message', async message => {
             setTimeout(() => {
                 borgRecently.delete(message.author.id);
             }, 3600000);
-            message.channel.send("TRAPBORG!", {
-                file: "https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/hug.gif"
-            });
+            message.react("❤️");
         }
     }
     //ignore bots
