@@ -18,6 +18,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const thankedRecently = new Set();
 const welcomeRecently = new Set();
 const streamedRecently = new Set();
+const borgRecently = new Set();
 const pirateSpeak = require('pirate-speak');
 const queue = new Map();
 const {
@@ -331,6 +332,16 @@ emitter.on("item:new", (item) => {
 });
 emitter.on("feed:error", (error) => console.error(error.message));
 client.on('message', async message => {
+    if (message.author.id == `637408181315829770`) {
+        if (welcomeRecently.has(message.author.id)) {
+
+        } else {
+            borgRecently.add(message.author.id);
+            setTimeout(() => {
+                borgRecently.delete(message.author.id);
+            }, 3600000);
+        
+    }
     //ignore bots
     if (message.author.bot) return;
     //Direct Message handle
