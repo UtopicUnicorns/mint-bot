@@ -31,7 +31,7 @@ module.exports = {
                 const embed = new Discord.RichEmbed()
                     .setTitle(linktitle)
                     .setURL(text2[31])
-                    .setThumbnail('https://www.protondb.com/sites/protondb/images/site-logo.svg')
+                    .setThumbnail('https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/protondb.png')
                     .addField('Rating confidence: ', body.confidence)
                     .addField('Tier: ', body.tier)
                     .addField('Trending Tier: ', body.trendingTier)
