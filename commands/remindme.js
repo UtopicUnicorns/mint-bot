@@ -6,6 +6,7 @@ module.exports = {
     execute(message) {
         //check reminder
         if (reminder.has(message.author.id + message.guild.id)) {
+            console.log(reminder);
             const reminderemb = new Discord.RichEmbed()
                 .setTitle('Reminder already set')
                 .setAuthor(message.author.username, message.author.avatarURL)
@@ -16,6 +17,7 @@ module.exports = {
                 embed: reminderemb
             });
         } else {
+            console.log(reminder);
             const args = message.content.slice(10).split(" ");
             if (!args) return message.reply("!remind me 2 m reason why");
             if (!args[1]) return message.reply("!remind me 2 m reason why");
