@@ -851,13 +851,13 @@ client.on('message', async message => {
     }
     //Simulate guild member join
     if (message.content === prefix + 'guildmemberadd') {
-        if (message.author.id === "127708549118689280") {
+        if (message.author.id === "127708549118689280" || message.author.id == message.guild.owner.id) {
             client.emit('guildMemberAdd', message.member || await message.guild.fetchMember(message.author));
         }
     }
     //Simulate guild member leave
     if (message.content === prefix + 'guildmemberremove') {
-        if (message.author.id === "127708549118689280") {
+        if (message.author.id === "127708549118689280" || message.author.id == message.guild.owner.id) {
             client.emit('guildMemberRemove', message.member || await message.guild.fetchMember(message.author));
         }
     }
