@@ -758,7 +758,7 @@ client.on('message', async message => {
         if (message.content.startsWith(`${prefix}`)) {
             if (message.content.includes(`${prefix}` + commandlogger.name)) {
                 if (commandlogger.description.includes(`[mod]`) || commandlogger.description.includes(`[admin]`)) {
-                    if (!logsChannel1 == '0') {
+                    if (logsChannel1 == '0') {} else {
                         if (message.member.hasPermission('KICK_MEMBERS')) {
                             const logsmessage = new Discord.RichEmbed()
                                 .setTitle(commandlogger.name)
