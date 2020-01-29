@@ -131,8 +131,17 @@ client.on("guildMemberAdd", async (guildMember) => {
     }
     if (thisguild) {
         var generalChannel1 = client.channels.get(guildChannels.generalChannel);
+        if (!generalChannel1) {
+            var generalChannel1 = '0';
+        }
         var muteChannel1 = client.channels.get(guildChannels.muteChannel);
+        if (!muteChannel1) {
+            var muteChannel1 = '0';
+        }
         var logsChannel1 = client.channels.get(guildChannels.logsChannel);
+        if (!logsChannel1) {
+            var logsChannel1 = '0';
+        }
     } else {
         var generalChannel1 = '0';
         var muteChannel1 = '0';
@@ -166,7 +175,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
     //logs
-    if (logsChannel1 != `0`) {
+    if (!logsChannel1 == `0`) {
         const embed = new Discord.RichEmbed()
             .setTitle(`User joined`)
             .setColor(`RANDOM`)
@@ -177,13 +186,15 @@ client.on("guildMemberAdd", async (guildMember) => {
             embed
         });
     }
-    if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
-        guildMember.addRole(roledel1);
-        return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
+    if (muteChannel1 == `0`) {
+        if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
+            guildMember.addRole(roledel1);
+            return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
+        }
     }
     //make nice image for welcoming
     guildMember.addRole(roleadd1);
-    if (generalChannel1 != '0') {
+    if (!generalChannel1 == '0') {
         var ReBeL = guildMember.user.username;
         var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
         var moon = bel[~~(Math.random() * bel.length)];
@@ -375,8 +386,17 @@ client.on('message', async message => {
     }
     if (thisguild) {
         var generalChannel1 = message.guild.channels.get(guildChannels.generalChannel);
+        if (!generalChannel1) {
+            var generalChannel1 = '0';
+        }
         var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
+        if (!muteChannel1) {
+            var muteChannel1 = '0';
+        }
         var logsChannel1 = message.guild.channels.get(guildChannels.logsChannel);
+        if (!logsChannel1) {
+            var logsChannel1 = '0';
+        }
     } else {
         var generalChannel1 = '0';
         var muteChannel1 = '0';
@@ -628,49 +648,50 @@ client.on('message', async message => {
         muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
     }
     //Mute filter
-    if (message.channel.id === muteChannel1.id) {
-        if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
-        if (message.content == message.author.username + "1337") {
-            let userscore1 = client.getScore.get(message.author.id, message.guild.id);
-            if (!userscore1) {
+    if (!muteChannel1 == '0') {
+        if (message.channel.id === muteChannel1.id) {
+            if (message.content == message.author.username + "1337") {
+                let userscore1 = client.getScore.get(message.author.id, message.guild.id);
+                if (!userscore1) {
 
-            } else {
-                if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+                } else {
+                    if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+                }
+                let roleadd = message.guild.roles.find(r => r.name === "~/Members");
+                let roledel = message.guild.roles.find(r => r.name === "Muted");
+                let member = message.member;
+                message.member.addRole(roleadd).catch(console.error);
+                message.member.removeRole(roledel).catch(console.error);
+                var ReBeL = member;
+                var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+                var moon = bel[~~(Math.random() * bel.length)];
+                moon = moon.replace('@', message.author.username)
+                const canvas = Canvas.createCanvas(700, 250);
+                const ctx = canvas.getContext('2d');
+                const background = await Canvas.loadImage('./mintwelcome.png');
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#74037b';
+                ctx.strokeRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '30px Zelda';
+                ctx.shadowColor = "black";
+                ctx.shadowBlur = 5;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
+                const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
+                ctx.drawImage(avatar, 600, 25, 50, 50);
+                ctx.beginPath();
+                ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                const guildlogo = await Canvas.loadImage(message.guild.iconURL);
+                ctx.drawImage(guildlogo, 25, 25, 200, 200);
+                ctx.font = '21px sans-serif';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+                const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+                generalChannel1.send(attachment);
+                return message.channel.send(`${member} has been approved.`);
             }
-            let roleadd = message.guild.roles.find(r => r.name === "~/Members");
-            let roledel = message.guild.roles.find(r => r.name === "Muted");
-            let member = message.member;
-            message.member.addRole(roleadd).catch(console.error);
-            message.member.removeRole(roledel).catch(console.error);
-            var ReBeL = member;
-            var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
-            var moon = bel[~~(Math.random() * bel.length)];
-            moon = moon.replace('@', message.author.username)
-            const canvas = Canvas.createCanvas(700, 250);
-            const ctx = canvas.getContext('2d');
-            const background = await Canvas.loadImage('./mintwelcome.png');
-            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#74037b';
-            ctx.strokeRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '30px Zelda';
-            ctx.shadowColor = "black";
-            ctx.shadowBlur = 5;
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
-            const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
-            ctx.drawImage(avatar, 600, 25, 50, 50);
-            ctx.beginPath();
-            ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.clip();
-            const guildlogo = await Canvas.loadImage(message.guild.iconURL);
-            ctx.drawImage(guildlogo, 25, 25, 200, 200);
-            ctx.font = '21px sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-            const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-            generalChannel1.send(attachment);
-            return message.channel.send(`${member} has been approved.`);
         }
     }
     //restart
