@@ -275,6 +275,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                 var streamChannel1 = '0';
             }
             if (streamChannel1 == '0') {} else {
+                if (!streamChannel1) return;
                 //no double posts
                 if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
 
@@ -286,14 +287,49 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                         json: true
                     }, function (err, res, body) {
-                        if (!body.results[0].background_image) {
-                            if (thisguild.id == '356642342184288258') {
-                                streamChannel1.send("@here");
+                        if (newMember.guild.id == '356642342184288258') {
+                            streamChannel1.send("@here");
+                            if (!body.results[0].background_image) {
+                                const embed = new Discord.RichEmbed()
+                                    .setTitle(newMember.presence.game.state)
+                                    .setColor(`RANDOM`)
+                                    .setURL(newMember.presence.game.url)
+                                    .setDescription(newMember.user + ' went live!')
+                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                    .setTimestamp();
+                                return streamChannel1.send({
+                                    embed
+                                });
                             }
                             const embed = new Discord.RichEmbed()
                                 .setTitle(newMember.presence.game.state)
                                 .setColor(`RANDOM`)
                                 .setURL(newMember.presence.game.url)
+                                .setThumbnail(`${body.results[0].background_image}`)
+                                .setDescription(newMember.user + ' went live!')
+                                .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                .setTimestamp();
+                            return streamChannel1.send({
+                                embed
+                            });
+                        } else {
+                            if (!body.results[0].background_image) {
+                                const embed = new Discord.RichEmbed()
+                                    .setTitle(newMember.presence.game.state)
+                                    .setColor(`RANDOM`)
+                                    .setURL(newMember.presence.game.url)
+                                    .setDescription(newMember.user + ' went live!')
+                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                    .setTimestamp();
+                                return streamChannel1.send({
+                                    embed
+                                });
+                            }
+                            const embed = new Discord.RichEmbed()
+                                .setTitle(newMember.presence.game.state)
+                                .setColor(`RANDOM`)
+                                .setURL(newMember.presence.game.url)
+                                .setThumbnail(`${body.results[0].background_image}`)
                                 .setDescription(newMember.user + ' went live!')
                                 .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
                                 .setTimestamp();
@@ -301,20 +337,6 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                 embed
                             });
                         }
-                        if (thisguild.id == '356642342184288258') {
-                            streamChannel1.send("@here");
-                        }
-                        const embed = new Discord.RichEmbed()
-                            .setTitle(newMember.presence.game.state)
-                            .setColor(`RANDOM`)
-                            .setURL(newMember.presence.game.url)
-                            .setThumbnail(`${body.results[0].background_image}`)
-                            .setDescription(newMember.user + ' went live!')
-                            .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                            .setTimestamp();
-                        return streamChannel1.send({
-                            embed
-                        });
                     });
                 }
             }
