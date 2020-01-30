@@ -175,7 +175,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
     let ageA = ageS.split(" ");
     //logs
-    if (!logsChannel1 == `0`) {
+    if (logsChannel1 == `0`) {} else {
         const embed = new Discord.RichEmbed()
             .setTitle(`User joined`)
             .setColor(`RANDOM`)
@@ -186,7 +186,7 @@ client.on("guildMemberAdd", async (guildMember) => {
             embed
         });
     }
-    if (muteChannel1 == `0`) {
+    if (muteChannel1 == `0`) {} else {
         if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
             guildMember.addRole(roledel1);
             return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
@@ -194,7 +194,7 @@ client.on("guildMemberAdd", async (guildMember) => {
     }
     //make nice image for welcoming
     guildMember.addRole(roleadd1);
-    if (!generalChannel1 == '0') {
+    if (generalChannel1 == '0') {} else {
         var ReBeL = guildMember.user.username;
         var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
         var moon = bel[~~(Math.random() * bel.length)];
@@ -236,16 +236,17 @@ client.on("guildMemberRemove", async (guildMember) => {
     } else {
         var logsChannel1 = '0';
     }
-    if (logsChannel1 == '0') return;
-    const embed = new Discord.RichEmbed()
-        .setTitle(`User Left The Building`)
-        .setColor(`RANDOM`)
-        .setDescription(guildMember.user)
-        .addField(`This user has left us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id)
-        .setTimestamp();
-    return logsChannel1.send({
-        embed
-    });
+    if (logsChannel1 == '0') {} else {
+        const embed = new Discord.RichEmbed()
+            .setTitle(`User Left The Building`)
+            .setColor(`RANDOM`)
+            .setDescription(guildMember.user)
+            .addField(`This user has left us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id)
+            .setTimestamp();
+        return logsChannel1.send({
+            embed
+        });
+    }
 });
 client.on("guildCreate", guild => {
     console.log("Joined a new guild: " + guild.name);
@@ -273,7 +274,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             } else {
                 var streamChannel1 = '0';
             }
-            if (streamChannel1) {
+            if (streamChannel1 == '0') {} else {
                 //no double posts
                 if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
 
@@ -281,11 +282,14 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     streamedRecently.add(newMember.user.id + newMember.guild.id);
                     setTimeout(() => {
                         streamedRecently.delete(newMember.user.id + newMember.guild.id);
-                    }, 600000);
+                    }, 5400000);
                     request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                         json: true
                     }, function (err, res, body) {
                         if (!body.results[0].background_image) {
+                            if (thisguild.id == '356642342184288258') {
+                                streamChannel1.send("@here");
+                            }
                             const embed = new Discord.RichEmbed()
                                 .setTitle(newMember.presence.game.state)
                                 .setColor(`RANDOM`)
@@ -296,6 +300,9 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                             return streamChannel1.send({
                                 embed
                             });
+                        }
+                        if (thisguild.id == '356642342184288258') {
+                            streamChannel1.send("@here");
                         }
                         const embed = new Discord.RichEmbed()
                             .setTitle(newMember.presence.game.state)
@@ -648,7 +655,7 @@ client.on('message', async message => {
         muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
     }
     //Mute filter
-    if (!muteChannel1 == '0') {
+    if (muteChannel1 == '0') {} else {
         if (message.channel.id === muteChannel1.id) {
             if (message.content == message.author.username + "1337") {
                 let userscore1 = client.getScore.get(message.author.id, message.guild.id);
