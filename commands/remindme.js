@@ -5,7 +5,6 @@ module.exports = {
     description: '[general] set a reminder',
     execute(message) {
         //check reminder
-        console.log(reminder);
         if (reminder.has(message.author.id, message.guild.id)) {
             const reminderemb = new Discord.RichEmbed()
                 .setTitle('Reminder already set')
