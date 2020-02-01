@@ -7,7 +7,7 @@ module.exports = {
     execute(message) {
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         if (message.content == prefix + 'react') return message.reply(prefix + "react MessageID EmoteName EmoteName EmoteName...");
-        let args = message.content.slice(7).split(" ");
+        let args = message.content.slice(prefix.length + 6).split(" ");
         let array = [];
         for (let i of args) {
             if (i !== args[0]) {

@@ -1,5 +1,7 @@
 const Discord = module.require('discord.js');
 const reminder = new Set();
+const fs = require('fs');
+let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'remindme',
     description: '[general] set a reminder',
@@ -16,7 +18,7 @@ module.exports = {
                 embed: reminderemb
             });
         } else {
-            const args = message.content.slice(10).split(" ");
+            const args = message.content.slice(prefix.length + 9).split(" ");
             if (!args) return message.reply("!remind me 2 m reason why");
             if (!args[1]) return message.reply("!remind me 2 m reason why");
             if (args[1] == 's' || args[1] == 'sec' || args[1] == 'seconds') {

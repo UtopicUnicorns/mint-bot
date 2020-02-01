@@ -7,7 +7,7 @@ module.exports = {
     name: 'proton',
     description: '[general] Search the ProtonDB',
     execute(message) {
-        const args = message.content.slice(8);
+        const args = message.content.slice(prefix.length + 7);
         if (!args) return message.reply("Please provide a game name!");
         steam.find({
             search: `${args}`

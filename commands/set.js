@@ -4,7 +4,7 @@ const db = require('better-sqlite3')('./scores.sqlite');
 const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'set',
-    description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set uwu chanID\n${prefix}set unuwu chanID\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
+    description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
@@ -92,68 +92,6 @@ module.exports = {
                 userscore.muted = `0`;
                 userscore.warning = pointsToAdd;
                 setScore.run(userscore);
-            }
-            //uwu
-            if (args[1] == `uwu`) {
-                if (!args[2]) {
-                    let element = message.channel.id;
-                    let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                    if (!filter.includes(element)) {
-                        fs.appendFile('./set/uwu.txt', '\n' + element, function (err) {
-                            if (err) throw err;
-                        })
-                        return message.channel.send(element + ` is now UwU!`);
-                    } else {
-                        message.channel.send(args[2] + ` is already UwU`);
-                    }
-                }
-                let element = args[2];
-                let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                if (!filter.includes(element)) {
-                    fs.appendFile('./set/uwu.txt', '\n' + element, function (err) {
-                        if (err) throw err;
-                    })
-                    return message.channel.send(element + ` is now UwU!`);
-                } else {
-                    message.channel.send(args[2] + ` is already UwU`);
-                }
-            }
-            //un-uwu
-            if (args[1] == `unuwu`) {
-                if (!args[2]) {
-                    let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                    if (filter.includes(message.channel.id)) {
-                        let array = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                        let element = message.channel.id;
-                        let str = ``;
-                        for (let i of array) {
-                            if (i != element)
-                                str += i + '\n';
-                        }
-                        fs.writeFile(`./set/uwu.txt`, str, (error) => {
-                            if (error) throw error;
-                        })
-                        return message.channel.send(element + ` is now not UwU!`);
-                    } else {
-                        message.channel.send(message.channel.id + ` is not UwU`);
-                    }
-                }
-                let filter = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                if (filter.includes(args[2])) {
-                    let array = fs.readFileSync('./set/uwu.txt').toString().split(`\n`);
-                    let element = args[2];
-                    let str = ``;
-                    for (let i of array) {
-                        if (i != element)
-                            str += i + '\n';
-                    }
-                    fs.writeFile(`./set/uwu.txt`, str, (error) => {
-                        if (error) throw error;
-                    })
-                    return message.channel.send(element + ` is now not UwU!`);
-                } else {
-                    message.channel.send(args[2] + ` is not UwU`);
-                }
             }
             //gif
             if (args[1] == `gif`) {

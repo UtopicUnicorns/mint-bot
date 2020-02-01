@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
+const prefix = fs.readFileSync('./set/prefix.txt').toString();
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'warn',

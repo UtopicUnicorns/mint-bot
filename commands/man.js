@@ -10,7 +10,7 @@ module.exports = {
         if (message.content === `${prefix}man`) {
             return message.channel.send(`${prefix}man ARGS`);
         }
-        let args = message.content.slice(5);
+        let args = message.content.slice(prefix.length + 4);
         let baseurl = `https://cheat.sh/`;
         let search = args;
         let url = baseurl + search;

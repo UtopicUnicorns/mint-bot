@@ -19,7 +19,6 @@ const thankedRecently = new Set();
 const welcomeRecently = new Set();
 const streamedRecently = new Set();
 const borgRecently = new Set();
-const pirateSpeak = require('pirate-speak');
 const queue = new Map();
 const {
     FeedEmitter
@@ -32,7 +31,7 @@ for (const file of commandFiles) {
 }
 client.once('ready', () => {
     let nowtime = new Date();
-    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name).join(', ') + '\n\n');
+    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name + ' Users: ' + guild.memberCount).join('\n') + '\n\n');
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
@@ -167,8 +166,9 @@ client.on("guildMemberAdd", async (guildMember) => {
     } else {
         if (userscore2.muted == '1') {
             guildMember.addRole(roledel1);
-            if (muteChannel1 == '0') return;
-            return muteChannel1.send(user + ", You have been muted by our system due to breaking rules, trying to leave and rejoin will not work!");
+            if (muteChannel1 == '0') {} else {
+                return muteChannel1.send(user + ", You have been muted by our system due to breaking rules, trying to leave and rejoin will not work!");
+            }
         }
     }
     var cdate = moment.utc(user.createdAt).format('YYYYMMDD');
@@ -249,10 +249,10 @@ client.on("guildMemberRemove", async (guildMember) => {
     }
 });
 client.on("guildCreate", guild => {
-    console.log("Joined a new guild: " + guild.name);
+    console.log("Joined a new guild: " + guild.name + " Users: " + guild.memberCount);
 });
 client.on("guildDelete", guild => {
-    console.log("Left a guild: " + guild.name);
+    console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount);
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
     //Twitch notifications
@@ -283,7 +283,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     streamedRecently.add(newMember.user.id + newMember.guild.id);
                     setTimeout(() => {
                         streamedRecently.delete(newMember.user.id + newMember.guild.id);
-                    }, 5400000);
+                    }, 7200000);
                     request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                         json: true
                     }, function (err, res, body) {
@@ -360,6 +360,11 @@ emitter.add({
     refresh: 10000,
     ignoreFirst: true
 });
+emitter.add({
+    url: "https://www.reddit.com/r/linux/new.rss",
+    refresh: 10000,
+    ignoreFirst: true
+});
 emitter.on("item:new", (item) => {
     const reddittext = htmlToText.fromString(item.description, {
         wordwrap: false,
@@ -431,10 +436,10 @@ client.on('message', async message => {
         var muteChannel1 = '0';
         var logsChannel1 = '0';
     }
-    const args = message.content.slice(1).split(/ +/);
+    let prefix = fs.readFileSync('./set/prefix.txt').toString();
+    const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
-    let prefix = fs.readFileSync('./set/prefix.txt').toString();
     //Reaction roles
     if (message.content.startsWith(prefix + "reaction")) {
         if (!message.channel.guild) return;
@@ -822,24 +827,6 @@ client.on('message', async message => {
     if (message.content === prefix + "ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
-    }
-    //memes
-    let uwufilter = fs.readFileSync('./set/uwu.txt').toString().split("\n");
-    if (uwufilter.includes(message.channel.id)) {
-        if (!message.content.startsWith(prefix)) {
-            v = message.content;
-            if (!message.content) return;
-            if (message.content.startsWith("http")) return;
-            message.delete();
-            const uwutext = new Discord.RichEmbed()
-                .setAuthor(message.author.username, message.author.avatarURL)
-                .setColor('RANDOM')
-                .setDescription(pirateSpeak.translate(v))
-                .setTimestamp()
-            return message.channel.send({
-                embed: uwutext
-            });
-        }
     }
     //Artemis Talk
     if (message.channel.id === '642882039372185609') {

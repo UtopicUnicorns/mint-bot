@@ -30,7 +30,7 @@ module.exports = {
                 embed
             });
         }
-        const args = message.content.slice(12).split(" ");
+        const args = message.content.slice(prefix.length + 11).split(" ");
         const rolechecker = message.guild.roles.find(r => r.name === (`${args}`)) || message.guild.roles.find(r => r.id === (`${args}`));
         if (!rolechecker) {
             return console.log(args + ' is not a role.');

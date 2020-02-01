@@ -77,6 +77,23 @@ module.exports = {
                 embed: embed
             });
         }
+        if (message.content === `${prefix}help stream`) {
+            let str = '';
+            const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const command = require(`./${file}`);
+                if (command.description.includes(`[stream]`))
+                    str += `${prefix}${command.name}, ${command.description} \n`;
+            }
+            let embed = new Discord.RichEmbed()
+                .setColor(`RANDOM`)
+                .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
+                .setDescription(`${str}`)
+                .setTimestamp();
+            return message.channel.send({
+                embed: embed
+            });
+        }
         if (message.content === `${prefix}help music`) {
             let str = '';
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -98,7 +115,7 @@ module.exports = {
             .setColor(`RANDOM`)
             .setThumbnail('https://cdn.discordapp.com/icons/628978428019736619/33f4cf09c0a0ee96c87d89bfd677e39a.png')
             .setTitle('Pick a category')
-            .setDescription(`${prefix}help general\n${prefix}help fun\n${prefix}help music\n${prefix}help mod\n${prefix}help admin`)
+            .setDescription(`${prefix}help general\n${prefix}help fun\n${prefix}help stream\n${prefix}help music\n${prefix}help mod\n${prefix}help admin`)
             .addField('Basic info:', '\nWhen Artemis replies with an Arrow up emote, you leveled up!\nYou can report a message by reaction to it with :x: \nhaving 3 :tea: reactions to a message will highlight it!')
             .setTimestamp();
         return message.channel.send({
