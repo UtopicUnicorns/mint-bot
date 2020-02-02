@@ -3,7 +3,7 @@ const fs = require('fs');
 let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'check',
-    description: '[admin] Role check',
+    description: '[server] Role check',
     async execute(message) {
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const args = message.content.slice(prefix.length + 6).split(" ");
@@ -13,7 +13,7 @@ module.exports = {
                 let array = await message.guild.members.map(m => m);
                 let str = "";
                 for (let i of array) {
-                    if (!i.roles.find(r => r.name === cargs) || !i.roles.find(r => r.id === cargs)) {
+                    if (!i.roles.find(r => r.name === cargs) || i.roles.find(r => r.id === cargs)) {
                         str += i + '\n';
                     }
                 }

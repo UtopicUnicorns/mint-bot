@@ -3,7 +3,7 @@ const fs = require('fs');
 let prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'react',
-    description: '[mod] Add reactions to a message',
+    description: '[server] Add CUSTOM EMOTE reactions to a message',
     execute(message) {
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         if (message.content == prefix + 'react') return message.reply(prefix + "react MessageID EmoteName EmoteName EmoteName...");

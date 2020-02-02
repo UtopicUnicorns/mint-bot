@@ -4,7 +4,7 @@ const db = require('better-sqlite3')('./scores.sqlite');
 const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'channelmanage',
-    description: '[admin] Manage preset channels',
+    description: '[server] Manage preset channels',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel);");

@@ -4,7 +4,7 @@ const fs = require('fs');
 const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'rolemanage',
-    description: '[admin] Manage self assignable roles',
+    description: '[server] Manage self assignable roles',
     execute(message) {
         const getRoles = db.prepare("SELECT * FROM roles WHERE roles = ?");
         const setRoles = db.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");

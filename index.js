@@ -35,13 +35,13 @@ client.once('ready', () => {
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
-        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER, translate INTEGER);").run();
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER, translate INTEGER, stream INTEGER, notes INTEGER);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
+    client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
@@ -160,7 +160,9 @@ client.on("guildMemberAdd", async (guildMember) => {
             level: 1,
             warning: 0,
             muted: 0,
-            translate: 0
+            translate: 0,
+            stream: 0,
+            notes: 0
         };
         client.setScore.run(userscore2);
     } else {
@@ -276,24 +278,79 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             }
             if (streamChannel1 == '0') {} else {
                 if (!streamChannel1) return;
-                //no double posts
-                if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
+                //check if user wants notifications
+                let user = newMember.user;
+                let streamcheck = client.getScore.get(user.id, newMember.guild.id);
+                if (!streamcheck) {
+                    streamcheck = {
+                        id: `${newMember.guild.id}-${newMember.user.id}`,
+                        user: newMember.user.id,
+                        guild: newMember.guild.id,
+                        points: 0,
+                        level: 1,
+                        warning: 0,
+                        muted: 0,
+                        translate: 0,
+                        stream: 0,
+                        notes: 0
+                    };
+                }
+                client.setScore.run(streamcheck);
+                if (streamcheck.stream == `2`) {} else {
+                    //no double posts
+                    if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
 
-                } else {
-                    streamedRecently.add(newMember.user.id + newMember.guild.id);
-                    setTimeout(() => {
-                        streamedRecently.delete(newMember.user.id + newMember.guild.id);
-                    }, 7200000);
-                    request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
-                        json: true
-                    }, function (err, res, body) {
-                        if (newMember.guild.id == '356642342184288258') {
-                            streamChannel1.send("@here");
-                            if (!body.results[0].background_image) {
+                    } else {
+                        streamedRecently.add(newMember.user.id + newMember.guild.id);
+                        setTimeout(() => {
+                            streamedRecently.delete(newMember.user.id + newMember.guild.id);
+                        }, 7200000);
+                        request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
+                            json: true
+                        }, function (err, res, body) {
+                            if (newMember.guild.id == '356642342184288258') {
+                                streamChannel1.send("@here");
+                                if (!body.results[0].background_image) {
+                                    const embed = new Discord.RichEmbed()
+                                        .setTitle(newMember.presence.game.state)
+                                        .setColor(`RANDOM`)
+                                        .setURL(newMember.presence.game.url)
+                                        .setDescription(newMember.user + ' went live!')
+                                        .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                        .setTimestamp();
+                                    return streamChannel1.send({
+                                        embed
+                                    });
+                                }
                                 const embed = new Discord.RichEmbed()
                                     .setTitle(newMember.presence.game.state)
                                     .setColor(`RANDOM`)
                                     .setURL(newMember.presence.game.url)
+                                    .setThumbnail(`${body.results[0].background_image}`)
+                                    .setDescription(newMember.user + ' went live!')
+                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                    .setTimestamp();
+                                return streamChannel1.send({
+                                    embed
+                                });
+                            } else {
+                                if (!body.results[0].background_image) {
+                                    const embed = new Discord.RichEmbed()
+                                        .setTitle(newMember.presence.game.state)
+                                        .setColor(`RANDOM`)
+                                        .setURL(newMember.presence.game.url)
+                                        .setDescription(newMember.user + ' went live!')
+                                        .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                        .setTimestamp();
+                                    return streamChannel1.send({
+                                        embed
+                                    });
+                                }
+                                const embed = new Discord.RichEmbed()
+                                    .setTitle(newMember.presence.game.state)
+                                    .setColor(`RANDOM`)
+                                    .setURL(newMember.presence.game.url)
+                                    .setThumbnail(`${body.results[0].background_image}`)
                                     .setDescription(newMember.user + ' went live!')
                                     .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
                                     .setTimestamp();
@@ -301,43 +358,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                     embed
                                 });
                             }
-                            const embed = new Discord.RichEmbed()
-                                .setTitle(newMember.presence.game.state)
-                                .setColor(`RANDOM`)
-                                .setURL(newMember.presence.game.url)
-                                .setThumbnail(`${body.results[0].background_image}`)
-                                .setDescription(newMember.user + ' went live!')
-                                .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                                .setTimestamp();
-                            return streamChannel1.send({
-                                embed
-                            });
-                        } else {
-                            if (!body.results[0].background_image) {
-                                const embed = new Discord.RichEmbed()
-                                    .setTitle(newMember.presence.game.state)
-                                    .setColor(`RANDOM`)
-                                    .setURL(newMember.presence.game.url)
-                                    .setDescription(newMember.user + ' went live!')
-                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                                    .setTimestamp();
-                                return streamChannel1.send({
-                                    embed
-                                });
-                            }
-                            const embed = new Discord.RichEmbed()
-                                .setTitle(newMember.presence.game.state)
-                                .setColor(`RANDOM`)
-                                .setURL(newMember.presence.game.url)
-                                .setThumbnail(`${body.results[0].background_image}`)
-                                .setDescription(newMember.user + ' went live!')
-                                .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                                .setTimestamp();
-                            return streamChannel1.send({
-                                embed
-                            });
-                        }
-                    });
+                        });
+                    }
                 }
             }
         }
@@ -670,7 +692,10 @@ client.on('message', async message => {
                 points: 0,
                 level: 1,
                 warning: 0,
-                muted: 1
+                muted: 1,
+                translate: 0,
+                stream: 0,
+                notes: 0
             }
         }
         userscore.muted = `1`;
@@ -893,7 +918,9 @@ client.on('message', async message => {
             level: 1,
             warning: 0,
             muted: 0,
-            translate: 0
+            translate: 0,
+            stream: 0,
+            notes: 0
         };
     }
     client.setScore.run(translateopt);
@@ -955,7 +982,10 @@ client.on('message', async message => {
                 points: 0,
                 level: 1,
                 warning: 0,
-                muted: 0
+                muted: 0,
+                translate: 0,
+                stream: 0,
+                notes: 0
             };
         }
         score.points++;

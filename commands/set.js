@@ -7,7 +7,7 @@ module.exports = {
     description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate);");
+        const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         if (message.member.hasPermission('KICK_MEMBERS')) {
             const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
             const guildChannels = getGuild.get(message.guild.id);
@@ -43,7 +43,10 @@ module.exports = {
                         points: 0,
                         level: 1,
                         warning: 0,
-                        muted: 1
+                        muted: 1,
+                        translate: 0,
+                        stream: 0,
+                        notes: 0
                     }
                 }
                 userscore.muted = `1`;
@@ -67,7 +70,7 @@ module.exports = {
                 message.guild.channels.forEach(async (channel, id) => {
                     if (id == muteChannel1) return;
                     if (channel.permissionOverwrites.get(member2)) {
-                    await channel.permissionOverwrites.get(member2).delete()
+                        await channel.permissionOverwrites.get(member2).delete()
                     }
                 });
                 let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
@@ -85,7 +88,10 @@ module.exports = {
                         points: 0,
                         level: 1,
                         warning: 0,
-                        muted: 0
+                        muted: 0,
+                        translate: 0,
+                        stream: 0,
+                        notes: 0
                     }
                 }
                 if (userscore.muted == `0`) return message.channel.send(user + ' Is not muted!');
