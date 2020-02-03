@@ -19,6 +19,7 @@ const thankedRecently = new Set();
 const welcomeRecently = new Set();
 const streamedRecently = new Set();
 const borgRecently = new Set();
+const spamRecently = new Set();
 const queue = new Map();
 const {
     FeedEmitter
@@ -35,7 +36,7 @@ client.once('ready', () => {
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
-        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER, translate INTEGER, stream INTEGER, notes INTEGER);").run();
+        sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, warning INTEGER, muted INTEGER, translate INTEGER, stream INTEGER, notes TEXT);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
@@ -45,13 +46,13 @@ client.once('ready', () => {
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
-        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT);").run();
+        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT, streamHere TEXT, autoMod TEXT);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
-    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel);");
+    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod);");
     //role DB
     const table3 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';").get();
     if (!table3['count(*)']) {
@@ -62,6 +63,16 @@ client.once('ready', () => {
     }
     client.getRoles = sql.prepare("SELECT * FROM roles WHERE guild = ?");
     client.setRoles = sql.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
+    //words DB
+    const table5 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'words';").get();
+    if (!table5['count(*)']) {
+        sql.prepare("CREATE TABLE words (guild TEXT, words TEXT, wordguild TEXT PRIMARY KEY);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_wordguild_id ON words (wordguild);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+    client.getWords = sql.prepare("SELECT * FROM words WHERE guild = ?");
+    client.setWords = sql.prepare("INSERT OR REPLACE INTO words (guild, words) VALUES (@guild, @words);");
     //levelup DB
     const table4 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'level';").get();
     if (!table4['count(*)']) {
@@ -273,8 +284,10 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             }
             if (thisguild) {
                 var streamChannel1 = client.channels.get(guildChannels.streamChannel);
+                var streamNotif = guildChannels.streamHere;
             } else {
                 var streamChannel1 = '0';
+                var streamNotif = '0';
             }
             if (streamChannel1 == '0') {} else {
                 if (!streamChannel1) return;
@@ -308,7 +321,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                         request('https://api.rawg.io/api/games?page_size=5&search=' + newMember.presence.game.state, {
                             json: true
                         }, function (err, res, body) {
-                            if (newMember.guild.id == '356642342184288258') {
+                            if (streamNotif == '2') {
                                 streamChannel1.send("@here");
                                 if (!body.results[0].background_image) {
                                     const embed = new Discord.RichEmbed()
@@ -659,53 +672,81 @@ client.on('message', async message => {
         }
         client.setGuild.run(newGuild);
     }
-    //Anti-mention
-    if (message.mentions.users.size > 3) {
-        message.delete();
-        if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
-        const member = message.author;
-        message.guild.channels.forEach(async (channel, id) => {
-            await channel.overwritePermissions(member, {
-                VIEW_CHANNEL: false,
-                READ_MESSAGES: false,
-                SEND_MESSAGES: false,
-                READ_MESSAGE_HISTORY: false,
-                ADD_REACTIONS: false
-            });
-        })
-        setTimeout(() => {
-            muteChannel1.overwritePermissions(member, {
-                VIEW_CHANNEL: true,
-                READ_MESSAGES: true,
-                SEND_MESSAGES: true,
-                READ_MESSAGE_HISTORY: true,
-                ATTACH_FILES: false
-            })
-        }, 2000);
-        const user = message.mentions.users.first();
-        let userscore = client.getScore.get(user.id, message.guild.id);
-        if (!userscore) {
-            userscore = {
-                id: `${message.guild.id}-${user.id}`,
-                user: user.id,
-                guild: message.guild.id,
-                points: 0,
-                level: 1,
-                warning: 0,
-                muted: 1,
-                translate: 0,
-                stream: 0,
-                notes: 0
+    //autoMod START
+    if (message.member.hasPermission('KICK_MEMBERS')) {} else {
+        if (guildChannels.autoMod == '2') {
+            //Word/sentence filter
+            let allwords = sql.prepare("SELECT * FROM words WHERE guild = ?;").all(message.guild.id);
+            let wargs = message.content.toLowerCase();
+            for (const data of allwords) {
+                if (wargs.includes(data.words)) {
+                    return message.delete();
+                }
+            }
+            //No Spam
+            if (spamRecently.has(message.author.id + message.guild.id)) {
+                message.delete();
+                message.reply("Slow down there buddy!\nAnti-Spam is ON!");
+            } else {
+                spamRecently.add(message.author.id + message.guild.id);
+                setTimeout(() => {
+                    spamRecently.delete(message.author.id + message.guild.id);
+                }, 1000);
+            }
+            //No discord invites
+            if (message.content.toLowerCase().includes('discord.gg/') || message.content.toLowerCase().includes('discordapp.com/invite/')) {
+                message.delete();
+            }
+            //Anti-mention
+            if (message.mentions.users.size > 3) {
+                message.delete();
+                if (muteChannel1 == '0') return message.channel.send("You have not set up a mute channel!");
+                const member = message.author;
+                message.guild.channels.forEach(async (channel, id) => {
+                    await channel.overwritePermissions(member, {
+                        VIEW_CHANNEL: false,
+                        READ_MESSAGES: false,
+                        SEND_MESSAGES: false,
+                        READ_MESSAGE_HISTORY: false,
+                        ADD_REACTIONS: false
+                    });
+                })
+                setTimeout(() => {
+                    muteChannel1.overwritePermissions(member, {
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGES: true,
+                        SEND_MESSAGES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        ATTACH_FILES: false
+                    })
+                }, 2000);
+                const user = message.mentions.users.first();
+                let userscore = client.getScore.get(user.id, message.guild.id);
+                if (!userscore) {
+                    userscore = {
+                        id: `${message.guild.id}-${user.id}`,
+                        user: user.id,
+                        guild: message.guild.id,
+                        points: 0,
+                        level: 1,
+                        warning: 0,
+                        muted: 1,
+                        translate: 0,
+                        stream: 0,
+                        notes: 0
+                    }
+                }
+                userscore.muted = `1`;
+                client.setScore.run(userscore);
+                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                message.member.removeRole(memberrole).catch(console.error);
+                message.member.addRole(mutedrole).catch(console.error);
+                muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
             }
         }
-        userscore.muted = `1`;
-        client.setScore.run(userscore);
-        let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-        let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
-        message.member.removeRole(memberrole).catch(console.error);
-        message.member.addRole(mutedrole).catch(console.error);
-        muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
     }
+    //AutoMod END
     //Mute filter
     if (muteChannel1 == '0') {} else {
         if (message.channel.id === muteChannel1.id) {

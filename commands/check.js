@@ -17,7 +17,6 @@ module.exports = {
                         str += i + '\n';
                     }
                 }
-                console.log(str);
                 let role = message.guild.roles.find(r => r.id === cargs) || message.guild.roles.find(r => r.name === cargs);
                 const check = new Discord.RichEmbed()
                     .setTitle('RoleCheck')
@@ -36,7 +35,6 @@ module.exports = {
                         str += i + '\n';
                     }
                 }
-                console.log(str);
                 let role = message.guild.roles.find(r => r.id === cargs) || message.guild.roles.find(r => r.name === cargs);
                 const check = new Discord.RichEmbed()
                     .setTitle('RoleCheck')

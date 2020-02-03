@@ -4,7 +4,7 @@ const db = require('better-sqlite3')('./scores.sqlite');
 const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'stream',
-    description: `[stream] turn your own stream notifications on or off`,
+    description: `[stream] turn on or off your own stream notifications`,
     execute(message) {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
