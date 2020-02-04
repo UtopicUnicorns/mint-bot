@@ -157,6 +157,13 @@ client.on("guildMemberAdd", async (guildMember) => {
         var muteChannel1 = '0';
         var logsChannel1 = '0';
     }
+    if (guildMember.guild.id == '628978428019736619') {
+        rolearray = ['674208095626592266', '674208167437139979', '674207678347608064', '674207950822440970'];
+        for (let i in rolearray) {
+            let role = guildMember.guild.roles.find(r => r.id === i);
+            guildMember.addRole(role);
+        }
+    }
     //account age check
     let roleadd1 = guildMember.guild.roles.find(r => r.name === "~/Members");
     let roledel1 = guildMember.guild.roles.find(r => r.name === "Muted");

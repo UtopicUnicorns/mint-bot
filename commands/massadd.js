@@ -14,7 +14,7 @@ module.exports = {
             message.channel.send(`Adding ${args} to everyone. This may take a while.`);
             let str = "";
             for (let i of array) {
-                str += await i.addRole(role).catch(console.error);
+                   await i.addRole(role).catch(console.error);
             }
             message.channel.send(`Done! Added ${args} to everyone!`);
             console.log("done");
