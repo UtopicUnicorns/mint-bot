@@ -223,8 +223,6 @@ client.on("guildMemberAdd", async (guildMember) => {
         const ctx = canvas.getContext('2d');
         const background = await Canvas.loadImage('./mintwelcome.png');
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#74037b';
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
         ctx.font = '30px Zelda';
         ctx.shadowColor = "black";
         ctx.shadowBlur = 5;
@@ -777,8 +775,6 @@ client.on('message', async message => {
                 const ctx = canvas.getContext('2d');
                 const background = await Canvas.loadImage('./mintwelcome.png');
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                ctx.strokeStyle = '#74037b';
-                ctx.strokeRect(0, 0, canvas.width, canvas.height);
                 ctx.font = '30px Zelda';
                 ctx.shadowColor = "black";
                 ctx.shadowBlur = 5;
