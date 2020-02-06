@@ -14,7 +14,12 @@ module.exports = {
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone!");
-        const args = message.content.slice(prefix.length + 5);
+        const args = message.content.slice(prefix.length + user.id.length + 10);
+        if (!args) {
+            var warningtext = 'No reason given.';
+        } else {
+            var warningtext = args;
+        }
         const pointsToAdd = parseInt(1, 10);
         let userscore = getScore.get(user.id, message.guild.id);
         if (!userscore) {
@@ -31,7 +36,7 @@ module.exports = {
                 notes: 0
             }
         }
-        userscore.notes = args;
+        userscore.notes = warningtext;
         userscore.warning += pointsToAdd;
         if (userscore.warning > 2) {
             const member = message.mentions.members.first();
