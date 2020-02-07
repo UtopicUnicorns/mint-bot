@@ -272,6 +272,42 @@ client.on("guildCreate", guild => {
 client.on("guildDelete", guild => {
     console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount);
 });
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+    const guildChannels = client.getGuild.get(oldMember.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
+    if (thisguild) {
+        var logsChannel1 = client.channels.get(guildChannels.logsChannel);
+    } else {
+        var logsChannel1 = '0';
+    }
+    if (logsChannel1 == '0') {} else {
+        if (oldMember.nickname !== newMember.nickname) {
+            if (!oldMember.nickname) {
+                var oldname = 'Had no nickname!';
+            } else {
+                var oldname = oldMember.nickname;
+            }
+            if (!newMember.nickname) {
+                var newname = 'No nickname set!';
+            } else {
+                var newname = newMember.nickname;
+            }
+            const embed = new Discord.RichEmbed()
+                .setTitle(`Nickname changed!`)
+                .setColor(`RANDOM`)
+                .setDescription(oldMember.user)
+                .addField(`Name changed: `, '\n' + 'Old nickname: ' + oldname + '\n' + 'New nickname: ' + newname)
+                .setFooter(newMember.user.id)
+                .setTimestamp();
+            return logsChannel1.send({
+                embed
+            });
+        }
+    }
+
+});
 client.on("presenceUpdate", (oldMember, newMember) => {
     //Twitch notifications
     if (oldMember.presence.game !== newMember.presence.game) {
@@ -380,6 +416,29 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     }
                 }
             }
+        }
+    }
+    const guildChannels = client.getGuild.get(oldMember.guild.id);
+    if (guildChannels) {
+        var thisguild = client.guilds.get(guildChannels.guild);
+    }
+    if (thisguild) {
+        var logsChannel1 = client.channels.get(guildChannels.logsChannel);
+    } else {
+        var logsChannel1 = '0';
+    }
+    if (logsChannel1 == '0') {} else {
+        if (oldMember.user.username !== newMember.user.username) {
+            const embed = new Discord.RichEmbed()
+                .setTitle(`Username changed!`)
+                .setColor(`RANDOM`)
+                .setDescription(oldMember.user)
+                .addField(`Name changed: `, '\n' + oldMember.user.username + '\n' + newMember.user.username)
+                .setFooter(newMember.user.id)
+                .setTimestamp();
+            return logsChannel1.send({
+                embed
+            });
         }
     }
     //Change topic based on user activity
@@ -1063,7 +1122,7 @@ client.on('message', async message => {
             let checking = message.member.roles.find(r => r.name === lvl5.name);
             if (!checking) {
                 message.member.addRole(lvl5);
-                message.reply("You earned the title " + lvl5);
+                message.reply("For reaching level 5\nYou earned the title " + lvl5);
             }
         }
     }
@@ -1074,7 +1133,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl10);
                 message.member.removeRole(lvl5);
-                message.reply("You earned the title " + lvl10);
+                message.reply("For reaching level 10\nYou earned the title " + lvl10);
             }
         }
     }
@@ -1085,7 +1144,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl15);
                 message.member.removeRole(lvl10);
-                message.reply("You earned the title " + lvl15);
+                message.reply("For reaching level 15\nYou earned the title " + lvl15);
             }
         }
     }
@@ -1096,7 +1155,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl20);
                 message.member.removeRole(lvl15);
-                message.reply("You earned the title " + lvl20);
+                message.reply("For reaching level 20\nYou earned the title " + lvl20);
             }
         }
     }
@@ -1107,7 +1166,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl30);
                 message.member.removeRole(lvl20);
-                message.reply("You earned the title " + lvl30);
+                message.reply("For reaching level 30\nYou earned the title " + lvl30);
             }
         }
     }
@@ -1118,7 +1177,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl50);
                 message.member.removeRole(lvl30);
-                message.reply("You earned the title " + lvl50);
+                message.reply("For reaching level 50\nYou earned the title " + lvl50);
             }
         }
     }
@@ -1129,7 +1188,7 @@ client.on('message', async message => {
             if (!checking) {
                 message.member.addRole(lvl85);
                 message.member.removeRole(lvl50);
-                message.reply("You earned the title " + lvl85);
+                message.reply("For reaching level 85\nYou earned the title " + lvl85);
             }
         }
     }
