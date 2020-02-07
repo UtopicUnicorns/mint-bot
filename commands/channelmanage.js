@@ -30,8 +30,13 @@ module.exports = {
         if (args[0] == 'mute') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.muteChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
             channelget.muteChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("Mute channel has been changed to " + channelcheck);
@@ -39,8 +44,13 @@ module.exports = {
         if (args[0] == 'general') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.generalChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
             channelget.generalChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("General channel has been changed to " + channelcheck);
@@ -48,8 +58,13 @@ module.exports = {
         if (args[0] == 'highlight') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.hightlightChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
             channelget.hightlightChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("Highlight channel has been changed to " + channelcheck);
@@ -57,8 +72,13 @@ module.exports = {
         if (args[0] == 'logs') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.logsChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
             channelget.logsChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("Logs channel has been changed to " + channelcheck);
@@ -66,17 +86,27 @@ module.exports = {
         if (args[0] == 'stream') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.reactionChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
-            channelget.streamChannel = channelcheck.id;
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
+            channelget.reactionChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("Stream channel has been changed to " + channelcheck);
         }
         if (args[0] == 'reaction') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
+            if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
+                channelget.reactionChannel = `0`;
+                message.reply(args[0] + ' channel has been set to 0/reset!');
+                return setGuild.run(channelget);
+            }
             let channelcheck = message.guild.channels.find(channel => channel.id === args[1]) || message.guild.channels.find(channel => channel.name === args[1]);
-            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!");
+            if (!channelcheck) return message.channel.send(args[1] + " is not a valid channel!\nIf you used Channelname try using channelID instead!");
             channelget.reactionChannel = channelcheck.id;
             setGuild.run(channelget);
             return message.channel.send("Reaction Roles channel has been changed to " + channelcheck);
