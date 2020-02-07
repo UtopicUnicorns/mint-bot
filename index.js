@@ -32,7 +32,7 @@ for (const file of commandFiles) {
 }
 client.once('ready', () => {
     let nowtime = new Date();
-    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name + ' Users: ' + guild.memberCount).join('\n') + '\n\n');
+    console.log(`${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name + ' Users: ' + guild.memberCount + ' Owner: ' + guild.owner.user.username).join('\n') + '\n\n');
     //Level DB
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     if (!table['count(*)']) {
