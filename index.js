@@ -569,7 +569,9 @@ client.on('message', async message => {
                     muteChannel: `0`,
                     logsChannel: `0`,
                     streamChannel: `0`,
-                    reactionChannel: `0`
+                    reactionChannel: `0`,
+                    streamHere: `0`,
+                    autoMod: `0`
                 };
                 const hellothereguilders = new Discord.RichEmbed()
                     .setTitle('Setup skipped!')
@@ -628,7 +630,9 @@ client.on('message', async message => {
                         muteChannel: mcheck,
                         logsChannel: lcheck,
                         streamChannel: `0`,
-                        reactionChannel: `0`
+                        reactionChannel: `0`,
+                        streamHere: `0`,
+                        autoMod: `0`
                     };
                     const hellothereguilder = new Discord.RichEmbed()
                         .setTitle('Channels have been set up!')
@@ -659,7 +663,9 @@ client.on('message', async message => {
                 muteChannel: newGuildArgs[3],
                 logsChannel: newGuildArgs[4],
                 streamChannel: `0`,
-                reactionChannel: `0`
+                reactionChannel: `0`,
+                streamHere: `0`,
+                autoMod: `0`
             };
             const hellothereguilder = new Discord.RichEmbed()
                 .setTitle('Channels have been set up!')
