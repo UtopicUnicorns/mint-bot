@@ -506,7 +506,7 @@ client.on('message', async message => {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server.')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
             .setTimestamp()
         return message.channel.send({
             embed: whoartemis
@@ -954,7 +954,7 @@ client.on('message', async message => {
         const whoartemis = new Discord.RichEmbed()
             .setTitle('Artemis')
             .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server.')
+            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
             .setTimestamp()
         return message.channel.send({
             embed: whoartemis
