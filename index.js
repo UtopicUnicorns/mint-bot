@@ -459,11 +459,6 @@ emitter.add({
     refresh: 10000,
     ignoreFirst: true
 });
-emitter.add({
-    url: "https://www.reddit.com/r/linux/new.rss",
-    refresh: 10000,
-    ignoreFirst: true
-});
 emitter.on("item:new", (item) => {
     const reddittext = htmlToText.fromString(item.description, {
         wordwrap: false,
@@ -484,7 +479,22 @@ emitter.on("item:new", (item) => {
         embed: redditmessage
     });
 });
-emitter.on("feed:error", (error) => console.error(error.message));
+emitter.on("feed:error", (error) => {
+    //console.error(error.message)
+});
+//On edit execute command
+client.on('messageUpdate', (oldMessage, newMessage) => {
+    if (newMessage.author.bot) return;
+    let prefix = fs.readFileSync('./set/prefix.txt').toString();
+    const commandName = newMessage.content.slice(prefix.length).toLowerCase().split(/ +/);
+    const command = client.commands.get(commandName.shift());
+    if (!newMessage.content.startsWith(prefix)) return;
+    try {
+        command.execute(newMessage);
+    } catch (error) {
+        console.error(error);
+    }
+ });
 client.on('message', async message => {
     if (message.author.id == `637408181315829770`) {
         if (borgRecently.has(message.author.id)) {
