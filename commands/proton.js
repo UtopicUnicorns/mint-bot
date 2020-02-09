@@ -20,7 +20,6 @@ module.exports = {
             request(url, {
                 json: true
             }, (err, res, body) => {
-                console.log(res);
                 if (err) return message.channel.send(err);
                 const embed = new Discord.RichEmbed()
                     .setTitle(game.name)

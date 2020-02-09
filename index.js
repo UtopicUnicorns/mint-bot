@@ -494,7 +494,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     } catch (error) {
         console.error(error);
     }
- });
+});
 client.on('message', async message => {
     if (message.author.id == `637408181315829770`) {
         if (borgRecently.has(message.author.id)) {
@@ -935,25 +935,27 @@ client.on('message', async message => {
         const commandlogger = require(`./commands/${file}`);
         if (message.content.startsWith(prefix + commandlogger.name) && commandlogger.description.includes(`[mod]` || `[admin]`)) {
             if (logsChannel1 == '0') {} else {
-                if (message.member.hasPermission('KICK_MEMBERS')) {
-                    if (spamRecently.has(message.author.id + message.guild.id)) {} else {
-                        spamRecently.add(message.author.id + message.guild.id);
-                        setTimeout(() => {
-                            spamRecently.delete(message.author.id + message.guild.id);
-                        }, 1000);
-                        const logsmessage = new Discord.RichEmbed()
-                            .setTitle(commandlogger.name)
-                            .setAuthor(message.author.username, message.author.avatarURL)
-                            .setDescription("Used by: " + message.author)
-                            .setURL(message.url)
-                            .setColor('RANDOM')
-                            .addField('Usage:\n', message.content, true)
-                            .addField('Channel', message.channel, true)
-                            .setFooter("Message ID: " + message.id)
-                            .setTimestamp();
-                        logsChannel1.send({
-                            embed: logsmessage
-                        });
+                if (message.channel.id == '642882039372185609') {} else {
+                    if (message.member.hasPermission('KICK_MEMBERS')) {
+                        if (spamRecently.has(message.author.id + message.guild.id)) {} else {
+                            spamRecently.add(message.author.id + message.guild.id);
+                            setTimeout(() => {
+                                spamRecently.delete(message.author.id + message.guild.id);
+                            }, 1000);
+                            const logsmessage = new Discord.RichEmbed()
+                                .setTitle(commandlogger.name)
+                                .setAuthor(message.author.username, message.author.avatarURL)
+                                .setDescription("Used by: " + message.author)
+                                .setURL(message.url)
+                                .setColor('RANDOM')
+                                .addField('Usage:\n', message.content, true)
+                                .addField('Channel', message.channel, true)
+                                .setFooter("Message ID: " + message.id)
+                                .setTimestamp();
+                            logsChannel1.send({
+                                embed: logsmessage
+                            });
+                        }
                     }
                 }
             }
