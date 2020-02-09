@@ -1,11 +1,13 @@
 const Discord = module.require('discord.js');
 const reminder = new Set();
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'remindme',
     description: '[general] set a reminder',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         //check reminder
         if (reminder.has(message.author.id, message.guild.id)) {
             const reminderemb = new Discord.RichEmbed()

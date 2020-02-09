@@ -1,13 +1,13 @@
 const Discord = module.require('discord.js');
-const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'automod',
     description: `[server] Turn on or off automod!`,
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
-        const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, autoMod, autoMod) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @autoMod, @autoMod);");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
+        const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
         const args = message.content.slice(prefix.length + 8).split(" ");
         if (args[0] == `on`) {

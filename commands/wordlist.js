@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
-const fs = require('fs');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'wordlist',
     description: '[server] Add or remove bad words from the wordlist',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const getWords = db.prepare("SELECT * FROM words WHERE words = ?");
         const setWords = db.prepare("INSERT OR REPLACE INTO words (guild, words, wordguild) VALUES (@guild, @words, @wordguild);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;

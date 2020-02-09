@@ -1,12 +1,14 @@
 const Discord = require('discord.js');
 const request = require(`request`);
-const fs = require('fs');
 const steam = require('steam-searcher');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'proton',
     description: '[general] Search the ProtonDB',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const args = message.content.slice(prefix.length + 7);
         if (!args) return message.reply("Please provide a game name!");
         steam.find({

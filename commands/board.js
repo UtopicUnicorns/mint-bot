@@ -4,6 +4,9 @@ module.exports = {
     name: 'board',
     description: '[general] Show leaderboard',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const top10 = db.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
         const embed = new Discord.RichEmbed()
             .setTitle("Leaderboard")

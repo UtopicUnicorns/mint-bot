@@ -1,11 +1,13 @@
 const Discord = require('discord.js');
 const request = require("request");
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'package',
     description: '[general] Searches Ubuntu/Mint packages',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         let args = message.content.slice(prefix.length + 8);
         let baseurl = "https://api.launchpad.net/1.0/ubuntu/+archive/primary?ws.op=getPublishedSources&source_name=";
         let url = baseurl + args + '&exact_match=true';

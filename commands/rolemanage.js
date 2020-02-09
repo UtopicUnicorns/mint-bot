@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
-const fs = require('fs');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'rolemanage',
     description: '[server] Manage self assignable roles',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const getRoles = db.prepare("SELECT * FROM roles WHERE roles = ?");
         const setRoles = db.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
@@ -26,7 +27,7 @@ module.exports = {
                 .setColor('RANDOM')
                 .addField('Command usage: ', prefix + 'rolemanage roleNAME/roleID')
                 .addField('Current self assignable roles: ', `${str}`);
-           return message.channel.send({
+            return message.channel.send({
                 embed
             });
         }

@@ -46,13 +46,13 @@ client.once('ready', () => {
     //Guild Channel DB
     const table2 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';").get();
     if (!table2['count(*)']) {
-        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT, streamHere TEXT, autoMod TEXT);").run();
+        sql.prepare("CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT, streamHere TEXT, autoMod TEXT, prefix TEXT);").run();
         sql.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
         sql.pragma("synchronous = 1");
         sql.pragma("journal_mode = wal");
     }
     client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
-    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod);");
+    client.setGuild = sql.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);");
     //role DB
     const table3 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';").get();
     if (!table3['count(*)']) {
@@ -95,9 +95,8 @@ client.once('ready', () => {
     }, 21600000);
     //change bot Status
     setInterval(() => {
-        let prefixstatus = fs.readFileSync('./set/prefix.txt').toString();
         var RAN = [
-            `${prefixstatus}help`,
+            `https://artemisbot.eu`,
             `${client.guilds.size} servers`
         ];
         client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
@@ -485,7 +484,8 @@ emitter.on("feed:error", (error) => {
 //On edit execute command
 client.on('messageUpdate', (oldMessage, newMessage) => {
     if (newMessage.author.bot) return;
-    let prefix = fs.readFileSync('./set/prefix.txt').toString();
+    const prefixstart = client.getGuild.get(newMessage.guild.id);
+    const prefix = prefixstart.prefix;
     const commandName = newMessage.content.slice(prefix.length).toLowerCase().split(/ +/);
     const command = client.commands.get(commandName.shift());
     if (!newMessage.content.startsWith(prefix)) return;
@@ -545,7 +545,8 @@ client.on('message', async message => {
         var muteChannel1 = '0';
         var logsChannel1 = '0';
     }
-    let prefix = fs.readFileSync('./set/prefix.txt').toString();
+    const prefixstart = client.getGuild.get(message.guild.id);
+    const prefix = prefixstart.prefix;
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
@@ -640,7 +641,8 @@ client.on('message', async message => {
                     streamChannel: `0`,
                     reactionChannel: `0`,
                     streamHere: `0`,
-                    autoMod: `0`
+                    autoMod: `0`,
+                    prefix: `!`
                 };
                 const hellothereguilders = new Discord.RichEmbed()
                     .setTitle('Setup skipped!')
@@ -701,7 +703,8 @@ client.on('message', async message => {
                         streamChannel: `0`,
                         reactionChannel: `0`,
                         streamHere: `0`,
-                        autoMod: `0`
+                        autoMod: `0`,
+                        prefix: `!`
                     };
                     const hellothereguilder = new Discord.RichEmbed()
                         .setTitle('Channels have been set up!')
@@ -734,7 +737,8 @@ client.on('message', async message => {
                 streamChannel: `0`,
                 reactionChannel: `0`,
                 streamHere: `0`,
-                autoMod: `0`
+                autoMod: `0`,
+                prefix: `!`
             };
             const hellothereguilder = new Discord.RichEmbed()
                 .setTitle('Channels have been set up!')

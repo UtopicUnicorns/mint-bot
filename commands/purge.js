@@ -1,10 +1,12 @@
 const Discord = module.require('discord.js');
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'purge',
     description: '[mod] Purge a mentioned user or a specified ammount',
     async execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
             const user = message.mentions.users.first();
             const amount = !!parseInt(message.content.split(' ')[1]) ? parseInt(message.content.split(' ')[1]) : parseInt(message.content.split(' ')[2])

@@ -1,11 +1,14 @@
 const Discord = module.require('discord.js');
 const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'set',
-    description: `[mod] \n${prefix}set mute MENTION\n${prefix}set unmute MENTION\n${prefix}set gif chanID\n${prefix}set ungif chanID`,
+    description: `[mod] \nset mute MENTION\nset unmute MENTION\nset gif chanID\nset ungif chanID`,
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
+        const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);");
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         if (message.member.hasPermission('KICK_MEMBERS')) {
@@ -135,13 +138,10 @@ module.exports = {
             }
             //prefix
             if (args[1] == `prefix`) {
-                if (message.author.id !== '127708549118689280') return;
                 if (!args[2]) return message.channel.send(`Specify a prefix!!`);
-                let element = args[2];
-                fs.writeFile(`./set/prefix.txt`, element, (error) => {
-                    if (error) throw error;
-                })
-                message.channel.send('Prefix set to ' + element + '\nUse the following command:\n' + element + 'reload');
+                prefixstart.prefix = args[2];
+                setGuild.run(prefixstart);
+                message.channel.send('Prefix set to ' + args[2]);
             }
             //
         }

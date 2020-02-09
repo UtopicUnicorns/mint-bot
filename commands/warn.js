@@ -1,6 +1,4 @@
 const Discord = require('discord.js');
-const fs = require('fs');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'warn',
@@ -9,6 +7,8 @@ module.exports = {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const guildChannels = getGuild.get(message.guild.id);
         var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
         if (!message.member.hasPermission('KICK_MEMBERS')) return;

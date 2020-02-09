@@ -1,8 +1,12 @@
 const Discord = module.require('discord.js');
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'massdell',
     description: '[admin] Mass dell a role',
     async execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (message.member.hasPermission('KICK_MEMBERS')) {
             let array = await message.guild.members.map(m => m);
             let args = message.content.slice(10);

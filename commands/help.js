@@ -1,10 +1,13 @@
 const Discord = module.require('discord.js');
 const fs = require('fs')
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'help',
     description: '[general] Displays all available commands',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (message.content === `${prefix}help admin`) {
             if (message.member.hasPermission('KICK_MEMBERS')) {
                 let str = '';

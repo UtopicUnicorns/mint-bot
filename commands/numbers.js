@@ -4,6 +4,9 @@ module.exports = {
     name: 'numbers',
     description: '[general] Display role sizes',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const allroles = db.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
         let array = message.guild.roles.sort((a, b) => a.position - b.position).map(role => role);
         let array2 = [];

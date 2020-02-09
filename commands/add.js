@@ -4,6 +4,9 @@ module.exports = {
     name: 'add',
     description: '[admin] Give a user points or take them',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;

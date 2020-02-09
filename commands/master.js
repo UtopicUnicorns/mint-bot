@@ -1,11 +1,14 @@
 const Discord = module.require('discord.js');
 const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 const request = require('request');
 module.exports = {
     name: 'master',
     description: '[admin] Download and insert scripts',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (message.author.id !== '127708549118689280') return;
         if (message.content == `${prefix}master`) return message.channel.send(`${prefix}master read ${prefix}master commands/script.js / OR /commands/ script(without .js)`);
         if (message.content == `${prefix}master read`) {

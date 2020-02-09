@@ -4,12 +4,14 @@ const moment = require('moment');
 const {
     askkey,
 } = require('../config.json');
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'ask',
     description: '[general] Ask Ubuntu api',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         let baseurl = "https://api.stackexchange.com/2.2/search/advanced?pagesize=1&order=desc&sort=votes&q=";
         let q = message.content.slice(prefix.length + 4);
         let key = '&site=askubuntu&key=' + askkey;

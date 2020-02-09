@@ -4,7 +4,10 @@ module.exports = {
     name: 'join',
     description: '[general] Join a self assignable role',
     execute(message) {
-        const args = message.content.slice(6);
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
+        const args = message.content.slice(prefix.length + 5);
         const member = message.member;
         const allroles = db.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
         let array2 = [];

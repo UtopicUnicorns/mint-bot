@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
-const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
-const prefix = fs.readFileSync('./set/prefix.txt').toString();
 module.exports = {
     name: 'levelmanage',
     description: '[server] Manage level up roles',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const getLevel = db.prepare("SELECT * FROM level WHERE guild = ?");
         const setLevel = db.prepare("INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);");    
         if (!message.member.hasPermission('KICK_MEMBERS')) return;

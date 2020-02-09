@@ -1,10 +1,12 @@
 const search = require('node-ddg').default;
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'search',
     description: '[general] Search the internet!',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (message.content === `${prefix}search`) {
             return message.channel.send(`Feel free to give me some search terms.`);
         }

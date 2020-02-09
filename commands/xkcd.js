@@ -1,11 +1,13 @@
 const Discord = require('discord.js');
 const request = require(`request`);
-const fs = require('fs');
-let prefix = fs.readFileSync('./set/prefix.txt').toString();
+const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'xkcd',
     description: '[fun] Xkcd images',
     execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         if (message.content == `${prefix}xkcd random`) {
             let baseurl = `https://xkcd.com/`;
             let num = Math.floor(Math.random() * 2200) + 1;

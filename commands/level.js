@@ -5,6 +5,9 @@ module.exports = {
     name: 'level',
     description: '[general] Show your points and level',
     async execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         const user = message.mentions.users.first() || message.author;
