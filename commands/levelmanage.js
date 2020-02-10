@@ -28,7 +28,7 @@ module.exports = {
                 embed: hellothereguilde
             });
         }
-        const args = message.content.slice(13).split(" ");
+        const args = message.content.slice(prefix.length + 12).split(" ");
         if (args[0] == 'lvl05') {
             let levelget = getLevel.get(message.guild.id);
             if (!levelget) return message.channel.send("An error has occured!");

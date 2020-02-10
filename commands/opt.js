@@ -9,7 +9,7 @@ module.exports = {
         const prefix = prefixstart.prefix;
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
-        const args = message.content.slice(5).split(" ");
+        const args = message.content.slice(prefix.length + 4).split(" ");
         if (args[0] == `in`) {
             let translate = getScore.get(message.author.id, message.guild.id);
             if (translate.translate != `2`) {

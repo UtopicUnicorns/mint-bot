@@ -8,7 +8,7 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (message.content === `${prefix}suggest`) {
-            return message.channel.send(`!suggest <suggestion>`);
+            return message.channel.send(prefix + `suggest <suggestion>`);
         }
         const embed = new Discord.RichEmbed()
             .setDescription('Your suggestion')

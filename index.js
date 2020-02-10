@@ -1447,4 +1447,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 });
+client.on("error", (e) => {
+});
+client.on("warn", (e) => {
+});
+client.on("debug", (e) => {
+});
 client.login(token);

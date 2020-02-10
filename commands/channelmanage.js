@@ -26,7 +26,7 @@ module.exports = {
                 embed: hellothereguilde
             });
         }
-        const args = message.content.slice(15).split(" ");
+        const args = message.content.slice(prefix.length + 14).split(" ");
         if (args[0] == 'mute') {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");

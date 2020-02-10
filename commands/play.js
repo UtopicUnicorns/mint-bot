@@ -15,7 +15,7 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
-        let args = message.content.slice(6).split(' ');
+        let args = message.content.slice(prefix.length + 5).split(' ');
         let openmusicurl2 = await youtube.searchVideos(`${args}`, 4);
         let openmusicurl = openmusicurl2[0].url;
         const queue = message.client.queue;

@@ -10,7 +10,7 @@ module.exports = {
         if (message.content === `${prefix}search`) {
             return message.channel.send(`Feel free to give me some search terms.`);
         }
-        let args = message.content.slice(7).split(' ');
+        let args = message.content.slice(prefix.length + 6).split(' ');
         search({
                 query: `${args}`,
                 maxResults: 1
