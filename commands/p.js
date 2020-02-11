@@ -26,7 +26,7 @@ module.exports = {
                 json: true
             }, (err, res, body) => {
                 var time2 = Date.now();
-                var calctime = time2 - time1 - 14;
+                var calctime = time2 - time1;
                 if (res) {
                     var status = res.statusCode;
                 } else {
@@ -34,7 +34,7 @@ module.exports = {
                 }
                 const embed = new Discord.RichEmbed()
                     .setTitle(args)
-                    .setDescription('Status code: ' + status + '\nPing: ' + calctime + ' ms')
+                    .setDescription('Status code: ' + status + '\nPage loaded in: ' + calctime + ' ms')
                 message.channel.send({
                     embed: embed
                 });
