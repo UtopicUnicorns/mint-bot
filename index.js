@@ -85,13 +85,17 @@ client.once('ready', () => {
     client.setLevel = sql.prepare("INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);");
     //Linux tips, no longer dad jokes
     setInterval(() => {
-        const linuxhint = new Discord.RichEmbed()
-            .setTitle("Hint:")
-            .setColor('RANDOM')
-            .setDescription(linuxhints[~~(Math.random() * linuxhints.length)])
-        client.channels.get('628984660298563584').send({
-            embed: linuxhint
-        });
+        try {
+            const linuxhint = new Discord.RichEmbed()
+                .setTitle("Hint:")
+                .setColor('RANDOM')
+                .setDescription(linuxhints[~~(Math.random() * linuxhints.length)])
+            client.channels.get('628984660298563584').send({
+                embed: linuxhint
+            });
+        } catch {
+            console.log(nowtime + '\n' + ': index.js:94');
+        }
     }, 21600000);
     //change bot Status
     setInterval(() => {
@@ -127,13 +131,14 @@ client.once('ready', () => {
 });
 client.once('reconnecting', () => {
     let nowtime = new Date();
-    console.log(`${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name).join(', ') + '\n\n');
+    console.log(`${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` + client.guilds.map(guild => guild.name + ' Users: ' + guild.memberCount + ' Owner: ' + guild.owner.user.username).join('\n') + '\n\n');
 });
 client.once('disconnect', () => {
     console.log('Disconnect!');
 });
 client.on("guildMemberAdd", async (guildMember) => {
     //load shit
+    let nowtime = new Date();
     const guildChannels = client.getGuild.get(guildMember.guild.id);
     if (guildChannels) {
         var thisguild = client.guilds.get(guildChannels.guild);
@@ -195,51 +200,63 @@ client.on("guildMemberAdd", async (guildMember) => {
     let ageA = ageS.split(" ");
     //logs
     if (logsChannel1 == `0`) {} else {
-        const embed = new Discord.RichEmbed()
-            .setTitle(`User joined`)
-            .setColor(`RANDOM`)
-            .setDescription(guildMember.user)
-            .addField(`This user has joined us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id + '\nAccount age: ' + ageA)
-            .setTimestamp();
-        logsChannel1.send({
-            embed
-        });
+        try {
+            const embed = new Discord.RichEmbed()
+                .setTitle(`User joined`)
+                .setColor(`RANDOM`)
+                .setDescription(guildMember.user)
+                .addField(`This user has joined us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id + '\nAccount age: ' + ageA)
+                .setTimestamp();
+            logsChannel1.send({
+                embed
+            });
+        } catch {
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:210');
+        }
     }
     if (muteChannel1 == `0`) {} else {
         if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
             guildMember.addRole(roledel1);
-            return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
+            try {
+                return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
+            } catch {
+                console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:221');
+            }
         }
     }
     //make nice image for welcoming
     guildMember.addRole(roleadd1);
     if (generalChannel1 == '0') {} else {
-        var ReBeL = guildMember.user.username;
-        var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
-        var moon = bel[~~(Math.random() * bel.length)];
-        moon = moon.replace('@', ReBeL)
-        const canvas = Canvas.createCanvas(700, 250);
-        const ctx = canvas.getContext('2d');
-        const background = await Canvas.loadImage('./mintwelcome.png');
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        ctx.font = '30px Zelda';
-        ctx.shadowColor = "black";
-        ctx.shadowBlur = 5;
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
-        ctx.font = '21px sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-        const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
-        ctx.drawImage(avatar, 600, 25, 50, 50);
-        ctx.beginPath();
-        ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.clip();
-        const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
-        ctx.drawImage(guildlogo, 25, 25, 200, 200);
-        const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-        generalChannel1.send(attachment);
+        try {
+            var ReBeL = guildMember.user.username;
+            var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+            var moon = bel[~~(Math.random() * bel.length)];
+            moon = moon.replace('@', ReBeL)
+            const canvas = Canvas.createCanvas(700, 250);
+            const ctx = canvas.getContext('2d');
+            const background = await Canvas.loadImage('./mintwelcome.png');
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            ctx.font = '30px Zelda';
+            ctx.shadowColor = "black";
+            ctx.shadowBlur = 5;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
+            ctx.font = '21px sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+            const avatar = await Canvas.loadImage(guildMember.user.displayAvatarURL);
+            ctx.drawImage(avatar, 600, 25, 50, 50);
+            ctx.beginPath();
+            ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+            const guildlogo = await Canvas.loadImage(guildMember.guild.iconURL);
+            ctx.drawImage(guildlogo, 25, 25, 200, 200);
+            const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+            await generalChannel1.send(attachment);
+        } catch {
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:256');
+        }
     }
 });
 client.on("guildMemberRemove", async (guildMember) => {
@@ -254,15 +271,19 @@ client.on("guildMemberRemove", async (guildMember) => {
         var logsChannel1 = '0';
     }
     if (logsChannel1 == '0') {} else {
-        const embed = new Discord.RichEmbed()
-            .setTitle(`User Left The Building`)
-            .setColor(`RANDOM`)
-            .setDescription(guildMember.user)
-            .addField(`This user has left us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id)
-            .setTimestamp();
-        return logsChannel1.send({
-            embed
-        });
+        try {
+            const embed = new Discord.RichEmbed()
+                .setTitle(`User Left The Building`)
+                .setColor(`RANDOM`)
+                .setDescription(guildMember.user)
+                .addField(`This user has left us.`, '\n' + guildMember.user.username + '\n' + guildMember.user.id)
+                .setTimestamp();
+            return logsChannel1.send({
+                embed
+            });
+        } catch {
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:282');
+        }
     }
 });
 client.on("guildCreate", guild => {
@@ -272,6 +293,7 @@ client.on("guildDelete", guild => {
     console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount);
 });
 client.on("guildMemberUpdate", (oldMember, newMember) => {
+    let nowtime = new Date();
     const guildChannels = client.getGuild.get(oldMember.guild.id);
     if (guildChannels) {
         var thisguild = client.guilds.get(guildChannels.guild);
@@ -293,21 +315,26 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
             } else {
                 var newname = newMember.nickname;
             }
-            const embed = new Discord.RichEmbed()
-                .setTitle(`Nickname changed!`)
-                .setColor(`RANDOM`)
-                .setDescription(oldMember.user)
-                .addField(`Name changed: `, '\n' + 'Old nickname: ' + oldname + '\n' + 'New nickname: ' + newname)
-                .setFooter(newMember.user.id)
-                .setTimestamp();
-            return logsChannel1.send({
-                embed
-            });
+            try {
+                const embed = new Discord.RichEmbed()
+                    .setTitle(`Nickname changed!`)
+                    .setColor(`RANDOM`)
+                    .setDescription(oldMember.user)
+                    .addField(`Name changed: `, '\n' + 'Old nickname: ' + oldname + '\n' + 'New nickname: ' + newname)
+                    .setFooter(newMember.user.id)
+                    .setTimestamp();
+                return logsChannel1.send({
+                    embed
+                });
+            } catch {
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:327');
+            }
         }
     }
 
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
+    let nowtime = new Date();
     //Twitch notifications
     if (oldMember.presence.game !== newMember.presence.game) {
         if (!newMember.presence.game) {
@@ -362,54 +389,66 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                             json: true
                         }, function (err, res, body) {
                             if (streamNotif == '2') {
-                                streamChannel1.send("@here");
-                                if (!body.results[0].background_image) {
+                                try {
+                                    streamChannel1.send("@here");
+                                    if (!body.results[0].background_image) {
+                                        const embed = new Discord.RichEmbed()
+                                            .setTitle(newMember.presence.game.state)
+                                            .setColor(`RANDOM`)
+                                            .setURL(newMember.presence.game.url)
+                                            .setDescription(newMember.user + ' went live!')
+                                            .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                            .setTimestamp();
+                                        return streamChannel1.send({
+                                            embed
+                                        });
+                                    }
                                     const embed = new Discord.RichEmbed()
                                         .setTitle(newMember.presence.game.state)
                                         .setColor(`RANDOM`)
                                         .setURL(newMember.presence.game.url)
+                                        .setThumbnail(`${body.results[0].background_image}`)
                                         .setDescription(newMember.user + ' went live!')
                                         .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
                                         .setTimestamp();
                                     return streamChannel1.send({
                                         embed
                                     });
+                                } catch {
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:415');
                                 }
-                                const embed = new Discord.RichEmbed()
-                                    .setTitle(newMember.presence.game.state)
-                                    .setColor(`RANDOM`)
-                                    .setURL(newMember.presence.game.url)
-                                    .setThumbnail(`${body.results[0].background_image}`)
-                                    .setDescription(newMember.user + ' went live!')
-                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                                    .setTimestamp();
-                                return streamChannel1.send({
-                                    embed
-                                });
                             } else {
                                 if (!body.results[0].background_image) {
+                                    try {
+                                        const embed = new Discord.RichEmbed()
+                                            .setTitle(newMember.presence.game.state)
+                                            .setColor(`RANDOM`)
+                                            .setURL(newMember.presence.game.url)
+                                            .setDescription(newMember.user + ' went live!')
+                                            .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
+                                            .setTimestamp();
+                                        return streamChannel1.send({
+                                            embed
+                                        });
+                                    } catch {
+                                        console.log(nowtime + '\n' + newMember.guild.id + ': index.js:431');
+                                    }
+                                }
+                                try {
                                     const embed = new Discord.RichEmbed()
                                         .setTitle(newMember.presence.game.state)
                                         .setColor(`RANDOM`)
                                         .setURL(newMember.presence.game.url)
+                                        .setThumbnail(`${body.results[0].background_image}`)
                                         .setDescription(newMember.user + ' went live!')
                                         .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
                                         .setTimestamp();
                                     return streamChannel1.send({
                                         embed
                                     });
+                                } catch {
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:447');
                                 }
-                                const embed = new Discord.RichEmbed()
-                                    .setTitle(newMember.presence.game.state)
-                                    .setColor(`RANDOM`)
-                                    .setURL(newMember.presence.game.url)
-                                    .setThumbnail(`${body.results[0].background_image}`)
-                                    .setDescription(newMember.user + ' went live!')
-                                    .addField(newMember.presence.game.details, '\n' + newMember.presence.game.url)
-                                    .setTimestamp();
-                                return streamChannel1.send({
-                                    embed
-                                });
                             }
                         });
                     }
@@ -428,16 +467,20 @@ client.on("presenceUpdate", (oldMember, newMember) => {
     }
     if (logsChannel1 == '0') {} else {
         if (oldMember.user.username !== newMember.user.username) {
-            const embed = new Discord.RichEmbed()
-                .setTitle(`Username changed!`)
-                .setColor(`RANDOM`)
-                .setDescription(oldMember.user)
-                .addField(`Name changed: `, '\n' + oldMember.user.username + '\n' + newMember.user.username)
-                .setFooter(newMember.user.id)
-                .setTimestamp();
-            return logsChannel1.send({
-                embed
-            });
+            try {
+                const embed = new Discord.RichEmbed()
+                    .setTitle(`Username changed!`)
+                    .setColor(`RANDOM`)
+                    .setDescription(oldMember.user)
+                    .addField(`Name changed: `, '\n' + oldMember.user.username + '\n' + newMember.user.username)
+                    .setFooter(newMember.user.id)
+                    .setTimestamp();
+                return logsChannel1.send({
+                    embed
+                });
+            } catch {
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:480');
+            }
         }
     }
     //Change topic based on user activity
@@ -467,16 +510,21 @@ emitter.on("item:new", (item) => {
     });
     let reddittext2 = reddittext.replace('[link]', '').replace('[comments]', '');
     let reddittext3 = reddittext2.substr(0, 1000);
-    const redditmessage = new Discord.RichEmbed()
-        .setTitle(item.title.substr(0, 100))
-        .setURL(item.link)
-        .setColor('RANDOM')
-        .setDescription(reddittext3)
-        .addField(item.link + '\n', 'https://www.reddit.com' + item.author, true)
-        .setTimestamp();
-    return client.channels.get('656194923107713024').send({
-        embed: redditmessage
-    });
+    let nowtime = new Date();
+    try {
+        const redditmessage = new Discord.RichEmbed()
+            .setTitle(item.title.substr(0, 100))
+            .setURL(item.link)
+            .setColor('RANDOM')
+            .setDescription(reddittext3)
+            .addField(item.link + '\n', 'https://www.reddit.com' + item.author, true)
+            .setTimestamp();
+        return client.channels.get('656194923107713024').send({
+            embed: redditmessage
+        });
+    } catch {
+        console.log(nowtime + '\n' + ': index.js:519');
+    }
 });
 emitter.on("feed:error", (error) => {
     //console.error(error.message)
@@ -513,14 +561,18 @@ client.on('message', async message => {
     if (message.channel.type == "dm") {
         let nowtime = new Date();
         console.log(nowtime + '\n' + message.author.username + '\n' + message.content);
-        const whoartemis = new Discord.RichEmbed()
-            .setTitle('Artemis')
-            .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
-            .setTimestamp()
-        return message.channel.send({
-            embed: whoartemis
-        });
+        try {
+            const whoartemis = new Discord.RichEmbed()
+                .setTitle('Artemis')
+                .setColor('RANDOM')
+                .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
+                .setTimestamp()
+            return message.channel.send({
+                embed: whoartemis
+            });
+        } catch {
+            console.log(nowtime + '\n' + message.guild.id + ': index.js:571');
+        }
     }
     //load shit
     const guildChannels = client.getGuild.get(message.guild.id);
@@ -602,24 +654,30 @@ client.on('message', async message => {
                 welcomeRecently.delete(message.guild.id);
             }, 1800000);
             //Hello I am Artemis!
-            const hellothereguilde = new Discord.RichEmbed()
-                .setTitle('Thanks for choosing Artemis')
-                .setDescription('V 1.1')
-                .setURL('https://discord.gg/EVVtPpw')
-                .setColor('RANDOM')
-                .addField('Welcome new guild!\n', 'I see that you have not yet set me up properly.')
-                .addField('Setting me up is rather simple.', 'just speak the words\n`setup auto`\nand I will do the work for you')
-                .addField('You can choose to skip the setup process by speaking the words `setup skip` you can then manually set the channels with `!channelmanage`')
-                .addField('What does the setup do you ask?', 'I will look for 4 channels:\ngeneral\nmute\nlogs\nhighlights\n\nIf these are not there I will create them for you.')
-                .setFooter('Artemis is not perfect and is created by a noob called UtopicUnicorn#0383')
-                .setTimestamp();
-            message.channel.send({
-                embed: hellothereguilde
-            });
+            let nowtime = new Date();
+            try {
+                const hellothereguilde = new Discord.RichEmbed()
+                    .setTitle('Thanks for choosing Artemis')
+                    .setDescription('V 1.1')
+                    .setURL('https://discord.gg/EVVtPpw')
+                    .setColor('RANDOM')
+                    .addField('Welcome new guild!\n', 'I see that you have not yet set me up properly.')
+                    .addField('Setting me up is rather simple.', 'just speak the words\n`setup auto`\nand I will do the work for you')
+                    .addField('You can choose to skip the setup process by speaking the words `setup skip` you can then manually set the channels with `!channelmanage`')
+                    .addField('What does the setup do you ask?', 'I will look for 4 channels:\ngeneral\nmute\nlogs\nhighlights\n\nIf these are not there I will create them for you.')
+                    .setFooter('Artemis is not perfect and is created by a noob called UtopicUnicorn#0383')
+                    .setTimestamp();
+                message.channel.send({
+                    embed: hellothereguilde
+                });
+            } catch {
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:671');
+            }
         }
     }
     //Welcome new guild?
     if (message.content.startsWith("setup")) {
+        let nowtime = new Date();
         newGuild = client.getGuild.get(message.guild.id);
         if (!newGuild) {
             //Deny setup by any other than owner
@@ -644,17 +702,21 @@ client.on('message', async message => {
                     autoMod: `0`,
                     prefix: `!`
                 };
-                const hellothereguilders = new Discord.RichEmbed()
-                    .setTitle('Setup skipped!')
-                    .setDescription('No worries, you can manually setup your channels')
-                    .setURL('https://discord.gg/EVVtPpw')
-                    .setColor('RANDOM')
-                    .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
-                    .setFooter('Artemis has more commands, check them out with !help')
-                    .setTimestamp();
-                message.channel.send({
-                    embed: hellothereguilders
-                });
+                try {
+                    const hellothereguilders = new Discord.RichEmbed()
+                        .setTitle('Setup skipped!')
+                        .setDescription('No worries, you can manually setup your channels')
+                        .setURL('https://discord.gg/EVVtPpw')
+                        .setColor('RANDOM')
+                        .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
+                        .setFooter('Artemis has more commands, check them out with !help')
+                        .setTimestamp();
+                    message.channel.send({
+                        embed: hellothereguilders
+                    });
+                } catch {
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:714');
+                }
                 return client.setGuild.run(newGuild);
             }
             //setup auto, create channels sets channels ID
@@ -706,19 +768,23 @@ client.on('message', async message => {
                         autoMod: `0`,
                         prefix: `!`
                     };
-                    const hellothereguilder = new Discord.RichEmbed()
-                        .setTitle('Channels have been set up!')
-                        .setDescription('Here is a list of commands')
-                        .setURL('https://discord.gg/EVVtPpw')
-                        .setColor('RANDOM')
-                        .addField('!join !leave\n', 'Are the main ways to join/leave a role')
-                        .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
-                        .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
-                        .setFooter('Artemis has more commands, check them out with !help')
-                        .setTimestamp();
-                    message.channel.send({
-                        embed: hellothereguilder
-                    });
+                    try {
+                        const hellothereguilder = new Discord.RichEmbed()
+                            .setTitle('Channels have been set up!')
+                            .setDescription('Here is a list of commands')
+                            .setURL('https://discord.gg/EVVtPpw')
+                            .setColor('RANDOM')
+                            .addField('!join !leave\n', 'Are the main ways to join/leave a role')
+                            .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
+                            .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
+                            .setFooter('Artemis has more commands, check them out with !help')
+                            .setTimestamp();
+                        message.channel.send({
+                            embed: hellothereguilder
+                        });
+                    } catch {
+                        console.log(nowtime + '\n' + message.guild.id + ': index.js:782');
+                    }
                     return client.setGuild.run(newGuild);
                 }, 5000);
             }
@@ -740,19 +806,23 @@ client.on('message', async message => {
                 autoMod: `0`,
                 prefix: `!`
             };
-            const hellothereguilder = new Discord.RichEmbed()
-                .setTitle('Channels have been set up!')
-                .setDescription('Here is a list of commands')
-                .setURL('https://discord.gg/EVVtPpw')
-                .setColor('RANDOM')
-                .addField('!join !leave\n', 'Are the main ways to join/leave a role')
-                .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
-                .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
-                .setFooter('Artemis has more commands, check them out with !help')
-                .setTimestamp();
-            message.channel.send({
-                embed: hellothereguilder
-            });
+            try {
+                const hellothereguilder = new Discord.RichEmbed()
+                    .setTitle('Channels have been set up!')
+                    .setDescription('Here is a list of commands')
+                    .setURL('https://discord.gg/EVVtPpw')
+                    .setColor('RANDOM')
+                    .addField('!join !leave\n', 'Are the main ways to join/leave a role')
+                    .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
+                    .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
+                    .setFooter('Artemis has more commands, check them out with !help')
+                    .setTimestamp();
+                message.channel.send({
+                    embed: hellothereguilder
+                });
+            } catch {
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:820');
+            }
         }
         client.setGuild.run(newGuild);
     }
@@ -826,7 +896,12 @@ client.on('message', async message => {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 message.member.removeRole(memberrole).catch(console.error);
                 message.member.addRole(mutedrole).catch(console.error);
-                muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
+                let nowtime = new Date();
+                try {
+                    muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
+                } catch {
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:901');
+                }
             }
         }
     }
@@ -841,38 +916,43 @@ client.on('message', async message => {
                 } else {
                     if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
                 }
-                let roleadd = message.guild.roles.find(r => r.name === "~/Members");
-                let roledel = message.guild.roles.find(r => r.name === "Muted");
-                let member = message.member;
-                message.member.addRole(roleadd).catch(console.error);
-                message.member.removeRole(roledel).catch(console.error);
-                var ReBeL = member;
-                var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
-                var moon = bel[~~(Math.random() * bel.length)];
-                moon = moon.replace('@', message.author.username)
-                const canvas = Canvas.createCanvas(700, 250);
-                const ctx = canvas.getContext('2d');
-                const background = await Canvas.loadImage('./mintwelcome.png');
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                ctx.font = '30px Zelda';
-                ctx.shadowColor = "black";
-                ctx.shadowBlur = 5;
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
-                const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
-                ctx.drawImage(avatar, 600, 25, 50, 50);
-                ctx.beginPath();
-                ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.clip();
-                const guildlogo = await Canvas.loadImage(message.guild.iconURL);
-                ctx.drawImage(guildlogo, 25, 25, 200, 200);
-                ctx.font = '21px sans-serif';
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-                const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-                generalChannel1.send(attachment);
-                return message.channel.send(`${member} has been approved.`);
+                try {
+                    let roleadd = message.guild.roles.find(r => r.name === "~/Members");
+                    let roledel = message.guild.roles.find(r => r.name === "Muted");
+                    let member = message.member;
+                    message.member.addRole(roleadd).catch(console.error);
+                    message.member.removeRole(roledel).catch(console.error);
+                    var ReBeL = member;
+                    var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+                    var moon = bel[~~(Math.random() * bel.length)];
+                    moon = moon.replace('@', message.author.username)
+                    const canvas = Canvas.createCanvas(700, 250);
+                    const ctx = canvas.getContext('2d');
+                    const background = await Canvas.loadImage('./mintwelcome.png');
+                    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                    ctx.font = '30px Zelda';
+                    ctx.shadowColor = "black";
+                    ctx.shadowBlur = 5;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
+                    const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
+                    ctx.drawImage(avatar, 600, 25, 50, 50);
+                    ctx.beginPath();
+                    ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+                    ctx.closePath();
+                    ctx.clip();
+                    const guildlogo = await Canvas.loadImage(message.guild.iconURL);
+                    ctx.drawImage(guildlogo, 25, 25, 200, 200);
+                    ctx.font = '21px sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+                    const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+                    await generalChannel1.send(attachment);
+                    return message.channel.send(`${member} has been approved.`);
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:950');
+                }
             }
         }
     }
@@ -917,19 +997,24 @@ client.on('message', async message => {
         }
         for (let i of logschannels) {
             if (client.channels.get(`${i}`)) {
-                const updatetext = new Discord.RichEmbed()
-                    .setTitle("Update")
-                    .setAuthor(message.author.username, message.author.avatarURL)
-                    .setDescription(message.author)
-                    .setURL('https://discord.gg/EVVtPpw')
-                    .setColor('RANDOM')
-                    .addField('Update text:\n', message.content.slice(8))
-                    .addField('Channel', message.channel, true)
-                    .setFooter("Message ID: " + message.id)
-                    .setTimestamp();
-                client.channels.get(`${i}`).send({
-                    embed: updatetext
-                });
+                try {
+                    const updatetext = new Discord.RichEmbed()
+                        .setTitle("Update")
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription(message.author)
+                        .setURL('https://discord.gg/EVVtPpw')
+                        .setColor('RANDOM')
+                        .addField('Update text:\n', message.content.slice(8))
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    await client.channels.get(`${i}`).send({
+                        embed: updatetext
+                    });
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:1012');
+                }
             }
         }
     }
@@ -946,19 +1031,24 @@ client.on('message', async message => {
                             setTimeout(() => {
                                 spamRecently.delete(message.author.id + message.guild.id);
                             }, 1000);
-                            const logsmessage = new Discord.RichEmbed()
-                                .setTitle(commandlogger.name)
-                                .setAuthor(message.author.username, message.author.avatarURL)
-                                .setDescription("Used by: " + message.author)
-                                .setURL(message.url)
-                                .setColor('RANDOM')
-                                .addField('Usage:\n', message.content, true)
-                                .addField('Channel', message.channel, true)
-                                .setFooter("Message ID: " + message.id)
-                                .setTimestamp();
-                            logsChannel1.send({
-                                embed: logsmessage
-                            });
+                            try {
+                                const logsmessage = new Discord.RichEmbed()
+                                    .setTitle(commandlogger.name)
+                                    .setAuthor(message.author.username, message.author.avatarURL)
+                                    .setDescription("Used by: " + message.author)
+                                    .setURL(message.url)
+                                    .setColor('RANDOM')
+                                    .addField('Usage:\n', message.content, true)
+                                    .addField('Channel', message.channel, true)
+                                    .setFooter("Message ID: " + message.id)
+                                    .setTimestamp();
+                                logsChannel1.send({
+                                    embed: logsmessage
+                                });
+                            } catch {
+                                let nowtime = new Date();
+                                console.log(nowtime + '\n' + message.guild.id + ': index.js:1046');
+                            }
                         }
                     }
                 }
@@ -967,14 +1057,19 @@ client.on('message', async message => {
     }
     //WhoIsArtemis?
     if (message.content.toLowerCase().includes("who is artemis")) {
-        const whoartemis = new Discord.RichEmbed()
-            .setTitle('Artemis')
-            .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
-            .setTimestamp()
-        return message.channel.send({
-            embed: whoartemis
-        });
+        try {
+            const whoartemis = new Discord.RichEmbed()
+                .setTitle('Artemis')
+                .setColor('RANDOM')
+                .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
+                .setTimestamp()
+            return message.channel.send({
+                embed: whoartemis
+            });
+        } catch {
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + message.guild.id + ': index.js:1067');
+        }
     }
     if (message.content === prefix + "ping") {
         const m = await message.channel.send("Ping?");
@@ -999,18 +1094,13 @@ client.on('message', async message => {
             if (!client.channels.get(`${channelcheck}`)) {
                 return message.channel.send("Enter a valid channel ID first!\n!set ChannelID");
             }
-            client.channels.get(`${channelcheck}`).send(message.content);
+            try {
+                client.channels.get(`${channelcheck}`).send(message.content);
+            } catch {
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:1098');
+            }
             return;
-        }
-    }
-    //chatgiffilter
-    let giffilter = fs.readFileSync('./set/gif.txt').toString().split("\n");
-    if (giffilter.includes(message.channel.id)) {
-        if (message.content.includes("https://tenor.com")) {
-            message.delete();
-        }
-        if (message.content.includes(".gif")) {
-            message.delete();
         }
     }
     //guide channel
@@ -1078,15 +1168,20 @@ client.on('message', async message => {
             }).then(res => {
                 if (message.content.includes("ツ")) return;
                 if (res == message.content) return;
-                const translationtext = new Discord.RichEmbed()
-                    .setAuthor(message.author.username, message.author.avatarURL)
-                    .setColor('RANDOM')
-                    .setDescription(res)
-                    .setFooter('Translated from: ' + body.lang)
-                    .setTimestamp()
-                message.channel.send({
-                    embed: translationtext
-                });
+                try {
+                    const translationtext = new Discord.RichEmbed()
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setColor('RANDOM')
+                        .setDescription(res)
+                        .setFooter('Translated from: ' + body.lang)
+                        .setTimestamp()
+                    message.channel.send({
+                        embed: translationtext
+                    });
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:1179');
+                }
             }).catch(err => {
                 console.error(err);
             });
@@ -1278,23 +1373,51 @@ client.on("messageReactionAdd", async (reaction, user) => {
             if (reaction.message.author.id == '440892659264126997') return;
             if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
             if (!reaction.message.attachments.size > 0) {
-                logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-                const editmessage = new Discord.RichEmbed()
-                    .setTitle("A message got reported!")
-                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
-                    .setDescription("Message by: " + reaction.message.author)
-                    .setURL(reaction.message.url)
-                    .setColor('RANDOM')
-                    .addField('Reported Message:\n', reaction.message.content, true)
-                    .addField('Channel', reaction.message.channel, true)
-                    .addField('Reported by: ', reaction.users.first())
-                    .setFooter("Message ID: " + reaction.message.id)
-                    .setTimestamp();
-                return logsChannel1.send({
-                    embed: editmessage
-                });
+                try {
+                    logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+                    const editmessage = new Discord.RichEmbed()
+                        .setTitle("A message got reported!")
+                        .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                        .setDescription("Message by: " + reaction.message.author)
+                        .setURL(reaction.message.url)
+                        .setColor('RANDOM')
+                        .addField('Reported Message:\n', reaction.message.content, true)
+                        .addField('Channel', reaction.message.channel, true)
+                        .addField('Reported by: ', reaction.users.first())
+                        .setFooter("Message ID: " + reaction.message.id)
+                        .setTimestamp();
+                    return logsChannel1.send({
+                        embed: editmessage
+                    });
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1390');
+                }
             }
             if (reaction.message.content === '') {
+                try {
+                    logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+                    const image = reaction.message.attachments.array()[0].url;
+                    const editmessage = new Discord.RichEmbed()
+                        .setTitle("A message got reported!")
+                        .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                        .setDescription("Message by: " + reaction.message.author)
+                        .setURL(reaction.message.url)
+                        .setColor('RANDOM')
+                        .addField('Channel', reaction.message.channel, true)
+                        .addField('Reported by: ', reaction.users.first())
+                        .setFooter("Message ID: " + reaction.message.id)
+                        .setImage(image)
+                        .setTimestamp();
+                    return logsChannel1.send({
+                        embed: editmessage
+                    });
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1413');
+                }
+            }
+            try {
                 logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
                 const image = reaction.message.attachments.array()[0].url;
                 const editmessage = new Discord.RichEmbed()
@@ -1303,55 +1426,47 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     .setDescription("Message by: " + reaction.message.author)
                     .setURL(reaction.message.url)
                     .setColor('RANDOM')
-                    .addField('Channel', reaction.message.channel, true)
+                    .addField('Reported Message:\n', reaction.message.content, true)
                     .addField('Reported by: ', reaction.users.first())
+                    .addField('Channel', reaction.message.channel, true)
                     .setFooter("Message ID: " + reaction.message.id)
                     .setImage(image)
                     .setTimestamp();
                 return logsChannel1.send({
                     embed: editmessage
                 });
+            } catch {
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1436');
             }
-            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-            const image = reaction.message.attachments.array()[0].url;
-            const editmessage = new Discord.RichEmbed()
-                .setTitle("A message got reported!")
-                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
-                .setDescription("Message by: " + reaction.message.author)
-                .setURL(reaction.message.url)
-                .setColor('RANDOM')
-                .addField('Reported Message:\n', reaction.message.content, true)
-                .addField('Reported by: ', reaction.users.first())
-                .addField('Channel', reaction.message.channel, true)
-                .setFooter("Message ID: " + reaction.message.id)
-                .setImage(image)
-                .setTimestamp();
-            return logsChannel1.send({
-                embed: editmessage
-            });
         }
         //reportdelete
         let limit2 = 3;
         if (reaction.emoji.name == '❌' && reaction.count == limit2) {
-            logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
-            if (reaction.message.author.id == '440892659264126997') return;
-            if (reaction.message.author.id == '127708549118689280') return;
-            if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
-            reaction.message.delete();
-            if (reaction.message.content === '') return;
-            const editmessage = new Discord.RichEmbed()
-                .setTitle("A message that was reported got deleted!")
-                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
-                .setDescription("Message by: " + reaction.message.author)
-                .setColor('RANDOM')
-                .addField('Reported Message:\n', reaction.message.content, true)
-                .addField('Deleted by: ', reaction.users.last())
-                .addField('Channel', reaction.message.channel, true)
-                .setFooter("Message ID: " + reaction.message.id)
-                .setTimestamp();
-            return logsChannel1.send({
-                embed: editmessage
-            });
+            try {
+                logsChannel1.send('<@&628980538274873345> <@&628980016813703178>');
+                if (reaction.message.author.id == '440892659264126997') return;
+                if (reaction.message.author.id == '127708549118689280') return;
+                if (reaction.users.first() == reaction.message.author) return reaction.remove(reaction.message.author.id);
+                reaction.message.delete();
+                if (reaction.message.content === '') return;
+                const editmessage = new Discord.RichEmbed()
+                    .setTitle("A message that was reported got deleted!")
+                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                    .setDescription("Message by: " + reaction.message.author)
+                    .setColor('RANDOM')
+                    .addField('Reported Message:\n', reaction.message.content, true)
+                    .addField('Deleted by: ', reaction.users.last())
+                    .addField('Channel', reaction.message.channel, true)
+                    .setFooter("Message ID: " + reaction.message.id)
+                    .setTimestamp();
+                return logsChannel1.send({
+                    embed: editmessage
+                });
+            } catch {
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1464');
+            }
         }
     }
     //Highlights
@@ -1360,6 +1475,52 @@ client.on("messageReactionAdd", async (reaction, user) => {
         if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
         if (reaction.message.author.id == '440892659264126997') return;
         if (!reaction.message.attachments.size > 0) {
+            try {
+                const editmessage = new Discord.RichEmbed()
+                    .setTitle("A message got highlighted!")
+                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                    .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
+                    .setDescription("Message by: " + reaction.message.author)
+                    .setURL(reaction.message.url)
+                    .setColor('RANDOM')
+                    .addField('Mintiest Message:\n', reaction.message.content, true)
+                    .addField('Channel', reaction.message.channel, true)
+                    .setFooter("Message ID: " + reaction.message.id)
+                    .setTimestamp();
+                return highlightChannel1.send({
+                    embed: editmessage
+                });
+            } catch {
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1491');
+            }
+        }
+        if (reaction.message.content === '') {
+            if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
+            try {
+                const image = reaction.message.attachments.array()[0].url;
+                const editmessage = new Discord.RichEmbed()
+                    .setTitle("A message got highlighted!")
+                    .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
+                    .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
+                    .setDescription("Message by: " + reaction.message.author)
+                    .setURL(reaction.message.url)
+                    .setColor('RANDOM')
+                    .addField('Channel', reaction.message.channel, true)
+                    .setFooter("Message ID: " + reaction.message.id)
+                    .setImage(image)
+                    .setTimestamp();
+                return highlightChannel1.send({
+                    embed: editmessage
+                });
+            } catch {
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1514');
+            }
+        }
+        if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
+        try {
+            const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
                 .setTitle("A message got highlighted!")
                 .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
@@ -1370,46 +1531,15 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 .addField('Mintiest Message:\n', reaction.message.content, true)
                 .addField('Channel', reaction.message.channel, true)
                 .setFooter("Message ID: " + reaction.message.id)
-                .setTimestamp();
-            return highlightChannel1.send({
-                embed: editmessage
-            });
-        }
-        if (reaction.message.content === '') {
-            if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
-            const image = reaction.message.attachments.array()[0].url;
-            const editmessage = new Discord.RichEmbed()
-                .setTitle("A message got highlighted!")
-                .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
-                .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
-                .setDescription("Message by: " + reaction.message.author)
-                .setURL(reaction.message.url)
-                .setColor('RANDOM')
-                .addField('Channel', reaction.message.channel, true)
-                .setFooter("Message ID: " + reaction.message.id)
                 .setImage(image)
                 .setTimestamp();
             return highlightChannel1.send({
                 embed: editmessage
             });
+        } catch {
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1537');
         }
-        if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
-        const image = reaction.message.attachments.array()[0].url;
-        const editmessage = new Discord.RichEmbed()
-            .setTitle("A message got highlighted!")
-            .setAuthor(reaction.message.author.username, reaction.message.author.avatarURL)
-            .setThumbnail(`https://raw.githubusercontent.com/UtopicUnicorns/mint-bot/master/tea.png`)
-            .setDescription("Message by: " + reaction.message.author)
-            .setURL(reaction.message.url)
-            .setColor('RANDOM')
-            .addField('Mintiest Message:\n', reaction.message.content, true)
-            .addField('Channel', reaction.message.channel, true)
-            .setFooter("Message ID: " + reaction.message.id)
-            .setImage(image)
-            .setTimestamp();
-        return highlightChannel1.send({
-            embed: editmessage
-        });
     }
     //reaction roles
     if (!reactionChannel1 == '0') {
@@ -1447,10 +1577,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
     }
 });
-client.on("error", (e) => {
-});
-client.on("warn", (e) => {
-});
-client.on("debug", (e) => {
-});
+client.on("error", (e) => {});
+client.on("warn", (e) => {});
+client.on("debug", (e) => {});
 client.login(token);

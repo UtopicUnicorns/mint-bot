@@ -1,5 +1,6 @@
 const Discord = module.require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
+const nowtime = new Date();
 module.exports = {
     name: 'check',
     description: '[server] Role check',
@@ -20,14 +21,18 @@ module.exports = {
                     }
                 }
                 let role = message.guild.roles.find(r => r.id === cargs) || message.guild.roles.find(r => r.name === cargs);
-                const check = new Discord.RichEmbed()
-                    .setTitle('RoleCheck')
-                    .setColor('RANDOM')
-                    .addField('These users do not have ' + role, str)
-                    .setTimestamp();
-                return message.channel.send({
-                    embed: check
-                });
+                try {
+                    const check = new Discord.RichEmbed()
+                        .setTitle('RoleCheck')
+                        .setColor('RANDOM')
+                        .addField('These users do not have ' + role, str)
+                        .setTimestamp();
+                    return message.channel.send({
+                        embed: check
+                    })
+                } catch {
+                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:31');
+                }
             }
             if (args[0] == 'yes') {
                 let array = await message.guild.members.map(m => m);
@@ -38,14 +43,18 @@ module.exports = {
                     }
                 }
                 let role = message.guild.roles.find(r => r.id === cargs) || message.guild.roles.find(r => r.name === cargs);
-                const check = new Discord.RichEmbed()
-                    .setTitle('RoleCheck')
-                    .setColor('RANDOM')
-                    .addField('These users have ' + role, str)
-                    .setTimestamp();
-                return message.channel.send({
-                    embed: check
-                });
+                try {
+                    const check = new Discord.RichEmbed()
+                        .setTitle('RoleCheck')
+                        .setColor('RANDOM')
+                        .addField('These users have ' + role, str)
+                        .setTimestamp();
+                    return message.channel.send({
+                        embed: check
+                    })
+                } catch {
+                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:53');
+                }
             }
         }
     },
