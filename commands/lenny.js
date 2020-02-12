@@ -33,6 +33,8 @@ module.exports = {
                     embed: embed
                 });
             });
+        } else {
+            message.reply('( ͡° ͜ʖ ͡°)');
         }
     }
 };
