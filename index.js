@@ -21,6 +21,7 @@ const streamedRecently = new Set();
 const borgRecently = new Set();
 const spamRecently = new Set();
 const queue = new Map();
+const ln = require('nodejs-linenumber');
 const {
     FeedEmitter
 } = require("rss-emitter-ts");
@@ -94,7 +95,8 @@ client.once('ready', () => {
                 embed: linuxhint
             });
         } catch {
-            console.log(nowtime + '\n' + ': index.js:94');
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
         }
     }, 21600000);
     //change bot Status
@@ -211,7 +213,8 @@ client.on("guildMemberAdd", async (guildMember) => {
                 embed
             });
         } catch {
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:210');
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
         }
     }
     if (muteChannel1 == `0`) {} else {
@@ -220,7 +223,8 @@ client.on("guildMemberAdd", async (guildMember) => {
             try {
                 return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
             } catch {
-                console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:221');
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
     }
@@ -255,7 +259,8 @@ client.on("guildMemberAdd", async (guildMember) => {
             const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
             await generalChannel1.send(attachment);
         } catch {
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:256');
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
         }
     }
 });
@@ -282,7 +287,8 @@ client.on("guildMemberRemove", async (guildMember) => {
                 embed
             });
         } catch {
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:282');
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
         }
     }
 });
@@ -293,7 +299,6 @@ client.on("guildDelete", guild => {
     console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount);
 });
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-    let nowtime = new Date();
     const guildChannels = client.getGuild.get(oldMember.guild.id);
     if (guildChannels) {
         var thisguild = client.guilds.get(guildChannels.guild);
@@ -327,14 +332,14 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
                     embed
                 });
             } catch {
-                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:327');
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
     }
 
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
-    let nowtime = new Date();
     //Twitch notifications
     if (oldMember.presence.game !== newMember.presence.game) {
         if (!newMember.presence.game) {
@@ -415,7 +420,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                         embed
                                     });
                                 } catch {
-                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:415');
+                                    let nowtime = new Date();
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
                                 }
                             } else {
                                 if (!body.results[0].background_image) {
@@ -431,7 +437,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                             embed
                                         });
                                     } catch {
-                                        console.log(nowtime + '\n' + newMember.guild.id + ': index.js:431');
+                                        let nowtime = new Date();
+                                        console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
                                     }
                                 }
                                 try {
@@ -447,7 +454,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                         embed
                                     });
                                 } catch {
-                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:447');
+                                    let nowtime = new Date();
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
                                 }
                             }
                         });
@@ -479,7 +487,8 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                     embed
                 });
             } catch {
-                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:480');
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
     }
@@ -510,7 +519,6 @@ emitter.on("item:new", (item) => {
     });
     let reddittext2 = reddittext.replace('[link]', '').replace('[comments]', '');
     let reddittext3 = reddittext2.substr(0, 1000);
-    let nowtime = new Date();
     try {
         const redditmessage = new Discord.RichEmbed()
             .setTitle(item.title.substr(0, 100))
@@ -523,7 +531,14 @@ emitter.on("item:new", (item) => {
             embed: redditmessage
         });
     } catch {
-        console.log(nowtime + '\n' + ': index.js:519');
+        if (spamRecently.has('REDDIT')) {} else {
+            spamRecently.add('REDDIT');
+            setTimeout(() => {
+                spamRecently.delete('REDDIT');
+            }, 1000);
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
+        }
     }
 });
 emitter.on("feed:error", (error) => {
@@ -559,7 +574,6 @@ client.on('message', async message => {
     if (message.author.bot) return;
     //Direct Message handle
     if (message.channel.type == "dm") {
-        let nowtime = new Date();
         console.log(nowtime + '\n' + message.author.username + '\n' + message.content);
         try {
             const whoartemis = new Discord.RichEmbed()
@@ -571,7 +585,8 @@ client.on('message', async message => {
                 embed: whoartemis
             });
         } catch {
-            console.log(nowtime + '\n' + message.guild.id + ': index.js:571');
+            let nowtime = new Date();
+            console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
         }
     }
     //load shit
@@ -671,7 +686,8 @@ client.on('message', async message => {
                     embed: hellothereguilde
                 });
             } catch {
-                console.log(nowtime + '\n' + message.guild.id + ': index.js:671');
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
     }
@@ -715,7 +731,8 @@ client.on('message', async message => {
                         embed: hellothereguilders
                     });
                 } catch {
-                    console.log(nowtime + '\n' + message.guild.id + ': index.js:714');
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
                 return client.setGuild.run(newGuild);
             }
@@ -783,7 +800,8 @@ client.on('message', async message => {
                             embed: hellothereguilder
                         });
                     } catch {
-                        console.log(nowtime + '\n' + message.guild.id + ': index.js:782');
+                        let nowtime = new Date();
+                        console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                     }
                     return client.setGuild.run(newGuild);
                 }, 5000);
@@ -821,7 +839,8 @@ client.on('message', async message => {
                     embed: hellothereguilder
                 });
             } catch {
-                console.log(nowtime + '\n' + message.guild.id + ': index.js:820');
+                let nowtime = new Date();
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
         client.setGuild.run(newGuild);
@@ -896,11 +915,11 @@ client.on('message', async message => {
                 let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
                 message.member.removeRole(memberrole).catch(console.error);
                 message.member.addRole(mutedrole).catch(console.error);
-                let nowtime = new Date();
                 try {
                     muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`);
                 } catch {
-                    console.log(nowtime + '\n' + message.guild.id + ': index.js:901');
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }
         }
@@ -951,7 +970,7 @@ client.on('message', async message => {
                     return message.channel.send(`${member} has been approved.`);
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ': index.js:950');
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }
         }
@@ -1013,7 +1032,7 @@ client.on('message', async message => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ': index.js:1012');
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }
         }
@@ -1047,7 +1066,7 @@ client.on('message', async message => {
                                 });
                             } catch {
                                 let nowtime = new Date();
-                                console.log(nowtime + '\n' + message.guild.id + ': index.js:1046');
+                                console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                             }
                         }
                     }
@@ -1068,7 +1087,7 @@ client.on('message', async message => {
             });
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + message.guild.id + ': index.js:1067');
+            console.log(nowtime + '\n' + message.guild.id + ': index.js:7 + Math.floor(ln() - 4)');
         }
     }
     if (message.content === prefix + "ping") {
@@ -1098,7 +1117,7 @@ client.on('message', async message => {
                 client.channels.get(`${channelcheck}`).send(message.content);
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + message.guild.id + ': index.js:1098');
+                console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
             return;
         }
@@ -1180,7 +1199,7 @@ client.on('message', async message => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ': index.js:1179');
+                    console.log(nowtime + '\n' + message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }).catch(err => {
                 console.error(err);
@@ -1391,7 +1410,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1390');
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }
             if (reaction.message.content === '') {
@@ -1414,7 +1433,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1413');
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
                 }
             }
             try {
@@ -1437,7 +1456,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1436');
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
         //reportdelete
@@ -1465,7 +1484,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1464');
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
     }
@@ -1492,7 +1511,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1491');
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
         if (reaction.message.content === '') {
@@ -1515,7 +1534,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1514');
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
             }
         }
         if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
@@ -1538,7 +1557,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             });
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:1537');
+            console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
         }
     }
     //reaction roles
@@ -1550,7 +1569,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
             const allroles = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(reaction.message.guild.id);
             let array2 = [];
             for (const data of allroles) {
-                array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
+                try {
+                    array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
+                } catch {
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                }
             }
             for (let n in array2) {
                 if (reaction.emoji.name == array2[n]) {

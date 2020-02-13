@@ -1,6 +1,6 @@
 const Discord = module.require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
-const nowtime = new Date();
+const ln = require('nodejs-linenumber');
 module.exports = {
     name: 'check',
     description: '[server] Role check',
@@ -31,7 +31,8 @@ module.exports = {
                         embed: check
                     })
                 } catch {
-                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:31');
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:' + Math.floor(ln() - 4));
                 }
             }
             if (args[0] == 'yes') {
@@ -53,7 +54,8 @@ module.exports = {
                         embed: check
                     })
                 } catch {
-                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:53');
+                    let nowtime = new Date();
+                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:' + Math.floor(ln() - 4));
                 }
             }
         }
