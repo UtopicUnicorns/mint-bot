@@ -1,0 +1,13 @@
+{
+    "token": "TOKEN/KEY",
+    "yandex": "TOKEN/KEY",
+    "youtubekey": "TOKEN/KEY",
+    "askkey": "TOKEN/KEY",
+    "linuxhints": ["You can use *mv* to rename a file trough your terminal.\nmv old-file-name new-file-name",
+         "Linux has a photoshop alternative that's free.\nsudo apt install gimp",
+         "You can get a readable machine specification output with Neofetch!\nsudo apt install neofetch",
+         "To edit sound files you can use Audacity.\nsudo apt install audacity",
+         "If after instalation your music files won't play use this command in your terminal:\nsudo apt-get install mint-meta-codecs",
+         "Do not forget to make regular backups/snapshots of your system!",
+         "You can update your system trough the terminal too!\nsudo apt update && sudo apt upgrade"]
+}
