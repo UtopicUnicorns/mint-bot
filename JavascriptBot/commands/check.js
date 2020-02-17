@@ -32,7 +32,7 @@ module.exports = {
                     })
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': Check.js:' + Math.floor(ln() - 4));
                 }
             }
             if (args[0] == 'yes') {
@@ -55,7 +55,7 @@ module.exports = {
                     })
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ': Check.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': Check.js:' + Math.floor(ln() - 4));
                 }
             }
         }
