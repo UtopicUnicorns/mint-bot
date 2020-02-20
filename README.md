@@ -21,12 +21,7 @@ The bot was created in response to Dyno-bot being down a lot.
     $ npm install discord.js fs canvas request node-opus simple-youtube-api ytdl-core node-ddg translate-google moment better-sqlite3 rss-emitter-ts curl html-to-text steam-searcher nodejs-linenumber
     ```
 
-6. Change `./set/prefix.txt` to
-    ```
-    !
-    ```
-
-7. Change `./config.json` to
+6. Change `./config.json` to
     ```json
     {
         "token": "DISCORD_BOT_TOKEN",
@@ -36,16 +31,10 @@ The bot was created in response to Dyno-bot being down a lot.
     }
     ```
 
-8. Time to start the bot for the very first time.  
+7. Time to start the bot for the very first time.  
   You can quit the bot with ctrl+c.
     ```sh
     while true; do node index.js; done
-    ```
-
-9. The database should have been setup now too.  
-  The first time you speak in a server with the bot it will prompt you to type in your discord chat:
-    ```
-    install auto
     ```
   This will setup a few basic channels the bot needs to function properly.
 
