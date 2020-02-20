@@ -229,7 +229,9 @@ client.on("guildMemberAdd", async (guildMember) => {
         }
     }
     //make nice image for welcoming
-    guildMember.addRole(roleadd1);
+    guildMember.addRole(roleadd1).catch(error => {
+        console.log(new Date() + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+    });
     if (generalChannel1 == '0') {} else {
         try {
             var ReBeL = guildMember.user.username;
@@ -293,10 +295,40 @@ client.on("guildMemberRemove", async (guildMember) => {
     }
 });
 client.on("guildCreate", guild => {
-    console.log("Joined a new guild: " + guild.name + " Users: " + guild.memberCount);
+    console.log("Joined a new guild: " + guild.name + " Users: " + guild.memberCount + ' Owner: ' + guild.owner.user.username);
+    newGuild1 = client.getGuild.get(guild.id);
+    if (!newGuild1) {
+        newGuild = client.getGuild.get(guild.id);
+        if (!newGuild) {
+            if (!guild.roles.find(r => r.name === `Muted`)) {
+                guild.createRole({
+                    name: `Muted`
+                });
+            }
+            if (!guild.roles.find(r => r.name === `~/Members`)) {
+                guild.createRole({
+                    name: `~/Members`
+                });
+            }
+            newGuild = {
+                guild: guild.id,
+                generalChannel: `0`,
+                highlightChannel: `0`,
+                muteChannel: `0`,
+                logsChannel: `0`,
+                streamChannel: `0`,
+                reactionChannel: `0`,
+                streamHere: `0`,
+                autoMod: `0`,
+                prefix: `!`
+            };
+            client.setGuild.run(newGuild);
+        }
+    }
 });
 client.on("guildDelete", guild => {
-    console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount);
+    console.log("Left a guild: " + guild.name + " Users: " + guild.memberCount + ' Owner: ' + guild.owner.user.username);
+    sql.prepare(`DELETE FROM guildhub WHERE guild = ${guild.id}`).run();
 });
 client.on("guildMemberUpdate", (oldMember, newMember) => {
     const guildChannels = client.getGuild.get(oldMember.guild.id);
@@ -652,182 +684,6 @@ client.on('message', async message => {
             lvl85: `0`
         };
         client.setLevel.run(newLevel);
-    }
-    //Artemis welcome
-    newGuild1 = client.getGuild.get(message.guild.id);
-    if (!newGuild1) {
-        //Greet intervals
-        if (welcomeRecently.has(message.guild.id)) {
-
-        } else {
-            //And add interval
-            welcomeRecently.add(message.guild.id);
-            setTimeout(() => {
-                welcomeRecently.delete(message.guild.id);
-            }, 1800000);
-            //Hello I am Artemis!
-            const hellothereguilde = new Discord.RichEmbed()
-                .setTitle('Thanks for choosing Artemis')
-                .setDescription('V 1.1')
-                .setURL('https://discord.gg/EVVtPpw')
-                .setColor('RANDOM')
-                .addField('Welcome new guild!\n', 'I see that you have not yet set me up properly.')
-                .addField('Setting me up is rather simple.', 'just speak the words\n`setup auto`\nand I will do the work for you')
-                .addField('You can choose to skip the setup process by speaking the words `setup skip` you can then manually set the channels with `!channelmanage`')
-                .addField('What does the setup do you ask?', 'I will look for 4 channels:\ngeneral\nmute\nlogs\nhighlights\n\nIf these are not there I will create them for you.')
-                .setFooter('Artemis is not perfect and is created by a noob called UtopicUnicorn#0383')
-                .setTimestamp();
-            message.channel.send({
-                embed: hellothereguilde
-            }).catch(error =>
-                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-            );
-        }
-    }
-    //Welcome new guild?
-    if (message.content.startsWith("setup")) {
-        let nowtime = new Date();
-        newGuild = client.getGuild.get(message.guild.id);
-        if (!newGuild) {
-            //Deny setup by any other than owner
-            if (message.author.id !== message.guild.owner.id) {
-                return message.channel.send("Only the server owner may set me up!");
-            }
-            //start setups
-            if (message.content == "setup") {
-                return message.channel.send("setup\nGeneralChannelID\nHighlightChannelID\nMuteChannelID\nLogsChannelID");
-            }
-            //skip setup setup channels to 0
-            if (message.content == "setup skip") {
-                newGuild = {
-                    guild: message.guild.id,
-                    generalChannel: `0`,
-                    highlightChannel: `0`,
-                    muteChannel: `0`,
-                    logsChannel: `0`,
-                    streamChannel: `0`,
-                    reactionChannel: `0`,
-                    streamHere: `0`,
-                    autoMod: `0`,
-                    prefix: `!`
-                };
-                const hellothereguilders = new Discord.RichEmbed()
-                    .setTitle('Setup skipped!')
-                    .setDescription('No worries, you can manually setup your channels')
-                    .setURL('https://discord.gg/EVVtPpw')
-                    .setColor('RANDOM')
-                    .addField('!channelmanage\n', 'This command allows you to manually set up your channels!')
-                    .setFooter('Artemis has more commands, check them out with !help')
-                    .setTimestamp();
-                message.channel.send({
-                    embed: hellothereguilders
-                }).catch(error =>
-                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-                );
-                return client.setGuild.run(newGuild);
-            }
-            //setup auto, create channels sets channels ID
-            if (message.content == "setup auto") {
-                if (!message.guild.roles.find(r => r.name === `Muted`)) {
-                    message.guild.createRole({
-                        name: `Muted`
-                    });
-                }
-                if (!message.guild.roles.find(r => r.name === `~/Members`)) {
-                    message.guild.createRole({
-                        name: `~/Members`
-                    });
-                }
-                if (!message.guild.channels.find(channel => channel.name === "general")) {
-                    message.guild.createChannel("general", {
-                        type: "text"
-                    });
-                }
-                if (!message.guild.channels.find(channel => channel.name === "mute")) {
-                    message.guild.createChannel("mute", {
-                        type: "text"
-                    });
-                }
-                if (!message.guild.channels.find(channel => channel.name === "logs")) {
-                    message.guild.createChannel("logs", {
-                        type: "text"
-                    });
-                }
-                if (!message.guild.channels.find(channel => channel.name === "highlights")) {
-                    message.guild.createChannel("highlights", {
-                        type: "text"
-                    });
-                }
-                setTimeout(() => {
-                    let gcheck = message.guild.channels.find(channel => channel.name === "general").id;
-                    let mcheck = message.guild.channels.find(channel => channel.name === "mute").id;
-                    let lcheck = message.guild.channels.find(channel => channel.name === "logs").id;
-                    let hcheck = message.guild.channels.find(channel => channel.name === "highlights").id;
-                    newGuild = {
-                        guild: message.guild.id,
-                        generalChannel: gcheck,
-                        highlightChannel: hcheck,
-                        muteChannel: mcheck,
-                        logsChannel: lcheck,
-                        streamChannel: `0`,
-                        reactionChannel: `0`,
-                        streamHere: `0`,
-                        autoMod: `0`,
-                        prefix: `!`
-                    };
-                    const hellothereguilder = new Discord.RichEmbed()
-                        .setTitle('Channels have been set up!')
-                        .setDescription('Here is a list of commands')
-                        .setURL('https://discord.gg/EVVtPpw')
-                        .setColor('RANDOM')
-                        .addField('!join !leave\n', 'Are the main ways to join/leave a role')
-                        .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
-                        .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
-                        .setFooter('Artemis has more commands, check them out with !help')
-                        .setTimestamp();
-                    message.channel.send({
-                        embed: hellothereguilder
-                    }).catch(error =>
-                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-                    );
-                    return client.setGuild.run(newGuild);
-                }, 5000);
-            }
-            //Manually setup all channels if present
-            let newGuildArgs = message.content.slice().split('\n');
-            if (!newGuildArgs[1]) return;
-            if (!newGuildArgs[2]) return message.channel.send("Provide a highlightChannel ID!");
-            if (!newGuildArgs[3]) return message.channel.send("Provide a muteChannel ID!");
-            if (!newGuildArgs[4]) return message.channel.send("Provide a logsChannel ID!");
-            newGuild = {
-                guild: message.guild.id,
-                generalChannel: newGuildArgs[1],
-                highlightChannel: newGuildArgs[2],
-                muteChannel: newGuildArgs[3],
-                logsChannel: newGuildArgs[4],
-                streamChannel: `0`,
-                reactionChannel: `0`,
-                streamHere: `0`,
-                autoMod: `0`,
-                prefix: `!`
-            };
-            const hellothereguilder = new Discord.RichEmbed()
-                .setTitle('Channels have been set up!')
-                .setDescription('Here is a list of commands')
-                .setURL('https://discord.gg/EVVtPpw')
-                .setColor('RANDOM')
-                .addField('!join !leave\n', 'Are the main ways to join/leave a role')
-                .addField('!rolemanage', 'Is the command used to add/remove roles to the self assignable role list.')
-                .addField('!board !level', 'These commands hold the top chatter and extra info including warnings')
-                .setFooter('Artemis has more commands, check them out with !help')
-                .setTimestamp();
-            message.channel.send({
-                embed: hellothereguilder
-            }).catch(error =>
-                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-            );
-        }
-        client.setGuild.run(newGuild);
     }
     //autoMod START
     if (message.member.hasPermission('KICK_MEMBERS')) {} else {
@@ -1557,14 +1413,14 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     if (!haverole) {
                         guildMember.addRole(role).catch(console.error);
                         reaction.remove(user.id);
-                        client.channels.get(reactionChannel1.id).send(user + " Joined " + role)
+                        client.channels.get(reactionChannel1.id).send(user + " Joined " + role.name)
                             .then(message => {
                                 message.delete(5000)
                             });
                     } else {
                         guildMember.removeRole(role).catch(console.error);
                         reaction.remove(user.id);
-                        client.channels.get(reactionChannel1.id).send(user + " Left " + role)
+                        client.channels.get(reactionChannel1.id).send(user + " Left " + role.name)
                             .then(message => {
                                 message.delete(5000)
                             });

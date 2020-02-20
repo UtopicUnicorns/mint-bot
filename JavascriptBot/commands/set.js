@@ -139,9 +139,10 @@ module.exports = {
             //prefix
             if (args[1] == `prefix`) {
                 if (!args[2]) return message.channel.send(`Specify a prefix!!`);
-                prefixstart.prefix = args[2];
+                let zwargs = message.content.slice(prefix.length + 11);
+                prefixstart.prefix = zwargs;
                 setGuild.run(prefixstart);
-                message.channel.send('Prefix set to ' + args[2]);
+                message.channel.send('Prefix set to ' + zwargs);
             }
             //
         }
