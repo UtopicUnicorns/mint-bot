@@ -3,7 +3,7 @@ const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'set',
-    description: `[mod] \nset mute MENTION\nset unmute MENTION\nset gif chanID\nset ungif chanID`,
+    description: `[mod] \nset mute MENTION\nset unmute MENTION\nset prefix prefix`,
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
@@ -101,40 +101,6 @@ module.exports = {
                 userscore.muted = `0`;
                 userscore.warning = pointsToAdd;
                 setScore.run(userscore);
-            }
-            //gif
-            if (args[1] == `gif`) {
-                if (!args[2]) return message.channel.send(`Specify a channel name!`);
-                let element = args[2];
-                let filter = fs.readFileSync('./set/gif.txt').toString().split(`\n`);
-                if (!filter.includes(element)) {
-                    fs.appendFile('./set/gif.txt', '\n' + element, function (err) {
-                        if (err) throw err;
-                    })
-                    return message.channel.send(element + ` now has a gif filter!`);
-                } else {
-                    message.channel.send(args[2] + ` already has a gif filter in place!`);
-                }
-            }
-            //ungif
-            if (args[1] == `ungif`) {
-                if (!args[2]) return message.channel.send(`Specify a channel name!`);
-                let filter = fs.readFileSync('./set/gif.txt').toString().split(`\n`);
-                if (filter.includes(args[2])) {
-                    let array = fs.readFileSync('./set/gif.txt').toString().split(`\n`);
-                    let element = args[2];
-                    let str = ``;
-                    for (let i of array) {
-                        if (i != element)
-                            str += i + '\n';
-                    }
-                    fs.writeFile(`./set/gif.txt`, str, (error) => {
-                        if (error) throw error;
-                    })
-                    return message.channel.send(element + ` has no gif filter now!`);
-                } else {
-                    message.channel.send(args[2] + ` does not have a gif filter!`);
-                }
             }
             //prefix
             if (args[1] == `prefix`) {
