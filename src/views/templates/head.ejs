@@ -105,7 +105,7 @@
   }
 
   .box-shadow {
-    border-radius: 25%;
+    border-radius: 25px;
     box-shadow: -5px -5px 5px 0 rgba(48, 48, 48, 0.582);
     transition: box-shadow 500ms;
   }
@@ -117,7 +117,7 @@
   .example {
     position: relative;
     padding: 0;
-    border-radius: 25%;
+    border-radius: 25px;
     display: block;
     cursor: pointer;
   }
@@ -128,7 +128,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 25%;
+    border-radius: 25px;
     width: 169px;
     height: 90px;
     -webkit-transition: all 400ms ease-out;
@@ -136,6 +136,25 @@
     -o-transition: all 400ms ease-out;
     -ms-transition: all 400ms ease-out;
     transition: all 400ms ease-out;
+    text-align: center;
+  }
+
+  .topthing {
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    left: 90px;
+    border-radius: 25px;
+    text-align: center;
+    transition-duration: 0.4s;
+  }
+  .topthing:hover {
+    font-size: 20px;
+    position: absolute;
+    text-shadow: 5px 5px rgb(53, 177, 15);
+    top: 0;
+    left: 90px;
+    border-radius: 25px;
     text-align: center;
   }
 

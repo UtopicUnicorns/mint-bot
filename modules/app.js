@@ -13,14 +13,17 @@ const {
 
 // Util modules
 const chalk = require('chalk');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const log = console.log;
 
 // Run
 exports.run = (client, config) => {
 
   /*
-* App setup
-*/
+   * App setup
+   */
 
   // App view
   app.set('view engine', 'ejs');
@@ -29,6 +32,8 @@ exports.run = (client, config) => {
   // Asset directories
   app.use('/static', express.static('./src/add'));
   app.use('/static', express.static('./src/plugins'));
+  //app.use('/.well-known', express.static('./src/.well-known'));
+
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(session({
@@ -42,22 +47,22 @@ exports.run = (client, config) => {
 
   // passport login strategy
   passport.use(new DiscordStrategy({
-        clientID: client.user.id,
-        clientSecret: config.clientSecret,
-        callbackURL: config.redirectURI,
-        scope: ["identify"]
-      },
-      function(accessToken, refreshToken, profile, done) {
-        //Handle Database Query Addition Here.
-        //console.log(profile);
-        return done(null, profile);
-      }
+      clientID: client.user.id,
+      clientSecret: config.clientSecret,
+      callbackURL: config.redirectURI,
+      scope: ["identify"]
+    },
+    function (accessToken, refreshToken, profile, done) {
+      //Handle Database Query Addition Here.
+      //console.log(profile);
+      return done(null, profile);
+    }
   ));
 
-  passport.serializeUser(function(u, d) {
+  passport.serializeUser(function (u, d) {
     d(null, u);
   });
-  passport.deserializeUser(function(u, d) {
+  passport.deserializeUser(function (u, d) {
     d(null, u);
   });
 
@@ -69,19 +74,27 @@ exports.run = (client, config) => {
     guilds: client.guilds.size
   };
 
-  function accountImage (user) {
-    return `<img src="${"https://cdn.discordapp.com/avatars/" + user.id + "/" + user.avatar + ".png"}" class="img-circle elevation-2" alt="User Image"></img>`
+  function accountImage(user) {
+    return `<img src="${"https://cdn.discordapp.com/avatars/" + user.id + "/" + user.avatar + ".png"}" width="90px" height="90px" alt="User Image"></img>`
   }
 
   /*
-  * Routing
-  */
+   * Routing
+   */
   // Index page
   app.get('/', (req, res) => {
     if (!req.session.user) {
-      res.redirect('/auth/discord');
+      res.render('index2', {
+        page: "dashboard",
+        botInfo: botInfo,
+      });
     } else {
-      res.render('index', {page: "dashboard", botInfo: botInfo, userInfo: req.session.user, image: accountImage(req.session.user)});
+      res.render('index', {
+        page: "dashboard",
+        botInfo: botInfo,
+        userInfo: req.session.user,
+        image: accountImage(req.session.user)
+      });
       //res.send(`Hello ${req.session.user.username}`);
     }
   });
@@ -89,15 +102,35 @@ exports.run = (client, config) => {
   // Authorizing pages
   app.get("/auth/discord", passport.authenticate("discord.js"));
   // Callback for the Discord login
-  app.get("/auth/discord/callback", passport.authenticate("discord.js", { failureRedirect: "/auth/discord/error" }), function(req, res) {
+  app.get("/auth/discord/callback", passport.authenticate("discord.js", {
+    failureRedirect: "/auth/discord/error"
+  }), function (req, res) {
     // Accessing the user object easier
     req.session.user = req.session.passport.user;
     // Successful authentication, redirect home.
     res.redirect("/");
   });
+  const privateKey = fs.readFileSync('/etc/letsencrypt/live/artemisbot.eu/privkey.pem', 'utf8');
+  const certificate = fs.readFileSync('/etc/letsencrypt/live/artemisbot.eu/cert.pem', 'utf8');
+  const ca = fs.readFileSync('/etc/letsencrypt/live/artemisbot.eu/chain.pem', 'utf8');
 
-  // Listener
-  app.listen(config.port, () => {
-    log('INFO >> ' + chalk.green('Dashboard is running on port ' + config.port));
+  const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca
+  };
+  const httpServer = http.createServer(app);
+  const httpsServer = https.createServer(credentials, app);
+
+  httpServer.listen(80, () => {
+    console.log('HTTP Server running on port 80');
   });
+
+  httpsServer.listen(443, () => {
+    console.log('HTTPS Server running on port 443');
+  });
+  // Listener
+  //app.listen(config.port, () => {
+  //  log('INFO >> ' + chalk.green('Dashboard is running on port ' + config.port));
+  //});
 }
