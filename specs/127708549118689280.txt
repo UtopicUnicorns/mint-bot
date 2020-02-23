@@ -1,0 +1,12 @@
+librorum@prohibitorum 
+--------------------- 
+OS: Utopic Unicorn OS x86_64 
+Host: MS-7918 1.0 
+Kernel: 5.5.2-arch1-1 
+Packages: 870 
+DE: Cinnamon 4.4.8 
+CPU: Intel i7-4790 (8) @ 4.000GHz [34.0°C] 
+GPU: NVIDIA GeForce GTX 960 
+Memory: 3087MiB / 16027MiB (19%) 
+GPU Driver: NVIDIA 440.59 
+Disk (/): 169G / 442G (41%)

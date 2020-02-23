@@ -1,0 +1,18 @@
+dps@vulcan 
+---------- 
+OS: Ubuntu 19.10 x86_64 
+Host: JinGang GTX Standard 
+Kernel: 5.3.0-29-generic 
+Uptime: 28 mins 
+Packages: 2531 (dpkg), 8 (flatpak), 22 (snap) 
+Shell: bash 5.0.3 
+Resolution: 3840x2160 
+DE: GNOME 3.34.1 
+WM: GNOME Shell 
+WM Theme: Adwaita 
+Theme: Qogir-light [GTK2/3] 
+Icons: Tela-grey [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: Intel i7-7700HQ (8) @ 3.800GHz 
+GPU: NVIDIA GeForce GTX 1060 Mobile 
+Memory: 2936MiB / 15972MiB

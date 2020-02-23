@@ -1,0 +1,20 @@
+azad@azad 
+--------- 
+OS: openSUSE Tumbleweed x86_64 
+Host: Aspire A717-72G V1.19 
+Kernel: 5.3.12-2-default 
+Uptime: 36 mins 
+Packages: 2980 (rpm) 
+Shell: bash 5.0.11 
+Resolution: 1920x1080 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: Default 
+Theme: Adwaita-dark [GTK2], Adwaita [GTK3] 
+Icons: Papirus-Dark [GTK2], Adwaita [GTK3] 
+Terminal: xfce4-terminal 
+Terminal Font: Monospace 12 
+CPU: Intel i7-8750H (12) @ 2.200GHz 
+GPU: Intel UHD Graphics 630 
+GPU: NVIDIA GeForce GTX 1050 Mobile 
+Memory: 1889MiB / 15844MiB

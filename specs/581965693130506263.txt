@@ -1,0 +1,17 @@
+OS: Ubuntu 19.10 x86_64 
+Host: HP Stream Laptop 14-ds0xxx 
+Kernel: 5.3.0-23-generic 
+Uptime: 1 hour, 10 mins 
+Packages: 2069 (dpkg), 8 (snap) 
+Shell: bash 5.0.3 
+Resolution: 1366x768 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: Adapta-Nokto 
+Theme: Adapta-Nokto-Eta [GTK2], Greybird [GTK3] 
+Icons: Papirus-Dark [GTK2], elementary-xfce-darker [GTK3] 
+Terminal: xfce4-terminal 
+Terminal Font: DejaVu Sans Mono 9 
+CPU: AMD A4-9120e RADEON R3 2C+2G (2) @ 1.500GHz 
+GPU: AMD ATI Radeon R2/R3/R4/R5 Graphics 
+Memory: 2089MiB / 3862MiB

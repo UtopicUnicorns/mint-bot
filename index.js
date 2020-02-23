@@ -8,6 +8,9 @@ const Client = require('./client/Client');
 const {
     token,
     yandex,
+    SESSION_SECRET,
+    CLIENT_SECRET,
+    REDIRECT_URI,
     linuxhints
 } = require('./config.json');
 const SQLite = require("better-sqlite3");
@@ -26,6 +29,12 @@ const {
     FeedEmitter
 } = require("rss-emitter-ts");
 const emitter = new FeedEmitter();
+const oAuth = Discord.OAuth2Application;
+// dotenv
+require('dotenv').config();
+// Dashboard package
+const dashboard = require("./discord-bot-dashboard.js");
+//
 const htmlToText = require('html-to-text');
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
@@ -130,6 +139,7 @@ client.once('ready', () => {
             }
         }
     }
+    dashboard.run(client, { port: 80, clientSecret: CLIENT_SECRET, redirectURI: REDIRECT_URI}, oAuth);
 });
 client.once('reconnecting', () => {
     let nowtime = new Date();

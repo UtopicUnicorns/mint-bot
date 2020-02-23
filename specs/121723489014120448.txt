@@ -1,0 +1,13 @@
+OS: TrapOS x86_64 
+Kernel: 5.4.12-arch1-1 
+Shell: bash 5.0.11 
+Resolution: 1920x1080, 1920x1080, 2560x1440 
+DE: Plasma 
+WM: KWin 
+WM Theme: Breeze 
+Theme: Breeze-Dark [GTK2/3] 
+Icons: breeze-dark [GTK2/3] 
+Terminal: konsole 
+CPU: AMD Ryzen 9 3950X 16- (32) @ 4.000GHz 
+GPU: NVIDIA GeForce RTX 2080 Ti Rev. A 
+Memory: 32091MiB

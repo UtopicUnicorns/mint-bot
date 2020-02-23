@@ -1,0 +1,18 @@
+dominik@desktop 
+--------------- 
+OS: Debian GNU/Linux bullseye/sid x86_64 
+Host: Inspiron 3847 
+Kernel: 5.4.0-3-amd64 
+Uptime: 2 days, 1 hour, 5 mins 
+Packages: 2571 (dpkg), 2 (snap) 
+Shell: bash 5.0.11 
+Resolution: 1920x1080 
+DE: GNOME 3.34.3 
+WM: Mutter 
+WM Theme: Adwaita 
+Theme: Flat-Remix-GTK-Blue-Dark-Solid [GTK2/3] 
+Icons: Flat-Remix-Blue-Dark [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: Intel i5-4460 (4) @ 3.400GHz 
+GPU: NVIDIA GeForce GTX 1050 Ti 
+Memory: 16033MiB

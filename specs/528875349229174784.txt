@@ -1,0 +1,18 @@
+luxorr@heisenberger 
+------------------- 
+OS: Linux Mint 19.3 Tricia x86_64 
+Host: X507UA 1.0 
+Kernel: 5.3.0-24-generic 
+Uptime: 38 mins 
+Packages: 2566 
+Shell: bash 4.4.20 
+Resolution: 1920x1080 
+DE: Cinnamon 4.4.5 
+WM: Mutter (Muffin) 
+WM Theme: Flat-Remix-GTK-Blue-Darkest-Solid-NoBorder (Flat-Remix-GTK-Blue-Darkest-Solid-NoBorder) 
+Theme: Flat-Remix-GTK-Blue-Darkest-Solid-NoBorder [GTK2/3] 
+Icons: Flat-Remix-Blue-Dark [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: Intel i3-6006U (4) @ 2.000GHz 
+GPU: Intel HD Graphics 520 
+Memory: 1577MiB / 7845MiB

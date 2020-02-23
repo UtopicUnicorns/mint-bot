@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include ("templates/head.ejs") %>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper">
+
+    <%- include ("templates/top.ejs") %>
+
+    <table width="500" border="0" align="center">
+      <tr>
+        <th scope="col">
+          <div id="TabbedPanels1" class="TabbedPanels">
+            <ul class="TabbedPanelsTabGroup">
+              <li class="TabbedPanelsTab" tabindex="0">Start</li>
+              <li class="TabbedPanelsTab" tabindex="0">Setup</li>
+            </ul>
+            <div class="TabbedPanelsContentGroup">
+              <div class="TabbedPanelsContent" align="left">
+                <li>Clone or download the bot files
+                <li>Download and Install node.js and NPM (usually comes in one package)
+                <li>Install build-essentials trough your regular package manager
+                <li>Download and Install ffmpeg
+                <li>Install the project dependencies<br>
+                  <ul>npm install</ul>
+                <li>In the file ./config.json change the tokens/keys
+                <li>To start the bot simple start a terminal in your bot folder and type:
+                  <ul>while true; do node index.js; done</ul>
+                <li>If your server is completely new, then you can allow Artemis to setup herself by typing in the
+                  discord channal chat:
+                  <ul>setup auto</ul>
+              </div>
+              <div class="TabbedPanelsContent" align="left">
+                These are some essential commands you type in your Discord channel where Artemis is.
+                <li>!channelmanage
+                  <ul>This will allow you to change and check the setup channels. Artemis will use a various amount of
+                    channels to display different content.</ul>
+                <li>!levelmanage
+                  <ul>This will allow you to set level up roles.</ul>
+                <li>!rolemanage
+                  <ul>To make !join and !leave usable you have to add roles to the database, so that it can be used. You
+                    can also use this in combination with reaction roles: If the role name and emote name are exactly
+                    the same then if Artemis has a reaction channel setup in there you can add the emote to a message to
+                    make it a reaction role. reactions for custom emojis are made with !react</ul>
+                <li>!streamping
+                  <ul>If you have a streams channel setup (for twitch) then you can use this command !streamping on/off
+                    to enable @here notifications.</ul>
+              </div>
+            </div>
+          </div>
+        </th>
+      </tr>
+    </table>
+    <h3><%- botInfo.username %> is <%- botInfo.status %></h3>
+
+    <h3><%- botInfo.users %></h3>
+    <p>users</p>
+
+    <h3><%- botInfo.guilds %></h3>
+    <p>guilds</p>
+    <p><%= userInfo.username %></p>
+    <%- include ("templates/bottom.ejs") %>
+
+</body>
+
+</html>
