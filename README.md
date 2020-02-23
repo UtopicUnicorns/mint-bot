@@ -12,13 +12,11 @@ The bot was created in response to Dyno-bot being down a lot.
 
 1. Clone or download the bot files
 2. Download and Install node.js and NPM (usually comes in one package)
-3. Download and install Python 2.7
 4. Download and Install ffmpeg
 
-5. Configure `npm` and install the project dependencies
+5. Install the project dependencies
     ```sh 
-    $ npm config set python python2.7
-    $ npm install discord.js fs canvas request node-opus simple-youtube-api ytdl-core node-ddg translate-google moment better-sqlite3 rss-emitter-ts curl html-to-text steam-searcher nodejs-linenumber
+    $ npm install
     ```
 
 6. Change `./config.json` to
