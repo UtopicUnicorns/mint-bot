@@ -4,7 +4,7 @@ const steam = require('steam-searcher');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'proton',
-    description: '[general] Search the ProtonDB',
+    description: '[linux] Search the ProtonDB',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

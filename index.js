@@ -139,7 +139,11 @@ client.once('ready', () => {
             }
         }
     }
-    dashboard.run(client, { port: 80, clientSecret: CLIENT_SECRET, redirectURI: REDIRECT_URI}, oAuth);
+    dashboard.run(client, {
+        port: 80,
+        clientSecret: CLIENT_SECRET,
+        redirectURI: REDIRECT_URI
+    }, oAuth);
 });
 client.once('reconnecting', () => {
     let nowtime = new Date();
@@ -656,30 +660,6 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
-    //Reaction roles
-    if (message.content.startsWith(prefix + "reaction")) {
-        if (!message.channel.guild) return;
-        message.channel.send("Available roles");
-        const allroles2 = sql.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
-        let array3 = [];
-        for (const data of allroles2) {
-            array3.push(message.guild.roles.find(r => r.id == data.roles).name);
-        }
-        let channelstuff = client.channels.get(message.channel.id);
-        channelstuff.fetchMessages({
-                limit: 1
-            }).then(messages => {
-                for (let n in array3) {
-                    if (n > 19) return;
-                    var emoji3 = [message.guild.emojis.find(r => r.name == array3[n])];
-                    for (let i in emoji3) {
-                        let lastMessage = messages.first();
-                        lastMessage.react(emoji3[i]);
-                    }
-                }
-            })
-            .catch(console.error);
-    }
     //levelupstuff
     newLevel = client.getLevel.get(message.guild.id);
     if (!newLevel) {
@@ -843,14 +823,6 @@ client.on('message', async message => {
         }
         message.channel.send("Done");
     };
-    //reloadprefix
-    if (message.content === "forceprefix") {
-        if (!message.member.hasPermission('KICK_MEMBERS')) return;
-        fs.writeFile(`./set/prefix.txt`, '!', (error) => {
-            if (error) throw error;
-        })
-        message.channel.send("Forced prefix back to !");
-    }
     //update
     if (message.content.startsWith(prefix + "update")) {
         if (message.author.id !== '127708549118689280') return;
@@ -878,40 +850,6 @@ client.on('message', async message => {
                 } catch {
                     let nowtime = new Date();
                     console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4));
-                }
-            }
-        }
-    }
-    //Logs
-    const commandusage = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-    for (const file of commandusage) {
-        const commandlogger = require(`./commands/${file}`);
-        if (message.content.startsWith(prefix + commandlogger.name) && commandlogger.description.includes(`[mod]` || `[admin]`)) {
-            if (logsChannel1 == '0') {} else {
-                if (message.channel.id == '642882039372185609') {} else {
-                    if (message.member.hasPermission('KICK_MEMBERS')) {
-                        if (spamRecently.has(message.author.id + message.guild.id)) {} else {
-                            spamRecently.add(message.author.id + message.guild.id);
-                            setTimeout(() => {
-                                spamRecently.delete(message.author.id + message.guild.id);
-                            }, 1000);
-                            const logsmessage = new Discord.RichEmbed()
-                                .setTitle(commandlogger.name)
-                                .setAuthor(message.author.username, message.author.avatarURL)
-                                .setDescription("Used by: " + message.author)
-                                .setURL(message.url)
-                                .setColor('RANDOM')
-                                .addField('Usage:\n', message.content, true)
-                                .addField('Channel', message.channel, true)
-                                .setFooter("Message ID: " + message.id)
-                                .setTimestamp();
-                            logsChannel1.send({
-                                embed: logsmessage
-                            }).catch(error =>
-                                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-                            );
-                        }
-                    }
                 }
             }
         }

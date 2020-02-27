@@ -3,7 +3,7 @@ const Canvas = require('canvas');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'level',
-    description: '[general] Show your points and level',
+    description: '[level] Show your points and level',
     async execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

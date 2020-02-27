@@ -15,6 +15,30 @@ module.exports = {
             if (automodNotif.autoMod != `2`) {
                 automodNotif.autoMod = `2`;
                 setGuild.run(automodNotif);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'automod')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
                 return message.reply("AutoMod is turned ON!");
             } else {
                 return message.reply("AutoMod is already ON!");
@@ -26,6 +50,30 @@ module.exports = {
             if (automodNotif.autoMod != `1`) {
                 automodNotif.autoMod = `1`;
                 setGuild.run(automodNotif);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'automod')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
                 return message.reply("AutoMod is turned OFF!");
             } else {
                 return message.reply("AutoMod is already OFF!");

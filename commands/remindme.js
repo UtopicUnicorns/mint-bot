@@ -9,7 +9,7 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         //check reminder
-        if (reminder.has(message.author.id, message.guild.id)) {
+        if (reminder.has(message.author.id + message.id)) {
             const reminderemb = new Discord.RichEmbed()
                 .setTitle('Reminder already set')
                 .setAuthor(message.author.username, message.author.avatarURL)
@@ -32,18 +32,17 @@ module.exports = {
             if (args[1] == 'h' || args[1] == 'hour' || args[1] == 'hours') {
                 var settime = Math.floor(args[0] * 3600000)
             }
-            reminder.add(message.author.id, message.guild.id);
+            reminder.add(message.author.id + message.id);
             message.reply("Reminder has been set!");
             setTimeout(() => {
-                reminder.delete(message.author.id, message.guild.id);
+                reminder.delete(message.author.id + message.id);
                 message.reply("PING!");
                     const reminderemb2 = new Discord.RichEmbed()
                         .setTitle('REMIND ALERT')
                         .setAuthor(message.author.username, message.author.avatarURL)
                         .setDescription(message.author)
-                        .addField('Reminder: ', message.content.slice(10))
+                        .addField('Reminder: ', args.slice(2).join(" ") + '!')
                         .setColor('RANDOM')
-                        .setFooter('Reminder already set!')
                     message.channel.send({
                         embed: reminderemb2
                     });

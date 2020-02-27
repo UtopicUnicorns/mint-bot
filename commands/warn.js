@@ -66,6 +66,30 @@ module.exports = {
             muteChannel1.send(user + ", You have collected 3 warnings, you have been muted by our system.");
         }
         setScore.run(userscore);
+        //LOGS
+        const guildChannels2 = getGuild.get(message.guild.id);
+        var logger = message.guild.channels.get(guildChannels2.logsChannel);
+        if (!logger) {
+            var logger = '0';
+        }
+        if (logger == '0') {} else {
+            const logsmessage = new Discord.RichEmbed()
+                .setTitle(prefix + 'warn')
+                .setAuthor(message.author.username, message.author.avatarURL)
+                .setDescription("Used by: " + message.author)
+                .setURL(message.url)
+                .setColor('RANDOM')
+                .addField('Usage:\n', message.content, true)
+                .addField('Channel', message.channel, true)
+                .setFooter("Message ID: " + message.id)
+                .setTimestamp();
+            logger.send({
+                embed: logsmessage
+            }).catch(error =>
+                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            );
+        }
+        //
         return message.channel.send(`${user} has been warned!\nYou have ${userscore.warning} warning(s)`);
     }
 };

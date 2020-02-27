@@ -7,7 +7,7 @@ const {
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'ask',
-    description: '[general] Ask Ubuntu api',
+    description: '[linux] Ask Ubuntu api',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

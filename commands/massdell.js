@@ -20,6 +20,30 @@ module.exports = {
             for (let i of array) {
                 str += await i.removeRole(role).catch(console.error);
             }
+            //LOGS
+            const guildChannels = getGuild.get(message.guild.id);
+            var logger = message.guild.channels.get(guildChannels.logsChannel);
+            if (!logger) {
+                var logger = '0';
+            }
+            if (logger == '0') {} else {
+                const logsmessage = new Discord.RichEmbed()
+                    .setTitle(prefix + 'massdel')
+                    .setAuthor(message.author.username, message.author.avatarURL)
+                    .setDescription("Used by: " + message.author)
+                    .setURL(message.url)
+                    .setColor('RANDOM')
+                    .addField('Usage:\n', message.content, true)
+                    .addField('Channel', message.channel, true)
+                    .setFooter("Message ID: " + message.id)
+                    .setTimestamp();
+                logger.send({
+                    embed: logsmessage
+                }).catch(error =>
+                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                );
+            }
+            //
             message.channel.send(`Done! deleted ${role}`);
             console.log("done");
         }

@@ -2,7 +2,7 @@ const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'specs',
-    description: '[general] Add your hardware specifications to !userinfo',
+    description: '[linux] Add your hardware specifications to !userinfo',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

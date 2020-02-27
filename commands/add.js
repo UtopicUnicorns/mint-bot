@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'add',
-    description: '[admin] Give a user points or take them',
+    description: '[mscore] Give a user points or take them',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
@@ -34,6 +34,30 @@ module.exports = {
         let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
         userscore.level = userLevel;
         setScore.run(userscore);
+        //LOGS
+        const guildChannels = getGuild.get(message.guild.id);
+        var logger = message.guild.channels.get(guildChannels.logsChannel);
+        if (!logger) {
+            var logger = '0';
+        }
+        if (logger == '0') {} else {
+            const logsmessage = new Discord.RichEmbed()
+                .setTitle(prefix + 'add')
+                .setAuthor(message.author.username, message.author.avatarURL)
+                .setDescription("Used by: " + message.author)
+                .setURL(message.url)
+                .setColor('RANDOM')
+                .addField('Usage:\n', message.content, true)
+                .addField('Channel', message.channel, true)
+                .setFooter("Message ID: " + message.id)
+                .setTimestamp();
+            logger.send({
+                embed: logsmessage
+            }).catch(error =>
+                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            );
+        }
+        //
         return message.channel.send(`${user} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
     }
 };

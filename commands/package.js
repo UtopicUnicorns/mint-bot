@@ -3,7 +3,7 @@ const request = require("request");
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'package',
-    description: '[general] Searches Ubuntu/Mint packages',
+    description: '[linux] Searches Ubuntu/Mint packages',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

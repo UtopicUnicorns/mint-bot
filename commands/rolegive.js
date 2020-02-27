@@ -13,9 +13,57 @@ module.exports = {
         let check = message.mentions.members.first().roles.some(r => [`${args[2]}`].includes(r.name));
         if (!check) {
             member.addRole(rolegive).catch(console.error);
+            //LOGS
+            const guildChannels = getGuild.get(message.guild.id);
+            var logger = message.guild.channels.get(guildChannels.logsChannel);
+            if (!logger) {
+                var logger = '0';
+            }
+            if (logger == '0') {} else {
+                const logsmessage = new Discord.RichEmbed()
+                    .setTitle(prefix + 'rolegive')
+                    .setAuthor(message.author.username, message.author.avatarURL)
+                    .setDescription("Used by: " + message.author)
+                    .setURL(message.url)
+                    .setColor('RANDOM')
+                    .addField('Usage:\n', message.content, true)
+                    .addField('Channel', message.channel, true)
+                    .setFooter("Message ID: " + message.id)
+                    .setTimestamp();
+                logger.send({
+                    embed: logsmessage
+                }).catch(error =>
+                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                );
+            }
+            //
             return message.channel.send(`Gave ${member} the following role: **${args[2]}**!`);
         }
         member.removeRole(rolegive).catch(console.error);
+        //LOGS
+        const guildChannels = getGuild.get(message.guild.id);
+        var logger = message.guild.channels.get(guildChannels.logsChannel);
+        if (!logger) {
+            var logger = '0';
+        }
+        if (logger == '0') {} else {
+            const logsmessage = new Discord.RichEmbed()
+                .setTitle(prefix + 'rolegive')
+                .setAuthor(message.author.username, message.author.avatarURL)
+                .setDescription("Used by: " + message.author)
+                .setURL(message.url)
+                .setColor('RANDOM')
+                .addField('Usage:\n', message.content, true)
+                .addField('Channel', message.channel, true)
+                .setFooter("Message ID: " + message.id)
+                .setTimestamp();
+            logger.send({
+                embed: logsmessage
+            }).catch(error =>
+                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            );
+        }
+        //
         message.channel.send(`Took the following role: **${args[2]}** from: ${member}!`);
     },
 };

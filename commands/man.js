@@ -4,7 +4,7 @@ const htmlToText = require('html-to-text');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'man',
-    description: '[general] Shows linux manual pages',
+    description: '[linux] Shows linux manual pages',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

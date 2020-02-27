@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'join',
-    description: '[general] Join a self assignable role',
+    description: '[level] Join a self assignable role',
     execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

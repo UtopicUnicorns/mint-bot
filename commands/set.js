@@ -54,6 +54,30 @@ module.exports = {
                 }
                 userscore.muted = `1`;
                 setScore.run(userscore);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'set mute')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
                 muteChannel1.send(user + ', You have been muted!');
                 setTimeout(() => {
                     muteChannel1.overwritePermissions(member, {
@@ -101,6 +125,30 @@ module.exports = {
                 userscore.muted = `0`;
                 userscore.warning = pointsToAdd;
                 setScore.run(userscore);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'set unmute')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
             }
             //prefix
             if (args[1] == `prefix`) {
@@ -109,6 +157,30 @@ module.exports = {
                 prefixstart.prefix = zwargs;
                 setGuild.run(prefixstart);
                 message.channel.send('Prefix set to ' + zwargs);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'set prefix')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
             }
             //
         }
