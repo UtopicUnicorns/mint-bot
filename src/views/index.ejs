@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%- include ("templates/head.ejs") %>
+</head>
+
+<body>
+
+  <%- include ("templates/top.ejs") %>
+
+  <table width="500" border="0" align="center">
+    <tr>
+      <th scope="col">
+        <div id="TabbedPanels1" class="TabbedPanels">
+          <ul class="TabbedPanelsTabGroup">
+            <li class="TabbedPanelsTab" tabindex="0">Connections</li>
+            <li class="TabbedPanelsTab" tabindex="0">Commands</li>
+            <li class="TabbedPanelsTab" tabindex="0">Control Panel</li>
+          </ul>
+          <div class="TabbedPanelsContentGroup">
+            <div class="TabbedPanelsContent" align="left">
+              <%- data %>
+            </div>
+            <div class="TabbedPanelsContent" align="left">
+              <%- commands1 %>
+              <%- commands2 %>
+              <%- commands3 %>
+              <%- commands4 %>
+              <%- commands5 %>
+              <%- commands6 %>
+              <%- commands7 %>
+              <%- commands8 %>
+              <%- commands9 %>
+              <%- commands10 %>
+            </div>
+            <div class="TabbedPanelsContent" align="left">
+              <%- data2 %>
+            </div>
+          </div>
+        </div>
+      </th>
+    </tr>
+  </table>
+
+  <%- include ("templates/bottom.ejs") %>
+
+</body>
+
+</html>

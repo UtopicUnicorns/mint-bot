@@ -1,0 +1,44 @@
+const Discord = require('discord.js');
+const db = require('better-sqlite3')('./scores.sqlite');
+const ln = require('nodejs-linenumber');
+module.exports = {
+    name: 'nick',
+    description: '[mod] Change a user nickname',
+    async execute(message) {
+        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+        const prefixstart = getGuild.get(message.guild.id);
+        const prefix = prefixstart.prefix;
+        if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        const user = message.mentions.users.first();
+        if (!user) return message.reply("You must mention someone!");
+        const args = message.content.slice(prefix.length + user.id.length + 10);
+        if (!args) return message.reply("You must give a new nickname!");
+        let nowtime = new Date();
+        message.guild.members.get(user.id).setNickname(args).catch(console.log(nowtime + '\n' + message.guild.id + ': Nick.js:' + ln()));
+        //LOGS
+        const guildChannels = getGuild.get(message.guild.id);
+        var logger = message.guild.channels.get(guildChannels.logsChannel);
+        if (!logger) {
+            var logger = '0';
+        }
+        if (logger == '0') {} else {
+            const logsmessage = new Discord.RichEmbed()
+                .setTitle(prefix + 'nick')
+                .setAuthor(message.author.username, message.author.avatarURL)
+                .setDescription("Used by: " + message.author)
+                .setURL(message.url)
+                .setColor('RANDOM')
+                .addField('Usage:\n', message.content, true)
+                .addField('Channel', message.channel, true)
+                .setFooter("Message ID: " + message.id)
+                .setTimestamp();
+            logger.send({
+                embed: logsmessage
+            }).catch(error =>
+                console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            );
+        }
+        //
+        return message.reply(user + ' nickname changed to: ' + args);
+    }
+};
