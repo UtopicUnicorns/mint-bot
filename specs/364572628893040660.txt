@@ -1,6 +1,0 @@
-distro ~ Void Linux
-kernel ~ 5.3.18_1
-pkgs ~ 838
-wm ~ bspwm
-term ~ alacritty
-cpu ~ i5-3437U
