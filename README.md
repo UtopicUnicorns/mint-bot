@@ -25,11 +25,11 @@ and important update notices (When a command gets changed to the core that serve
 When Artemis joins your server it will create 2 roles:<br/>
 muted and ~/Members<br/>
 When you have set up a mute channel users who have been repeatedly warned, muted or use an account which is<br/>
- not a month old will get booted into this channel.<br/><br/>
+ not a month old will get booted into this channel.<br/>
 New users are supposed to verify themselves by writing their own username followed by 1337.<br/>
 Muted users (who have been muted due too many warns or manual mute will not be able to use this system to bypass their mute.)<br/>
 
-`highlightChannel`<br/><br/><br/>
+`highlightChannel`<br/>
 This is Artemis's version of the starboard.<br/>
 When a message (may not be a bot's message) gets 3 :tea: icons their message will be highlighted into this channel.<br/>
 <br/>
@@ -45,7 +45,7 @@ This enabled users to use `!join Role` `!leave Role` and the role will show thei
 `streamChannel`<br/>
 This channel will show notifications when users go live on twitch.<br/>
 Users can use `!stream on` or `!stream off` to enable or disable their own notifications.<br/>
-Admins and Mods can use `!streamping on` of `!streamping off` to enable or disable an @here notification when a user goes live (This is off by default)
+Admins and Mods can use `!streamping on` of `!streamping off` to enable or disable an @here notification when a user goes live (This is off by default)<br/>
 
 
 `automod`<br/>
@@ -55,10 +55,9 @@ Limit the amount of messages which a user can send per second (This includes att
 Delete messages that include discord invite links.<br/>
 Mute users who mention more than 3 other users at the same time (this does not count for role mentions, as this may be intended)<br/>
 Use a wordlist set up using `!wordlist add Word Word Word` (where Word is the word you want to censor), You can delete words from the wordlist by using `!wordlist del Word`.<br/>
-When a word on the wordlist is used by a user when automod is on, the message will be instantly deleted.<br/><br/>
+When a word on the wordlist is used by a user when automod is on, the message will be instantly deleted.<br/>
 Admins and Mods ALWAYS bypass automod, and thus will not affect them.<br/>
 
-<br/>
 `server prefix`<br/>
 This sets up the prefix of Artemis in your server.<br/>
 By default the prefix is `!`<br/>
