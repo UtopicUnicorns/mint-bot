@@ -8,19 +8,26 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
+        const getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        const setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('help');
+        usage.number++;
+        setUsage.run(usage);
         if (message.content === `${prefix}help admin`) {
             if (message.member.hasPermission('KICK_MEMBERS')) {
                 let str = '';
                 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
                 for (const file of commandFiles) {
                     const command = require(`./${file}`);
-                    if (command.description.includes(`[admin]`))
-                        str += `${prefix}${command.name}, ${command.description} \n`;
+                    if (command.description.includes(`[admin]`)) {
+                        let usag = getUsage.get(command.name);
+                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    }
                 }
                 let embed = new Discord.RichEmbed()
                     .setColor(`RANDOM`)
-                    .setThumbnail(message.guild.iconURL)
-                    .setDescription(`${str}${prefix}restart, [admin] well restart the bot\n${prefix}channel, [admin] Display sentient channelname\n${prefix}set, [admin] Set sentient channel ID\n${prefix}join, [admin] simulate a guildmemberjoin`)
+                    .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
+                    .setDescription(`${str}`)
                     .setTimestamp();
                 return message.channel.send({
                     embed: embed
@@ -33,12 +40,14 @@ module.exports = {
                 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
                 for (const file of commandFiles) {
                     const command = require(`./${file}`);
-                    if (command.description.includes(`[mod]`))
-                        str += `${prefix}${command.name}, ${command.description} \n`;
+                    if (command.description.includes(`[mod]`)) {
+                        let usag = getUsage.get(command.name);
+                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    }
                 }
                 let embed = new Discord.RichEmbed()
                     .setColor(`RANDOM`)
-                    .setThumbnail(message.guild.iconURL)
+                    .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                     .setDescription(`${str}`)
                     .setTimestamp();
                 return message.channel.send({
@@ -52,12 +61,14 @@ module.exports = {
                 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
                 for (const file of commandFiles) {
                     const command = require(`./${file}`);
-                    if (command.description.includes(`[server]`))
-                        str += `${prefix}${command.name}, ${command.description} \n`;
+                    if (command.description.includes(`[server]`)) {
+                        let usag = getUsage.get(command.name);
+                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    }
                 }
                 let embed = new Discord.RichEmbed()
                     .setColor(`RANDOM`)
-                    .setThumbnail(message.guild.iconURL)
+                    .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                     .setDescription(`${str}`)
                     .setTimestamp();
                 return message.channel.send({
@@ -71,12 +82,14 @@ module.exports = {
                 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
                 for (const file of commandFiles) {
                     const command = require(`./${file}`);
-                    if (command.description.includes(`[mscore]`))
-                        str += `${prefix}${command.name}, ${command.description} \n`;
+                    if (command.description.includes(`[mscore]`)) {
+                        let usag = getUsage.get(command.name);
+                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    }
                 }
                 let embed = new Discord.RichEmbed()
                     .setColor(`RANDOM`)
-                    .setThumbnail(message.guild.iconURL)
+                    .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                     .setDescription(`${str}`)
                     .setTimestamp();
                 return message.channel.send({
@@ -89,13 +102,15 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[general]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[general]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
-                .setDescription(`${str}` + prefix + `ping,[general] display bot/server ping\n` + prefix + `tr,[general] Translate your sentence to English`)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
+                .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
                 embed: embed
@@ -106,12 +121,14 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[level]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[level]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                 .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
@@ -123,12 +140,14 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[linux]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[linux]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                 .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
@@ -140,12 +159,14 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[fun]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[fun]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                 .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
@@ -157,12 +178,14 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[stream]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[stream]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                 .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
@@ -174,12 +197,14 @@ module.exports = {
             const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
                 const command = require(`./${file}`);
-                if (command.description.includes(`[music]`))
-                    str += `${prefix}${command.name}, ${command.description} \n`;
+                if (command.description.includes(`[music]`)) {
+                    let usag = getUsage.get(command.name);
+                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                }
             }
             let embed = new Discord.RichEmbed()
                 .setColor(`RANDOM`)
-                .setThumbnail(message.guild.iconURL)
+                .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
                 .setDescription(`${str}`)
                 .setTimestamp();
             return message.channel.send({
@@ -188,7 +213,7 @@ module.exports = {
         }
         let embed2 = new Discord.RichEmbed()
             .setColor(`RANDOM`)
-            .setThumbnail(message.guild.iconURL)
+            .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
             .setTitle('Pick a category')
             .setDescription('When Artemis replies with an Arrow up emote, you leveled up!\nYou can report a message by reaction to it with :x: \nhaving 3 :tea: reactions to a message will highlight it!\n')
             .addField(`${prefix}help general`, 'Display General help\n')

@@ -10,6 +10,13 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (message.author.id !== '127708549118689280') return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('master');
+        usage.number++;
+        setUsage.run(usage);
+        //
         if (message.content == `${prefix}master`) return message.channel.send(`${prefix}master read ${prefix}master commands/script.js / OR /commands/ script(without .js)`);
         if (message.content == `${prefix}master read`) {
             let readingthis = fs.readdirSync('./commands');

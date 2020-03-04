@@ -8,6 +8,13 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('ban');
+        usage.number++;
+        setUsage.run(usage);
+        //
         const member = message.mentions.members.first();
         if (!member) {
             return message.reply('You need to mention the user you wish to ban!');

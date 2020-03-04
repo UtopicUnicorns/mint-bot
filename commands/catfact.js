@@ -15,5 +15,12 @@ module.exports = {
             if (err) return message.channel.send(err);
             message.channel.send(body.fact);
         });
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('catfact');
+        usage.number++;
+        setUsage.run(usage);
+        //
     }
 };

@@ -38,6 +38,13 @@ module.exports = {
                 embed: embed
             });
         });
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('ask');
+        usage.number++;
+        setUsage.run(usage);
+        //
 
     }
 };

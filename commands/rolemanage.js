@@ -10,6 +10,13 @@ module.exports = {
         const getRoles = db.prepare("SELECT * FROM roles WHERE roles = ?");
         const setRoles = db.prepare("INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('rolemanage');
+        usage.number++;
+        setUsage.run(usage);
+        //
         if (message.content === `${prefix}rolemanage`) {
             const allroles = db.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
             let array = message.guild.roles.sort((a, b) => a.position - b.position).map(role => role);

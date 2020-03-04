@@ -7,6 +7,13 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('numbers');
+        usage.number++;
+        setUsage.run(usage);
+        //
         const allroles = db.prepare("SELECT * FROM roles WHERE guild = ?;").all(message.guild.id);
         let array = message.guild.roles.sort((a, b) => a.position - b.position).map(role => role);
         let array2 = [];

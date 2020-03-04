@@ -9,6 +9,13 @@ module.exports = {
         const prefix = prefixstart.prefix;
         const setGuild = db.prepare("INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('channelmanage');
+        usage.number++;
+        setUsage.run(usage);
+        //
         if (message.content === `${prefix}channelmanage`) {
             let channelget = getGuild.get(message.guild.id);
             const hellothereguilde = new Discord.RichEmbed()

@@ -9,6 +9,13 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix.toString();
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('userinfo');
+        usage.number++;
+        setUsage.run(usage);
+        //
         let args = message.content.slice(prefix.length + 9).split(' ');
         let user = message.mentions.users.first() || message.guild.members.get(args[0]) || message.author;
         let target = message.mentions.users.first() || message.author;

@@ -12,6 +12,13 @@ module.exports = {
         const getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
         const setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);");
         if (message.member.hasPermission('KICK_MEMBERS')) {
+            //
+            let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+            let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+            usage = getUsage.get('set');
+            usage.number++;
+            setUsage.run(usage);
+            //
             const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
             const guildChannels = getGuild.get(message.guild.id);
             var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);

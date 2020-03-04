@@ -9,6 +9,13 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (message.member.hasPermission('KICK_MEMBERS')) {
+            //
+            let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+            let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+            usage = getUsage.get('check');
+            usage.number++;
+            setUsage.run(usage);
+            //
             const args = message.content.slice(prefix.length + 6).split(" ");
             const cargs = message.content.slice(prefix.length + 10);
             if (!args) return message.reply("Provide 2 more args not/yes + idrole namerole");

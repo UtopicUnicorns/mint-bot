@@ -8,6 +8,13 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (message.member.hasPermission('KICK_MEMBERS')) {
+            //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('massdell');
+        usage.number++;
+        setUsage.run(usage);
+        //
             let array = await message.guild.members.map(m => m);
             let args = message.content.slice(10);
             let role = message.guild.roles.find(r => r.name === args);

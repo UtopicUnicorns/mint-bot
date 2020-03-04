@@ -8,6 +8,13 @@ module.exports = {
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('purge');
+        usage.number++;
+        setUsage.run(usage);
+        //
         const user = message.mentions.users.first();
         const amount = !!parseInt(message.content.split(' ')[1]) ? parseInt(message.content.split(' ')[1]) : parseInt(message.content.split(' ')[2])
         if (!amount) return message.reply('Must specify an amount to delete!');

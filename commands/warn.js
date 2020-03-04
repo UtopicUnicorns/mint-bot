@@ -12,6 +12,13 @@ module.exports = {
         const guildChannels = getGuild.get(message.guild.id);
         var muteChannel1 = message.guild.channels.get(guildChannels.muteChannel);
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('warn');
+        usage.number++;
+        setUsage.run(usage);
+        //
         const user = message.mentions.users.first();
         if (!user) return message.reply("You must mention someone!");
         const args = message.content.slice(prefix.length + user.id.length + 10);

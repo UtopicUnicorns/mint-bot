@@ -21,5 +21,12 @@ module.exports = {
         message.channel.send({
             embed
         });
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('board');
+        usage.number++;
+        setUsage.run(usage);
+        //
     }
 };

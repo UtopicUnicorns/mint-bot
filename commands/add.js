@@ -58,6 +58,12 @@ module.exports = {
             );
         }
         //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('add');
+        usage.number++;
+        setUsage.run(usage);
+        //
         return message.channel.send(`${user} has gotten: ${pointsToAdd} Points.\nYou have ${userscore.points} points now.\nAnd your level is ${userscore.level}`);
     }
 };

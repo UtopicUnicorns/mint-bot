@@ -9,6 +9,13 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('lenny');
+        usage.number++;
+        setUsage.run(usage);
+        //
         if (message.channel.id === '629019515740487691' || message.channel.id === '666776795047002132') {
             let baseurl = "https://aranym.com/ecchi/";
             request(baseurl, {

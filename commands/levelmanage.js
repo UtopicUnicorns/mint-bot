@@ -10,6 +10,13 @@ module.exports = {
         const getLevel = db.prepare("SELECT * FROM level WHERE guild = ?");
         const setLevel = db.prepare("INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);");    
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('levelmanage');
+        usage.number++;
+        setUsage.run(usage);
+        //
         if (message.content === `${prefix}levelmanage`) {
             let levelget = getLevel.get(message.guild.id);
             const hellothereguilde = new Discord.RichEmbed()

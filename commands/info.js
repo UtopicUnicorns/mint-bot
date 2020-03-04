@@ -31,5 +31,12 @@ module.exports = {
             .addField("You Joined", message.member.joinedAt)
             .setFooter(`Created ${message.guild.createdAt}`);
         message.channel.send(serverembed);
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('info');
+        usage.number++;
+        setUsage.run(usage);
+        //
     },
 };

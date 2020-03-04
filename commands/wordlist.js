@@ -10,6 +10,13 @@ module.exports = {
         const getWords = db.prepare("SELECT * FROM words WHERE words = ?");
         const setWords = db.prepare("INSERT OR REPLACE INTO words (guild, words, wordguild) VALUES (@guild, @words, @wordguild);");
         if (!message.member.hasPermission('KICK_MEMBERS')) return;
+        //
+        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+        usage = getUsage.get('wordlist');
+        usage.number++;
+        setUsage.run(usage);
+        //
         const args = message.content.toLowerCase().slice(prefix.length + 13).split(" ");
         const cargs = message.content.slice(prefix.length + 9).split(" ");
         const allwords = db.prepare("SELECT * FROM words WHERE guild = ?;").all(message.guild.id);
