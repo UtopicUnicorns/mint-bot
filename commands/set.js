@@ -1,6 +1,7 @@
 const Discord = module.require('discord.js');
 const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
+const mutedtime = new Set();
 module.exports = {
     name: 'set',
     description: `[mod] \nset mute MENTION\nset unmute MENTION\nset prefix prefix`,
@@ -29,6 +30,343 @@ module.exports = {
                 if (!member) return message.channel.send(`Mention a user!`);
                 if (message.author.id == member.id) {
                     return message.channel.send(`You can't mute yourself`);
+                }
+                if (args[2] == `time`) {
+                    if (!args[3]) return message.reply("Specify a time!\n" + prefix + "set mute time 10 m @user");
+                    if (!args[4]) return message.reply("Specify a time!\n" + prefix + "set mute time 10 m @user");
+                    if (args[4] == 's' || args[4] == 'sec' || args[4] == 'seconds') {
+                        var settime = Math.floor(args[3] * 1000);
+                        //
+                        if (mutedtime.has(member.id + message.guild.id)) {
+                            return message.reply(member + ' is already muted!')
+                        } else {
+                            mutedtime.add(member.id + message.guild.id);
+                            message.guild.channels.forEach(async (channel, id) => {
+                                await channel.overwritePermissions(member, {
+                                    VIEW_CHANNEL: false,
+                                    READ_MESSAGES: false,
+                                    SEND_MESSAGES: false,
+                                    READ_MESSAGE_HISTORY: false,
+                                    ADD_REACTIONS: false
+                                });
+                            })
+                            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                            member.removeRole(memberrole).catch(console.error);
+                            member.addRole(mutedrole).catch(console.error);
+                            const user = message.mentions.users.first();
+                            let userscore = getScore.get(user.id, message.guild.id);
+                            if (!userscore) {
+                                userscore = {
+                                    id: `${message.guild.id}-${user.id}`,
+                                    user: user.id,
+                                    guild: message.guild.id,
+                                    points: 0,
+                                    level: 1,
+                                    warning: 0,
+                                    muted: 1,
+                                    translate: 0,
+                                    stream: 0,
+                                    notes: 0
+                                }
+                            }
+                            userscore.muted = `1`;
+                            setScore.run(userscore);
+                            //LOGS
+                            const guildChannels = getGuild.get(message.guild.id);
+                            var logger = message.guild.channels.get(guildChannels.logsChannel);
+                            if (!logger) {
+                                var logger = '0';
+                            }
+                            if (logger == '0') {} else {
+                                const logsmessage = new Discord.RichEmbed()
+                                    .setTitle(prefix + 'set mute')
+                                    .setAuthor(message.author.username, message.author.avatarURL)
+                                    .setDescription("Used by: " + message.author)
+                                    .setURL(message.url)
+                                    .setColor('RANDOM')
+                                    .addField('Usage:\n', message.content, true)
+                                    .addField('Channel', message.channel, true)
+                                    .setFooter("Message ID: " + message.id)
+                                    .setTimestamp();
+                                logger.send({
+                                    embed: logsmessage
+                                }).catch(error =>
+                                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                                );
+                            }
+                            //
+                            message.reply(member + ' is temp muted!')
+                            muteChannel1.send(user + ', You have been temp muted!');
+                            setTimeout(() => {
+                                muteChannel1.overwritePermissions(member, {
+                                    VIEW_CHANNEL: true,
+                                    READ_MESSAGES: true,
+                                    SEND_MESSAGES: true,
+                                    READ_MESSAGE_HISTORY: true,
+                                    ATTACH_FILES: false
+                                })
+                            }, 2000);
+                           return setTimeout(() => {
+                                mutedtime.delete(member.id + message.guild.id);
+                                let member2 = member.id;
+                                message.guild.channels.forEach(async (channel, id) => {
+                                    if (id == muteChannel1) return;
+                                    if (channel.permissionOverwrites.get(member2)) {
+                                        await channel.permissionOverwrites.get(member2).delete()
+                                    }
+                                });
+                                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                                member.addRole(memberrole).catch(console.error);
+                                member.removeRole(mutedrole).catch(console.error);
+                                const user = message.mentions.users.first();
+                                const pointsToAdd = parseInt(0, 10);
+                                let userscore = getScore.get(user.id, message.guild.id);
+                                if (!userscore) {
+                                    userscore = {
+                                        id: `${message.guild.id}-${user.id}`,
+                                        user: user.id,
+                                        guild: message.guild.id,
+                                        points: 0,
+                                        level: 1,
+                                        warning: 0,
+                                        muted: 0,
+                                        translate: 0,
+                                        stream: 0,
+                                        notes: 0
+                                    }
+                                }
+                                userscore.muted = `0`;
+                                userscore.warning = pointsToAdd;
+                                setScore.run(userscore);
+                                message.reply(member + ' has been unmuted!')
+                            }, settime);
+                        }
+                        //
+                    }
+                    if (args[4] == 'm' || args[4] == 'min' || args[4] == 'minutes') {
+                        var settime = Math.floor(args[3] * 60000);
+                        //
+                        if (mutedtime.has(member.id + message.guild.id)) {
+                            return message.reply(member + ' is already muted!')
+                        } else {
+                            mutedtime.add(member.id + message.guild.id);
+                            message.guild.channels.forEach(async (channel, id) => {
+                                await channel.overwritePermissions(member, {
+                                    VIEW_CHANNEL: false,
+                                    READ_MESSAGES: false,
+                                    SEND_MESSAGES: false,
+                                    READ_MESSAGE_HISTORY: false,
+                                    ADD_REACTIONS: false
+                                });
+                            })
+                            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                            member.removeRole(memberrole).catch(console.error);
+                            member.addRole(mutedrole).catch(console.error);
+                            const user = message.mentions.users.first();
+                            let userscore = getScore.get(user.id, message.guild.id);
+                            if (!userscore) {
+                                userscore = {
+                                    id: `${message.guild.id}-${user.id}`,
+                                    user: user.id,
+                                    guild: message.guild.id,
+                                    points: 0,
+                                    level: 1,
+                                    warning: 0,
+                                    muted: 1,
+                                    translate: 0,
+                                    stream: 0,
+                                    notes: 0
+                                }
+                            }
+                            userscore.muted = `1`;
+                            setScore.run(userscore);
+                            //LOGS
+                            const guildChannels = getGuild.get(message.guild.id);
+                            var logger = message.guild.channels.get(guildChannels.logsChannel);
+                            if (!logger) {
+                                var logger = '0';
+                            }
+                            if (logger == '0') {} else {
+                                const logsmessage = new Discord.RichEmbed()
+                                    .setTitle(prefix + 'set mute')
+                                    .setAuthor(message.author.username, message.author.avatarURL)
+                                    .setDescription("Used by: " + message.author)
+                                    .setURL(message.url)
+                                    .setColor('RANDOM')
+                                    .addField('Usage:\n', message.content, true)
+                                    .addField('Channel', message.channel, true)
+                                    .setFooter("Message ID: " + message.id)
+                                    .setTimestamp();
+                                logger.send({
+                                    embed: logsmessage
+                                }).catch(error =>
+                                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                                );
+                            }
+                            //
+                            message.reply(member + ' is temp muted!')
+                            muteChannel1.send(user + ', You have been temp muted!');
+                            setTimeout(() => {
+                                muteChannel1.overwritePermissions(member, {
+                                    VIEW_CHANNEL: true,
+                                    READ_MESSAGES: true,
+                                    SEND_MESSAGES: true,
+                                    READ_MESSAGE_HISTORY: true,
+                                    ATTACH_FILES: false
+                                })
+                            }, 2000);
+                            return setTimeout(() => {
+                                mutedtime.delete(member.id + message.guild.id);
+                                let member2 = member.id;
+                                message.guild.channels.forEach(async (channel, id) => {
+                                    if (id == muteChannel1) return;
+                                    if (channel.permissionOverwrites.get(member2)) {
+                                        await channel.permissionOverwrites.get(member2).delete()
+                                    }
+                                });
+                                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                                member.addRole(memberrole).catch(console.error);
+                                member.removeRole(mutedrole).catch(console.error);
+                                const user = message.mentions.users.first();
+                                const pointsToAdd = parseInt(0, 10);
+                                let userscore = getScore.get(user.id, message.guild.id);
+                                if (!userscore) {
+                                    userscore = {
+                                        id: `${message.guild.id}-${user.id}`,
+                                        user: user.id,
+                                        guild: message.guild.id,
+                                        points: 0,
+                                        level: 1,
+                                        warning: 0,
+                                        muted: 0,
+                                        translate: 0,
+                                        stream: 0,
+                                        notes: 0
+                                    }
+                                }
+                                userscore.muted = `0`;
+                                userscore.warning = pointsToAdd;
+                                setScore.run(userscore);
+                                message.reply(member + ' has been unmuted!')
+                            }, settime);
+                        }
+                        //
+                    }
+                    if (args[4] == 'h' || args[4] == 'hour' || args[4] == 'hours') {
+                        var settime = Math.floor(args[3] * 3600000);
+                        //
+                        if (mutedtime.has(member.id + message.guild.id)) {
+                            return message.reply(member + ' is already muted!')
+                        } else {
+                            mutedtime.add(member.id + message.guild.id);
+                            message.guild.channels.forEach(async (channel, id) => {
+                                await channel.overwritePermissions(member, {
+                                    VIEW_CHANNEL: false,
+                                    READ_MESSAGES: false,
+                                    SEND_MESSAGES: false,
+                                    READ_MESSAGE_HISTORY: false,
+                                    ADD_REACTIONS: false
+                                });
+                            })
+                            let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                            let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                            member.removeRole(memberrole).catch(console.error);
+                            member.addRole(mutedrole).catch(console.error);
+                            const user = message.mentions.users.first();
+                            let userscore = getScore.get(user.id, message.guild.id);
+                            if (!userscore) {
+                                userscore = {
+                                    id: `${message.guild.id}-${user.id}`,
+                                    user: user.id,
+                                    guild: message.guild.id,
+                                    points: 0,
+                                    level: 1,
+                                    warning: 0,
+                                    muted: 1,
+                                    translate: 0,
+                                    stream: 0,
+                                    notes: 0
+                                }
+                            }
+                            userscore.muted = `1`;
+                            setScore.run(userscore);
+                            //LOGS
+                            const guildChannels = getGuild.get(message.guild.id);
+                            var logger = message.guild.channels.get(guildChannels.logsChannel);
+                            if (!logger) {
+                                var logger = '0';
+                            }
+                            if (logger == '0') {} else {
+                                const logsmessage = new Discord.RichEmbed()
+                                    .setTitle(prefix + 'set mute')
+                                    .setAuthor(message.author.username, message.author.avatarURL)
+                                    .setDescription("Used by: " + message.author)
+                                    .setURL(message.url)
+                                    .setColor('RANDOM')
+                                    .addField('Usage:\n', message.content, true)
+                                    .addField('Channel', message.channel, true)
+                                    .setFooter("Message ID: " + message.id)
+                                    .setTimestamp();
+                                logger.send({
+                                    embed: logsmessage
+                                }).catch(error =>
+                                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                                );
+                            }
+                            //
+                            message.reply(member + ' is temp muted!')
+                            muteChannel1.send(user + ', You have been temp muted!');
+                            setTimeout(() => {
+                                muteChannel1.overwritePermissions(member, {
+                                    VIEW_CHANNEL: true,
+                                    READ_MESSAGES: true,
+                                    SEND_MESSAGES: true,
+                                    READ_MESSAGE_HISTORY: true,
+                                    ATTACH_FILES: false
+                                })
+                            }, 2000);
+                            return setTimeout(() => {
+                                mutedtime.delete(member.id + message.guild.id);
+                                let member2 = member.id;
+                                message.guild.channels.forEach(async (channel, id) => {
+                                    if (id == muteChannel1) return;
+                                    if (channel.permissionOverwrites.get(member2)) {
+                                        await channel.permissionOverwrites.get(member2).delete()
+                                    }
+                                });
+                                let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
+                                let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+                                member.addRole(memberrole).catch(console.error);
+                                member.removeRole(mutedrole).catch(console.error);
+                                const user = message.mentions.users.first();
+                                const pointsToAdd = parseInt(0, 10);
+                                let userscore = getScore.get(user.id, message.guild.id);
+                                if (!userscore) {
+                                    userscore = {
+                                        id: `${message.guild.id}-${user.id}`,
+                                        user: user.id,
+                                        guild: message.guild.id,
+                                        points: 0,
+                                        level: 1,
+                                        warning: 0,
+                                        muted: 0,
+                                        translate: 0,
+                                        stream: 0,
+                                        notes: 0
+                                    }
+                                }
+                                userscore.muted = `0`;
+                                userscore.warning = pointsToAdd;
+                                setScore.run(userscore);
+                                message.reply(member + ' has been unmuted!')
+                            }, settime);
+                        }
+                        //
+                    }
                 }
                 message.guild.channels.forEach(async (channel, id) => {
                     await channel.overwritePermissions(member, {
@@ -85,6 +423,7 @@ module.exports = {
                     );
                 }
                 //
+                message.reply(member + ' is muted!')
                 muteChannel1.send(user + ', You have been muted!');
                 setTimeout(() => {
                     muteChannel1.overwritePermissions(member, {
@@ -139,6 +478,7 @@ module.exports = {
                     var logger = '0';
                 }
                 if (logger == '0') {} else {
+                    message.reply(member + ' is unmuted!')
                     const logsmessage = new Discord.RichEmbed()
                         .setTitle(prefix + 'set unmute')
                         .setAuthor(message.author.username, message.author.avatarURL)
