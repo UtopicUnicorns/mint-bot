@@ -50,6 +50,7 @@
 .TabbedPanelsContentVisible {
 	box-shadow: 10px 10px 10px 0 rgba(17, 17, 17, 0.5);
 	background-color: rgba(53, 52, 52, 0.5);
+	border-radius: 25px;
 }
 
 .VTabbedPanels .TabbedPanelsTabGroup {

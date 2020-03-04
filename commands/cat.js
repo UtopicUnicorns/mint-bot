@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const request = require("request");
+const fs = require('fs')
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'cat',
@@ -8,17 +8,19 @@ module.exports = {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);
         const prefix = prefixstart.prefix;
-        let baseurl = "https://some-random-api.ml/img/cat";
-        let url = baseurl;
-        request(url, {
-            json: true
-        }, (err, res, body) => {
-            if (err) return message.channel.send(err);
-            const embed = new Discord.RichEmbed()
-                .setImage(body.link)
-            message.channel.send({
-                embed: embed
-            });
+        const photos = fs.readdirSync('./pics/cats');
+        const array = [];
+        for (const file of photos) {
+            array.push(file);
+        }
+        const embed = new Discord.RichEmbed()
+            .setImage('attachment://image.png')
+        message.channel.send({
+            embed: embed,
+            files: [{
+                attachment: './pics/cats/' + array[~~(Math.random() * array.length)],
+                name: 'image.png'
+            }]
         });
         //
         let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");

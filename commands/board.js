@@ -10,7 +10,7 @@ module.exports = {
         const top10 = db.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;").all(message.guild.id);
         const embed = new Discord.RichEmbed()
             .setTitle("Leaderboard")
-            .setDescription("Top 10 chatters")
+            .setDescription("Full leaderboard on https://artemisbot.eu/")
             .setColor('RANDOM');
         for (const data of top10) {
             if (message.guild.members.get(data.user)) {

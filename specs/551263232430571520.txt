@@ -1,0 +1,35 @@
+OS: Linux Mint 19.3 Tricia i686 
+Host: Presario 2200 (PF743AV#ABA) Rev 1 
+Kernel: 5.0.0-37-generic 
+Uptime: 3 hours, 18 mins 
+Packages: 1958 
+Shell: bash 4.4.20 
+Resolution: 1024x768 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: Mint-Y 
+Theme: Mint-Y [GTK2/3] 
+Icons: Mint-Y [GTK2/3] 
+Terminal: xfce4-terminal 
+Terminal Font: Monospace 12 
+CPU: Intel Celeron M 1300MHz (1) @ 1.296G 
+GPU: Intel 852GM/855GM x86/MMX/SSE2 
+Memory: 454MiB / 895MiB
+OS: Linux Mint 19.3 Tricia i686 
+Host: Latitude D400 
+Kernel: 5.0.0-37-generic 
+Uptime: 1 hour, 19 mins 
+Packages: 1981 
+Shell: bash 4.4.20 
+Resolution: 1024x768 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: Mint-Y 
+Theme: Mint-Y [GTK2/3] 
+Icons: Mint-Y [GTK2/3] 
+Terminal: xfce4-terminal 
+Terminal Font: Monospace 12 
+CPU: Intel Pentium M 1400MHz (1) @ 1.400GHz 
+GPU: Intel 852GM/855GM x86/MMX/SSE2 
+Memory: 734MiB / 1434MiB
+Also: I have too many computers to continue listing.

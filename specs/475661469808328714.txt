@@ -1,0 +1,19 @@
+rheza@rheza001-arch 
+------------------- 
+OS: Arch Linux x86_64 
+Host: X550ZE 1.0 
+Kernel: 5.4.20-1-lts 
+Uptime: 2 hours, 5 mins 
+Packages: 1416 (pacman), 6 (flatpak) 
+Shell: bash 5.0.16 
+Resolution: 1920x1080, 1366x768 
+DE: Plasma 
+WM: KWin 
+WM Theme: Sierra Breeze 
+Theme: Aritim-Dark-GTK [GTK2/3] 
+Icons: la-capitaine-icon-theme [GTK2/3] 
+Terminal: konsole 
+CPU: AMD FX-7600P Radeon R7 4C+8G (4) @ 2.700GHz 
+GPU: AMD ATI Radeon R5 M230 / R7 M260DX / Radeon 520 Mobile 
+GPU: AMD ATI Radeon R7 Graphics 
+Memory: 2840MiB / 6905MiB

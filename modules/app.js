@@ -136,6 +136,37 @@ exports.run = (client, config) => {
         return array.toString().replace(/,/g, '');
       }
       //
+      //Leaderboard
+      function data8(user) {
+        let array = [];
+        let gid = [];
+        client.guilds.map(guild => gid.push(guild.id));
+        for (let i of gid) {
+          for (const data of getGuild.all(i)) {
+            let gettheguild = client.guilds.get(data.guild);
+            let thiss = gettheguild.members.get(user.id);
+            if (thiss) {
+              let top1 = '<button class="collapsible"><img src ="' + gettheguild.iconURL + '" width="30px" height="30px" style="border-radius: 50%;"><div class="textcol">' + client.guilds.get(data.guild) + '</div></button><div class="colpanel"><table width="100%" style="table-layout: fixed; max-width: 100px; border-collapse: collapse;" align="center">';
+              array.push(top1);
+              let count2 = 0;
+              const leader = db.prepare("SELECT * FROM scores WHERE guild = ? ORDER BY points DESC;").all(gettheguild.id);
+              for (const data2 of leader) {
+                let thisss = gettheguild.members.get(data2.user);
+                if (thisss) {
+                  if (data2.points > 5) {
+                    count2++
+                    array.push('<tr style="text-align:left; border-bottom: 1px solid black"><td style="overflow: hidden; width: 300px;">(' + count2 + ') <img src ="' + thisss.user.avatarURL + '" width="20px" height="20px"> ' + thisss.user.username + '</td><td style="width: 150px;">Lvl: ' + data2.level + ' Pts: ' + data2.points + '</td></tr>');
+                  }
+                }
+              }
+              let bot1 = '</table></div>';
+              array.push(bot1);
+            }
+          }
+        }
+        return array.toString().replace(/,/g, '');
+      }
+      //
       //control panel
       function data2(user) {
         let array = [];
@@ -234,7 +265,7 @@ exports.run = (client, config) => {
                 let rapp2b = '<input type="submit" class="button" onclick="document.getElementById(`' + data.guild + 'rapp2`).innerHTML = `Changed!`" value="Save"></form></td></tr>';
                 //prefix
                 let rapp3t = '<tr style="text-align:left; border-bottom: 1px solid black"><td>Server prefix:</td><td><div id="' + data.guild + 'rapp3">' + data.prefix + '</div></td></tr>';
-                let rapp3 = '<tr style="text-align:left; border-bottom: 1px solid black"><td></td><td><form action="/" method="post"><input type="hidden" name="data2" value="pr ' + data.guild +'" /><input type="text" name="data2" value="prefix">';
+                let rapp3 = '<tr style="text-align:left; border-bottom: 1px solid black"><td></td><td><form action="/" method="post"><input type="hidden" name="data2" value="pr ' + data.guild + '" /><input type="text" name="data2" value="prefix">';
                 let rapp3b = '<input type="submit" class="button" onclick="document.getElementById(`' + data.guild + 'rapp3`).innerHTML = `Changed!`" value="Save"></form></td></tr>';
                 //push shit
                 array.push(top1 + rapp3t + rapp3 + rapp3b + rapp1t + rapp1 + rapp1b + rapp2t + rapp2 + rapp2b + a1 + ct1 + c1 + cb1 + a2 + ct2 + c2 + cb2 + a3 + ct3 + c3 + cb3 + a4 + ct4 + c4 + cb4 + a5 + ct5 + c5 + cb5 + a6 + ct6 + c6 + cb6 + bot1 + '\n');
@@ -408,6 +439,7 @@ exports.run = (client, config) => {
         test: test,
         data: data1(req.session.user),
         data2: data2(req.session.user),
+        data8: data8(req.session.user),
         commands1: commands1(),
         commands2: commands2(),
         commands3: commands3(),
@@ -547,10 +579,10 @@ exports.run = (client, config) => {
             return res.status(204).send();
           }
           if (data2[0] == 'pr') {
-              let channelstuff = getGuild2.get(data2[1]);
-              channelstuff.prefix = data2.slice(2).join(" ");
-              setGuild.run(channelstuff);
-              return res.status(204).send();
+            let channelstuff = getGuild2.get(data2[1]);
+            channelstuff.prefix = data2.slice(2).join(" ");
+            setGuild.run(channelstuff);
+            return res.status(204).send();
           }
           if (data2[0] == 'am') {
             if (data2[2] == 'ON') {

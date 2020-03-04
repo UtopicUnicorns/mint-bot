@@ -10,8 +10,7 @@ const {
     yandex,
     SESSION_SECRET,
     CLIENT_SECRET,
-    REDIRECT_URI,
-    linuxhints
+    REDIRECT_URI
 } = require('./config.json');
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./scores.sqlite');
@@ -19,11 +18,11 @@ const client = new Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const thankedRecently = new Set();
-const welcomeRecently = new Set();
 const streamedRecently = new Set();
+const lovedRecently = new Set();
 const borgRecently = new Set();
 const spamRecently = new Set();
-const queue = new Map();
+const congratulationsRecently = new Set();
 const ln = require('nodejs-linenumber');
 const {
     FeedEmitter
@@ -36,8 +35,18 @@ require('dotenv').config();
 const dashboard = require("./discord-bot-dashboard.js");
 //
 const htmlToText = require('html-to-text');
+const getUsage = sql.prepare("SELECT * FROM usage WHERE command = ?");
+const setUsage = sql.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
+    let usagecheck = getUsage.get(command.name);
+    if (!usagecheck) {
+        usagecheck = {
+            command: command.name,
+            number: `0`
+        }
+        setUsage.run(usagecheck);
+    }
     client.commands.set(command.name, command);
 }
 client.once('ready', () => {
@@ -93,21 +102,17 @@ client.once('ready', () => {
     }
     client.getLevel = sql.prepare("SELECT * FROM level WHERE guild = ?");
     client.setLevel = sql.prepare("INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);");
-    //Linux tips, no longer dad jokes
-    setInterval(() => {
-        try {
-            const linuxhint = new Discord.RichEmbed()
-                .setTitle("Hint:")
-                .setColor('RANDOM')
-                .setDescription(linuxhints[~~(Math.random() * linuxhints.length)])
-            client.channels.get('628984660298563584').send({
-                embed: linuxhint
-            });
-        } catch {
-            let nowtime = new Date();
-            console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
-        }
-    }, 21600000);
+    //command usage DB
+    const table9 = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'usage';").get();
+    if (!table9['count(*)']) {
+        sql.prepare("CREATE TABLE usage (command TEXT PRIMARY KEY, number TEXT);").run();
+        sql.prepare("CREATE UNIQUE INDEX idx_usage_id ON usage (command);").run();
+        sql.pragma("synchronous = 1");
+        sql.pragma("journal_mode = wal");
+    }
+    client.getUsage = sql.prepare("SELECT * FROM usage WHERE command = ?");
+    client.setUsage = sql.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
+
     //change bot Status
     setInterval(() => {
         var RAN = [
@@ -601,7 +606,8 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
     try {
         command.execute(newMessage);
     } catch (error) {
-        console.error(error);
+        let nowtime = new Date();
+        console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
     }
 });
 client.on('message', async message => {
@@ -620,17 +626,19 @@ client.on('message', async message => {
     if (message.author.bot) return;
     //Direct Message handle
     if (message.channel.type == "dm") {
-        console.log(nowtime + '\n' + message.author.username + '\n' + message.content);
-        const whoartemis = new Discord.RichEmbed()
-            .setTitle('Artemis')
-            .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
-            .setTimestamp()
-        return message.channel.send({
-            embed: whoartemis
-        }).catch(error =>
+        console.log(new Date() + '\n' + message.author.username + '\n' + message.content);
+        try {
+            const whoartemis = new Discord.RichEmbed()
+                .setTitle('Artemis')
+                .setColor('RANDOM')
+                .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
+                .setTimestamp()
+            return message.channel.send({
+                embed: whoartemis
+            });
+        } catch {
             console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-        );
+        }
     }
     //load shit
     const guildChannels = client.getGuild.get(message.guild.id);
@@ -689,7 +697,6 @@ client.on('message', async message => {
             //No Spam
             if (spamRecently.has(message.author.id + message.guild.id)) {
                 message.delete();
-                message.reply("Slow down there buddy!\nAnti-Spam is ON!");
             } else {
                 spamRecently.add(message.author.id + message.guild.id);
                 setTimeout(() => {
@@ -800,29 +807,6 @@ client.on('message', async message => {
             }
         }
     }
-    //restart
-    if (message.content === prefix + 'restart') {
-        if (message.author.id !== '127708549118689280') return;
-        message.channel.send('Restarting').then(() => {
-            process.exit(1);
-        })
-    };
-    //reload commands
-    if (message.content === prefix + 'reload') {
-        if (!message.member.hasPermission('KICK_MEMBERS')) return;
-        let commandFiless = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-        for (let file of commandFiless) {
-            delete require.cache[require.resolve(`./commands/${file}`)];
-            try {
-                let newCommand = require(`./commands/${file}`);
-                message.client.commands.set(newCommand.name, newCommand);
-            } catch (error) {
-                console.log(error);
-                message.channel.send(`${file}:\n${error.message}`);
-            }
-        }
-        message.channel.send("Done");
-    };
     //update
     if (message.content.startsWith(prefix + "update")) {
         if (message.author.id !== '127708549118689280') return;
@@ -899,10 +883,6 @@ client.on('message', async message => {
             return;
         }
     }
-    //guide channel
-    if (message.channel.id === '648911771624538112') {
-        message.delete();
-    }
     //Simulate guild member join
     if (message.content === prefix + 'guildmemberadd') {
         if (message.author.id === "127708549118689280" || message.author.id == message.guild.owner.id) {
@@ -914,10 +894,6 @@ client.on('message', async message => {
         if (message.author.id === "127708549118689280" || message.author.id == message.guild.owner.id) {
             client.emit('guildMemberRemove', message.member || await message.guild.fetchMember(message.author));
         }
-    }
-    //bot reactions
-    if (message.content.includes("Artemis")) {
-        message.react("👀");
     }
     //translate
     //Start db for opt
@@ -1119,6 +1095,50 @@ client.on('message', async message => {
             userscore.level = userLevel;
             client.setScore.run(userscore);
             return message.reply("thanked " + user.username + "\n" + user.username + " has gotten 20 points for their effort!");
+        }
+    }
+    //love
+    if (message.content.toLowerCase().includes("love")) {
+        const user = message.mentions.users.first() || client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (lovedRecently.has(message.author.id)) {
+            return message.reply("I love you too!");
+        } else {
+            lovedRecently.add(message.author.id);
+            setTimeout(() => {
+                lovedRecently.delete(message.author.id);
+            }, 600000);
+            const pointsToAdd = parseInt(20, 10);
+            let userscore = client.getScore.get(user.id, message.guild.id);
+            if (!userscore) return message.reply("This user does not have a database index yet.");
+            userscore.points += pointsToAdd;
+            let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+            userscore.level = userLevel;
+            client.setScore.run(userscore);
+            return message.reply("Gave love to " + user.username + "\n" + user.username + " gets 20 points!");
+        }
+    }
+    //Congratulations
+    if (message.content.toLowerCase().includes("congrat")) {
+        const user = message.mentions.users.first() || client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (congratulationsRecently.has(message.author.id)) {
+            return
+        } else {
+            congratulationsRecently.add(message.author.id);
+            setTimeout(() => {
+                congratulationsRecently.delete(message.author.id);
+            }, 600000);
+            const pointsToAdd = parseInt(20, 10);
+            let userscore = client.getScore.get(user.id, message.guild.id);
+            if (!userscore) return message.reply("This user does not have a database index yet.");
+            userscore.points += pointsToAdd;
+            let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+            userscore.level = userLevel;
+            client.setScore.run(userscore);
+            return message.reply("Congratulated " + user.username + "\n" + user.username + " gets 20 points!");
         }
     }
     //Clean Database

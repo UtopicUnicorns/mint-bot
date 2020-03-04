@@ -1,0 +1,18 @@
+gingkathfox@Gingkas-MacBook 
+--------------------------- 
+OS: macOS Mojave 10.14.6 18G103 x86_64 
+Host: MacBookAir7,2 
+Kernel: 18.7.0 
+Uptime: 12 days, 2 hours, 36 mins 
+Packages: 229 (brew) 
+Shell: zsh 5.3 
+Resolution: 1440x900 
+DE: Aqua 
+WM: Quartz Compositor 
+WM Theme: Blue (Dark) 
+Terminal: Apple_Terminal 
+Terminal Font: SFMono-Regular 
+CPU: Intel i5-5350U (4) @ 1.80GHz 
+GPU: Intel HD Graphics 6000 
+GPU Driver: macOS Default Graphics Driver 
+Local IP: 192.168.1.40

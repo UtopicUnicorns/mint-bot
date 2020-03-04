@@ -1,0 +1,18 @@
+dominik@desktop 
+--------------- 
+OS: Debian GNU/Linux bullseye/sid x86_64 
+Host: Inspiron 3847 
+Kernel: 5.4.0-4-amd64 
+Packages: 2508 (dpkg) 
+Shell: zsh 5.8 
+Resolution: 1920x1080 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: Default 
+Theme: Flat-Remix-GTK-Blue-Dark-Solid [GTK2]
+Icons: Paper [GTK2]
+Terminal: xfce4-terminal 
+Terminal Font: Monospace 12 
+CPU: Intel i5-4460 (4) @ 3.400GHz 
+GPU: NVIDIA GeForce GTX 1050 Ti 
+Memory: 16033MiB

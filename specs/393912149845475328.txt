@@ -1,0 +1,17 @@
+OS: Debian GNU/Linux bullseye/sid x86_64 
+Host: 4238AB9 ThinkPad T420 
+Kernel: 5.3.0-3-amd64 
+Uptime: 1 hour, 56 mins 
+Packages: 1785 (dpkg) 
+Shell: bash 5.0.11 
+Resolution: 1600x900 
+DE: Xfce 
+WM: Xfwm4 
+WM Theme: PRO-dark-XFCE-4.14 
+Theme: PRO-dark-XFCE-4.14 [GTK2], Adwaita [GTK3] 
+Icons: ePapirus [GTK2], Adwaita [GTK3] 
+Terminal: xfce4-terminal 
+Terminal Font: Monospace 12 
+CPU: Intel i5-2520M (4) @ 3.200GHz 
+GPU: Intel 2nd Generation Core Processor Family 
+Memory: 2751MiB / 7852MiB
