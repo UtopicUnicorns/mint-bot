@@ -1007,7 +1007,7 @@ client.on('message', async message => {
                         const level2 = message.guild.roles.find(r => r.id === n);
                         if (level2) {
                             if (message.member.roles.find(r => r.id === n)) {
-                                message.member.removeRole(lvl5).catch(error => {
+                                message.member.removeRole(level2).catch(error => {
                                     console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
                                 });
                             }

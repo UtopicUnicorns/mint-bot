@@ -30,7 +30,7 @@ module.exports = {
                     .setColor('#RANDOM')
                     .setImage(body.img)
                     .setFooter(body.alt)
-                message.channel.send({
+                 message.channel.send({
                     embed: embed
                 });
             });
@@ -49,10 +49,11 @@ module.exports = {
                     .setColor('#RANDOM')
                     .setImage(body.img)
                     .setFooter(body.alt)
-                message.channel.send({
+                 message.channel.send({
                     embed: embed
                 });
             });
+            return
         }
         let baseurl = `https://xkcd.com/`;
         let num = args[1];
@@ -68,7 +69,7 @@ module.exports = {
                 .setColor('#RANDOM')
                 .setImage(body.img)
                 .setFooter(body.alt)
-            message.channel.send({
+            return message.channel.send({
                 embed: embed
             });
         });
