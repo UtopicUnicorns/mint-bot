@@ -22,7 +22,7 @@ module.exports = {
             const hellothereguilde = new Discord.RichEmbed()
                 .setTitle('Manage level up role rewards')
                 .setColor('RANDOM')
-                .addField('Command usage:\n', `${prefix}channelmanage lvl05|lvl10|lvl15|lvl20|lvl30|lvl50|lvl85 roleID/roleNAME`)
+                .addField('Command usage:\n', `${prefix}levelmanage lvl05|lvl10|lvl15|lvl20|lvl30|lvl50|lvl85 roleID/roleNAME`)
                 .addField('Level 5: ', message.guild.roles.find(r => r.id === levelget.lvl5))
                 .addField('Level 10: ', message.guild.roles.find(r => r.id === levelget.lvl10))
                 .addField('Level 15: ', message.guild.roles.find(r => r.id === levelget.lvl15))

@@ -52,6 +52,40 @@ module.exports = {
             }
 
         }
+        if (args[0] == `strict`) {
+            let automodNotif = getGuild.get(message.guild.id);
+            if (automodNotif.autoMod != `strict`) {
+                automodNotif.autoMod = `strict`;
+                setGuild.run(automodNotif);
+                //LOGS
+                const guildChannels = getGuild.get(message.guild.id);
+                var logger = message.guild.channels.get(guildChannels.logsChannel);
+                if (!logger) {
+                    var logger = '0';
+                }
+                if (logger == '0') {} else {
+                    const logsmessage = new Discord.RichEmbed()
+                        .setTitle(prefix + 'automod')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setDescription("Used by: " + message.author)
+                        .setURL(message.url)
+                        .setColor('RANDOM')
+                        .addField('Usage:\n', message.content, true)
+                        .addField('Channel', message.channel, true)
+                        .setFooter("Message ID: " + message.id)
+                        .setTimestamp();
+                    logger.send({
+                        embed: logsmessage
+                    }).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    );
+                }
+                //
+                return message.reply("AutoMod strict is turned ON!");
+            } else {
+                return message.reply("AutoMod strict is already ON!");
+            }
+        }
         if (args[0] == `off`) {
             let automodNotif = getGuild.get(message.guild.id);
             if (automodNotif.autoMod != `1`) {
@@ -88,7 +122,7 @@ module.exports = {
         }
         let automodNotif = getGuild.get(message.guild.id);
         if (automodNotif.autoMod == `2`) {
-            var optstatus = `AutMmod is ON!`
+            var optstatus = `AutoMod is ON!`
         } else {
             var optstatus = `AutoMod is OFF!`
         }

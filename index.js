@@ -233,23 +233,23 @@ client.on("guildMemberAdd", async (guildMember) => {
             });
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + ln());
         }
     }
     if (muteChannel1 == `0`) {} else {
         if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
             guildMember.addRole(roledel1);
             try {
-                return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYour account is younger than 30 days!\nTo prevent spammers and ban evaders we have temporarely muted you.\nWrite your own username with 1337 at the end to gain access.\nYour username is case sensitive\nExample UtopicUnicorn1337");
+                return muteChannel1.send(ageA + ' ' + guildMember.user + "\nYou have a rather new account so you have to verify!\nType your username(case sensitive) and attach 1337 to the end.\nExample: UtopicUnicorn1337");
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + ln());
             }
         }
     }
     //make nice image for welcoming
     guildMember.addRole(roleadd1).catch(error => {
-        console.log(new Date() + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+        console.log(new Date() + '\n' + guildMember.guild.id + ': index.js:' + ln());
     });
     if (generalChannel1 == '0') {} else {
         try {
@@ -281,7 +281,7 @@ client.on("guildMemberAdd", async (guildMember) => {
             await generalChannel1.send(attachment);
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + ln());
         }
     }
 });
@@ -309,7 +309,7 @@ client.on("guildMemberRemove", async (guildMember) => {
             });
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+            console.log(nowtime + '\n' + guildMember.guild.id + ': index.js:' + ln());
         }
     }
 });
@@ -384,7 +384,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + ln());
             }
         }
     }
@@ -472,7 +472,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                     });
                                 } catch {
                                     let nowtime = new Date();
-                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + ln());
                                 }
                             } else {
                                 if (!body.results[0].background_image) {
@@ -489,7 +489,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                         });
                                     } catch {
                                         let nowtime = new Date();
-                                        console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                                        console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + ln());
                                     }
                                 }
                                 try {
@@ -506,7 +506,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                                     });
                                 } catch {
                                     let nowtime = new Date();
-                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                                    console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + ln());
                                 }
                             }
                         });
@@ -539,7 +539,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + newMember.guild.id + ': index.js:' + ln());
             }
         }
     }
@@ -588,7 +588,7 @@ emitter.on("item:new", (item) => {
                 spamRecently.delete('REDDIT');
             }, 1000);
             let nowtime = new Date();
-            console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
+            console.log(nowtime + '\n' + ': index.js:' + ln());
         }
     }
 });
@@ -607,7 +607,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         command.execute(newMessage);
     } catch (error) {
         let nowtime = new Date();
-        console.log(nowtime + '\n' + ': index.js:' + Math.floor(ln() - 4));
+        console.log(nowtime + '\n' + ': index.js:' + ln());
     }
 });
 client.on('message', async message => {
@@ -637,7 +637,7 @@ client.on('message', async message => {
                 embed: whoartemis
             });
         } catch {
-            console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln())
         }
     }
     //load shit
@@ -685,7 +685,7 @@ client.on('message', async message => {
     }
     //autoMod START
     if (message.member.hasPermission('KICK_MEMBERS')) {} else {
-        if (guildChannels.autoMod == '2') {
+        if (guildChannels.autoMod == 'strict' || guildChannels.autoMod == '2') {
             //Word/sentence filter
             let allwords = sql.prepare("SELECT * FROM words WHERE guild = ?;").all(message.guild.id);
             let wargs = message.content.toLowerCase();
@@ -753,7 +753,7 @@ client.on('message', async message => {
                 message.member.removeRole(memberrole).catch(console.error);
                 message.member.addRole(mutedrole).catch(console.error);
                 muteChannel1.send(member + `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`).catch(error =>
-                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln())
                 );
 
             }
@@ -764,46 +764,50 @@ client.on('message', async message => {
     if (muteChannel1 == '0') {} else {
         if (message.channel.id === muteChannel1.id) {
             if (message.content == message.author.username + "1337") {
-                let userscore1 = client.getScore.get(message.author.id, message.guild.id);
-                if (!userscore1) {
-
+                if (guildChannels.autoMod == 'strict') {
+                    return message.reply("Our sincere apologies, Automod Strict is ON\nWhich means that people have to be manually approved!");
                 } else {
-                    if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+                    let userscore1 = client.getScore.get(message.author.id, message.guild.id);
+                    if (!userscore1) {
+
+                    } else {
+                        if (userscore1.muted == '1') return message.reply("You have been muted by our system due to breaking rules, the verification system is not for you!");
+                    }
+                    let roleadd = message.guild.roles.find(r => r.name === "~/Members");
+                    let roledel = message.guild.roles.find(r => r.name === "Muted");
+                    let member = message.member;
+                    message.member.addRole(roleadd).catch(console.error);
+                    message.member.removeRole(roledel).catch(console.error);
+                    var ReBeL = member;
+                    var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
+                    var moon = bel[~~(Math.random() * bel.length)];
+                    moon = moon.replace('@', message.author.username)
+                    const canvas = Canvas.createCanvas(700, 250);
+                    const ctx = canvas.getContext('2d');
+                    const background = await Canvas.loadImage('./mintwelcome.png');
+                    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                    ctx.font = '30px Zelda';
+                    ctx.shadowColor = "black";
+                    ctx.shadowBlur = 5;
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
+                    const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
+                    ctx.drawImage(avatar, 600, 25, 50, 50);
+                    ctx.beginPath();
+                    ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+                    ctx.closePath();
+                    ctx.clip();
+                    const guildlogo = await Canvas.loadImage(message.guild.iconURL);
+                    ctx.drawImage(guildlogo, 25, 25, 200, 200);
+                    ctx.font = '21px sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+                    const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
+                    await generalChannel1.send(attachment).catch(error =>
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln())
+                    );
+                    return message.channel.send(`${member} has been approved.`);
                 }
-                let roleadd = message.guild.roles.find(r => r.name === "~/Members");
-                let roledel = message.guild.roles.find(r => r.name === "Muted");
-                let member = message.member;
-                message.member.addRole(roleadd).catch(console.error);
-                message.member.removeRole(roledel).catch(console.error);
-                var ReBeL = member;
-                var bel = ["\njust started brewing some minty tea!", "\nis using Arch BTW!", "\necho 'is here!'", "\nis sipping minty tea!", "\nuseradd -m -g users /bin/sh @"];
-                var moon = bel[~~(Math.random() * bel.length)];
-                moon = moon.replace('@', message.author.username)
-                const canvas = Canvas.createCanvas(700, 250);
-                const ctx = canvas.getContext('2d');
-                const background = await Canvas.loadImage('./mintwelcome.png');
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                ctx.font = '30px Zelda';
-                ctx.shadowColor = "black";
-                ctx.shadowBlur = 5;
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillText(message.author.username, canvas.width / 3.0, canvas.height / 2.0);
-                const avatar = await Canvas.loadImage(message.author.displayAvatarURL);
-                ctx.drawImage(avatar, 600, 25, 50, 50);
-                ctx.beginPath();
-                ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.clip();
-                const guildlogo = await Canvas.loadImage(message.guild.iconURL);
-                ctx.drawImage(guildlogo, 25, 25, 200, 200);
-                ctx.font = '21px sans-serif';
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-                const attachment = new Discord.Attachment(canvas.toBuffer(), 'welcome-image.png');
-                await generalChannel1.send(attachment).catch(error =>
-                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-                );
-                return message.channel.send(`${member} has been approved.`);
             }
         }
     }
@@ -833,7 +837,7 @@ client.on('message', async message => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
                 }
             }
         }
@@ -848,7 +852,7 @@ client.on('message', async message => {
         return message.channel.send({
             embed: whoartemis
         }).catch(error =>
-            console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
+            console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln())
         );
     }
     if (message.content === prefix + "ping") {
@@ -878,7 +882,7 @@ client.on('message', async message => {
                 client.channels.get(`${channelcheck}`).send(message.content);
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
             }
             return;
         }
@@ -952,17 +956,13 @@ client.on('message', async message => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
                 }
             }).catch(err => {
                 console.error(err);
             });
             if (err) return message.channel.send(err);
         });
-    }
-    //agree
-    if (message.content == "^") {
-        message.channel.send("I agree!");
     }
     //set points
     let score;
@@ -992,89 +992,42 @@ client.on('message', async message => {
     }
     //start level rewards
     const levelups = client.getLevel.get(message.guild.id);
-    const lvl5 = message.guild.roles.find(r => r.id === levelups.lvl5);
-    const lvl10 = message.guild.roles.find(r => r.id === levelups.lvl10);
-    const lvl15 = message.guild.roles.find(r => r.id === levelups.lvl15);
-    const lvl20 = message.guild.roles.find(r => r.id === levelups.lvl20);
-    const lvl30 = message.guild.roles.find(r => r.id === levelups.lvl30);
-    const lvl50 = message.guild.roles.find(r => r.id === levelups.lvl50);
-    const lvl85 = message.guild.roles.find(r => r.id === levelups.lvl85);
-    //lvl5
-    if (score.level > 4 && score.level < 9) {
-        if (lvl5) {
-            let checking = message.member.roles.find(r => r.name === lvl5.name);
-            if (!checking) {
-                message.member.addRole(lvl5);
-                message.reply("For reaching level 5\nYou earned the title " + lvl5);
+    let levelers = [levelups.lvl5, levelups.lvl10, levelups.lvl15, levelups.lvl20, levelups.lvl30, levelups.lvl50, levelups.lvl85];
+    let levelerstxt = ["5", "10", "15", "20", "30", "50", "85", "1000"];
+    let count = -1;
+    for (let i of levelers) {
+        count++
+        if (score.level >= levelerstxt[count] && score.level < levelerstxt[count + 1]) {
+            const level = message.guild.roles.find(r => r.id === i);
+            if (level) {
+                let checking = message.member.roles.find(r => r.id === i);
+                if (!checking) {
+                    let remove = [levelups.lvl5, levelups.lvl10, levelups.lvl15, levelups.lvl20, levelups.lvl30, levelups.lvl50, levelups.lvl85];
+                    for (let n of remove) {
+                        const level2 = message.guild.roles.find(r => r.id === n);
+                        if (level2) {
+                            if (message.member.roles.find(r => r.id === n)) {
+                                message.member.removeRole(lvl5).catch(error => {
+                                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
+                                });
+                            }
+                        }
+                    }
+                    message.member.addRole(level).catch(error => {
+                        console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
+                    });
+                    const embed = new Discord.RichEmbed()
+                        .setTitle('Level Role get!')
+                        .setAuthor(message.author.username, message.author.avatarURL)
+                        .setColor('RANDOM')
+                        .addField('Gained the title: ', level, true)
+                        .setTimestamp();
+                    message.channel.send(embed);
+                }
             }
         }
     }
-    //lvl10
-    if (score.level > 9 && score.level < 14) {
-        if (lvl10) {
-            let checking = message.member.roles.find(r => r.name === lvl10.name);
-            if (!checking) {
-                message.member.addRole(lvl10);
-                message.member.removeRole(lvl5);
-                message.reply("For reaching level 10\nYou earned the title " + lvl10);
-            }
-        }
-    }
-    //lvl15
-    if (score.level > 14 && score.level < 19) {
-        if (lvl15) {
-            let checking = message.member.roles.find(r => r.name === lvl15.name);
-            if (!checking) {
-                message.member.addRole(lvl15);
-                message.member.removeRole(lvl10);
-                message.reply("For reaching level 15\nYou earned the title " + lvl15);
-            }
-        }
-    }
-    //lvl20
-    if (score.level > 19 && score.level < 29) {
-        if (lvl20) {
-            let checking = message.member.roles.find(r => r.name === lvl20.name);
-            if (!checking) {
-                message.member.addRole(lvl20);
-                message.member.removeRole(lvl15);
-                message.reply("For reaching level 20\nYou earned the title " + lvl20);
-            }
-        }
-    }
-    //lvl30
-    if (score.level > 29 && score.level < 49) {
-        if (lvl30) {
-            let checking = message.member.roles.find(r => r.name === lvl30.name);
-            if (!checking) {
-                message.member.addRole(lvl30);
-                message.member.removeRole(lvl20);
-                message.reply("For reaching level 30\nYou earned the title " + lvl30);
-            }
-        }
-    }
-    //lvl50
-    if (score.level > 49 && score.level < 84) {
-        if (lvl50) {
-            let checking = message.member.roles.find(r => r.name === lvl50.name);
-            if (!checking) {
-                message.member.addRole(lvl50);
-                message.member.removeRole(lvl30);
-                message.reply("For reaching level 50\nYou earned the title " + lvl50);
-            }
-        }
-    }
-    //lvl85
-    if (score.level > 84 && score.level < 99) {
-        if (lvl85) {
-            let checking = message.member.roles.find(r => r.name === lvl85.name);
-            if (!checking) {
-                message.member.addRole(lvl85);
-                message.member.removeRole(lvl50);
-                message.reply("For reaching level 85\nYou earned the title " + lvl85);
-            }
-        }
-    }
+    //console.log(message.member.roles.map(role => role.id));
     //thanks
     if (message.content.toLowerCase().includes("thank")) {
         const user = message.mentions.users.first() || client.users.get(args[0]);
@@ -1207,7 +1160,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
                 }
             }
             if (reaction.message.content === '') {
@@ -1230,7 +1183,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     });
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
                 }
             }
             try {
@@ -1253,7 +1206,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
             }
         }
         //reportdelete
@@ -1281,7 +1234,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
             }
         }
     }
@@ -1308,7 +1261,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
             }
         }
         if (reaction.message.content === '') {
@@ -1331,7 +1284,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 });
             } catch {
                 let nowtime = new Date();
-                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
             }
         }
         if (highlightChannel1 == '0') return reaction.message.channel.send("You did not set up a logs channel!");
@@ -1354,7 +1307,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             });
         } catch {
             let nowtime = new Date();
-            console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+            console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
         }
     }
     //reaction roles
@@ -1370,7 +1323,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     array2.push(reaction.message.guild.roles.find(r => r.id == data.roles).name);
                 } catch {
                     let nowtime = new Date();
-                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + Math.floor(ln() - 4));
+                    console.log(nowtime + '\n' + reaction.message.guild.id + ': index.js:' + ln());
                 }
             }
             for (let n in array2) {
@@ -1381,14 +1334,24 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     if (!haverole) {
                         guildMember.addRole(role).catch(console.error);
                         reaction.remove(user.id);
-                        client.channels.get(reactionChannel1.id).send(user + " Joined " + role.name)
+                        const embed = new Discord.RichEmbed()
+                            .setAuthor(user.username, user.avatarURL)
+                            .setColor('RANDOM')
+                            .addField('Joined: ', role, true)
+                            .setTimestamp();
+                        client.channels.get(reactionChannel1.id).send(embed)
                             .then(message => {
                                 message.delete(5000)
                             });
                     } else {
                         guildMember.removeRole(role).catch(console.error);
                         reaction.remove(user.id);
-                        client.channels.get(reactionChannel1.id).send(user + " Left " + role.name)
+                        const embed = new Discord.RichEmbed()
+                            .setAuthor(user.username, user.avatarURL)
+                            .setColor('RANDOM')
+                            .addField('Left: ', role, true)
+                            .setTimestamp();
+                        client.channels.get(reactionChannel1.id).send(embed)
                             .then(message => {
                                 message.delete(5000)
                             });
