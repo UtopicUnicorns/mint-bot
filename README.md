@@ -7,6 +7,7 @@
 
 ## How to use
 
+0. Need at least a role with kicking permissions to use mod commands!
 1. Invite the bot to your server
 2. visit Artemis's website, and login
 3. Click on the tab control panel
