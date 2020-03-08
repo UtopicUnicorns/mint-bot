@@ -155,7 +155,7 @@ exports.run = (client, config) => {
                 if (thisss) {
                   if (data2.points > 5) {
                     count2++
-                    array.push('<tr style="text-align:left; border-bottom: 1px solid black"><td style="overflow: hidden; width: 300px;">(' + count2 + ') <img src ="' + thisss.user.avatarURL + '" width="20px" height="20px"> ' + thisss.user.username + '</td><td style="width: 150px;">Lvl: ' + data2.level + ' Pts: ' + data2.points + '</td></tr>');
+                    array.push('<tr style="text-align:left; border-bottom: 1px solid black"><td style="width: 300px;">(' + count2 + ') <img src ="' + thisss.user.avatarURL + '" width="20px" height="20px"> ' + thisss.user.username + '</td><td style="width: 150px;">Lvl: ' + data2.level + ' Pts: ' + data2.points + '</td></tr>');
                   }
                 }
               }

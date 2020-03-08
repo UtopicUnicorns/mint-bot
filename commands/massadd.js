@@ -2,7 +2,7 @@ const Discord = module.require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
 module.exports = {
     name: 'massadd',
-    description: '[admin] Mass add a role',
+    description: '[Restricted] Mass add a role',
     async execute(message) {
         const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
         const prefixstart = getGuild.get(message.guild.id);

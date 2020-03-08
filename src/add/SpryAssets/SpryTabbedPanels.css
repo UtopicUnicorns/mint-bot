@@ -19,6 +19,7 @@
 	margin: 0px 1px 0px 0px;
 	list-style: none;
 	border-radius: 10px;
+	overflow: hidden;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	cursor: pointer;

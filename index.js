@@ -607,21 +607,10 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
         command.execute(newMessage);
     } catch (error) {
         let nowtime = new Date();
-        console.log(nowtime + '\n' + ': index.js:' + ln());
+        console.log(nowtime + '\n' + newMessage.guild.id + ' ' + newMessage.guild.owner.user.username + ': index.js:' + ln());
     }
 });
 client.on('message', async message => {
-    if (message.author.id == `637408181315829770`) {
-        if (borgRecently.has(message.author.id)) {
-
-        } else {
-            borgRecently.add(message.author.id);
-            setTimeout(() => {
-                borgRecently.delete(message.author.id);
-            }, 3600000);
-            message.react("❤️");
-        }
-    }
     //ignore bots
     if (message.author.bot) return;
     //Direct Message handle
@@ -688,10 +677,12 @@ client.on('message', async message => {
         if (guildChannels.autoMod == 'strict' || guildChannels.autoMod == '2') {
             //Word/sentence filter
             let allwords = sql.prepare("SELECT * FROM words WHERE guild = ?;").all(message.guild.id);
-            let wargs = message.content.toLowerCase();
-            for (const data of allwords) {
-                if (wargs.includes(data.words)) {
-                    return message.delete();
+            let wargs = message.content.toLowerCase().split(" ");
+            for (i in wargs) {
+                for (const data of allwords) {
+                    if (wargs.includes(data.words)) {
+                        return message.delete();
+                    }
                 }
             }
             //No Spam
