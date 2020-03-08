@@ -1,0 +1,9 @@
+{
+    "token": "TOKEN/KEY",
+    "yandex": "TOKEN/KEY",
+    "youtubekey": "TOKEN/KEY",
+    "askkey": "TOKEN/KEY",
+    "SESSION_SECRET": "your_own_secret_code_for_sessions",
+    "CLIENT_SECRET": "your_client_secret_code",
+    "REDIRECT_URI": "your_redirect_uri",
+}
