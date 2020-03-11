@@ -802,50 +802,28 @@ client.on('message', async message => {
             }
         }
     }
-    //update
-    if (message.content.startsWith(prefix + "update")) {
-        if (message.author.id !== '127708549118689280') return;
-        const logslist = sql.prepare("SELECT * FROM guildhub").all();
-        const logschannels = []
-        for (const data of logslist) {
-            logschannels.push(data.logsChannel);
-        }
-        for (let i of logschannels) {
-            if (client.channels.get(`${i}`)) {
-                try {
-                    const updatetext = new Discord.RichEmbed()
-                        .setTitle("Update")
-                        .setAuthor(message.author.username, message.author.avatarURL)
-                        .setDescription(message.author)
-                        .setURL('https://discord.gg/EVVtPpw')
-                        .setColor('RANDOM')
-                        .addField('Update text:\n', message.content.slice(8))
-                        .addField('Channel', message.channel, true)
-                        .setFooter("Message ID: " + message.id)
-                        .setTimestamp();
-                    await client.channels.get(`${i}`).send({
-                        embed: updatetext
-                    });
-                } catch {
-                    let nowtime = new Date();
-                    console.log(nowtime + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln());
-                }
+    //EVENT
+    if (message.guild.id == '628978428019736619') {
+        let eventnumber = 25;
+        let eventnumber2 = Math.floor(Math.random() * 50);
+        if (eventnumber2 == eventnumber) {
+            let eventcheck = message.member.roles.find(r => r.name === `512Mb`);
+            if (!eventcheck) {
+                let eventr = message.guild.roles.find(r => r.name === `512Mb`);
+                if (!eventr) return;
+                message.member.addRole(eventr);
+                const eventembed = new Discord.RichEmbed()
+                    .setTitle('EVENT')
+                    .setColor('RANDOM')
+                    .setDescription(message.author + '\n earned the event title:\n512Mb\nCongratulations!')
+                    .setTimestamp()
+                client.channels.get(`628984660298563584`).send({
+                    embed: eventembed
+                });
             }
         }
     }
-    //WhoIsArtemis?
-    if (message.content.toLowerCase().includes("who is artemis")) {
-        const whoartemis = new Discord.RichEmbed()
-            .setTitle('Artemis')
-            .setColor('RANDOM')
-            .setDescription('Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/')
-            .setTimestamp()
-        return message.channel.send({
-            embed: whoartemis
-        }).catch(error =>
-            console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + ln())
-        );
-    }
+    //ping
     if (message.content === prefix + "ping") {
         const m = await message.channel.send("Ping?");
         m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
