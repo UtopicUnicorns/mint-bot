@@ -30,6 +30,16 @@ module.exports = {
                 messages = messages.array().slice(0, amount);
             }
             message.channel.bulkDelete(messages).catch(error => console.log(error.stack));
+            const embed = new Discord.RichEmbed()
+                .setTitle('Purging')
+                .setImage('attachment://image.gif')
+            message.channel.send({
+                embed: embed,
+                files: [{
+                    attachment: './pics/purge.gif',
+                    name: 'image.gif'
+                }]
+            });
             //LOGS
             const guildChannels = getGuild.get(message.guild.id);
             var logger = message.guild.channels.get(guildChannels.logsChannel);
