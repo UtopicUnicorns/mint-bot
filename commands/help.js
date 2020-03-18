@@ -21,7 +21,7 @@ module.exports = {
                     const command = require(`./${file}`);
                     if (command.description.includes(`[admin]`)) {
                         let usag = getUsage.get(command.name);
-                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                        str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                     }
                 }
                 let embed = new Discord.RichEmbed()
@@ -42,7 +42,7 @@ module.exports = {
                     const command = require(`./${file}`);
                     if (command.description.includes(`[mod]`)) {
                         let usag = getUsage.get(command.name);
-                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                        str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                     }
                 }
                 let embed = new Discord.RichEmbed()
@@ -63,7 +63,7 @@ module.exports = {
                     const command = require(`./${file}`);
                     if (command.description.includes(`[server]`)) {
                         let usag = getUsage.get(command.name);
-                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                        str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                     }
                 }
                 let embed = new Discord.RichEmbed()
@@ -84,7 +84,7 @@ module.exports = {
                     const command = require(`./${file}`);
                     if (command.description.includes(`[mscore]`)) {
                         let usag = getUsage.get(command.name);
-                        str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                        str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                     }
                 }
                 let embed = new Discord.RichEmbed()
@@ -104,7 +104,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[general]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()
@@ -123,7 +123,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[level]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()
@@ -142,7 +142,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[linux]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()
@@ -161,7 +161,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[fun]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()
@@ -180,7 +180,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[stream]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()
@@ -199,7 +199,7 @@ module.exports = {
                 const command = require(`./${file}`);
                 if (command.description.includes(`[music]`)) {
                     let usag = getUsage.get(command.name);
-                    str += `${prefix}${command.name}, ${command.description} (${usag.number})\n`;
+                    str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
                 }
             }
             let embed = new Discord.RichEmbed()

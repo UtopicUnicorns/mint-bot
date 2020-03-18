@@ -1,5 +1,6 @@
 const Discord = module.require('discord.js');
 const db = require('better-sqlite3')('./scores.sqlite');
+const ln = require("nodejs-linenumber");
 module.exports = {
     name: 'ban',
     description: '[mod] Ban a user',

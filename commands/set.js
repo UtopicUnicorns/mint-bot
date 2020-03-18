@@ -2,6 +2,7 @@ const Discord = module.require('discord.js');
 const fs = require('fs');
 const db = require('better-sqlite3')('./scores.sqlite');
 const mutedtime = new Set();
+const ln = require("nodejs-linenumber");
 module.exports = {
     name: 'set',
     description: `[mod] \nset mute MENTION\nset unmute MENTION\nset prefix prefix`,

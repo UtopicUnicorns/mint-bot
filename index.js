@@ -24,6 +24,7 @@ const streamedRecently = new Set();
 const lovedRecently = new Set();
 const borgRecently = new Set();
 const spamRecently = new Set();
+const noticeset = new Set();
 const congratulationsRecently = new Set();
 const reminder2 = new Set();
 const ln = require("nodejs-linenumber");
@@ -494,7 +495,7 @@ client.on("guildDelete", guild => {
       " Owner: " +
       guild.owner.user.username
   );
-  sql.prepare(`DELETE FROM guildhub WHERE guild = ${guild.id}`).run();
+  //sql.prepare(`DELETE FROM guildhub WHERE guild = ${guild.id}`).run();
 });
 client.on("guildMemberUpdate", (oldMember, newMember) => {
   //ignoredbl
@@ -827,6 +828,40 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 client.on("message", async message => {
   //ignoredbl
   if (message.guild.id == "264445053596991498") return;
+  //NOTICE!
+  /* if (noticeset.has(message.guild.id)) {
+  } else {
+    noticeset.add(message.guild.id);
+    const NOTICETHIS = new Discord.RichEmbed()
+      .setAuthor(message.author.username, message.author.avatarURL)
+      .setColor("RANDOM")
+      .setTitle("Notice")
+      .addField(
+        "Our apologies\n",
+        "Discords most recent outage caused our channel manage database and prefixes to reset.\nvisit https://artemisbot.eu and redo the channels and your prefix.\nNote that only mods and the guild owner can take this action.\nThis message may be repeated a few times over the next week."
+      )
+      .setTimestamp();
+    message.channel.send({
+      embed: NOTICETHIS
+    });
+  } */
+  //Failsafe
+  newGuild3 = client.getGuild.get(message.guild.id);
+  if (!newGuild3) {
+    newGuild3 = {
+      guild: message.guild.id,
+      generalChannel: `0`,
+      highlightChannel: `0`,
+      muteChannel: `0`,
+      logsChannel: `0`,
+      streamChannel: `0`,
+      reactionChannel: `0`,
+      streamHere: `0`,
+      autoMod: `0`,
+      prefix: `!`
+    };
+    client.setGuild.run(newGuild3);
+  }
   //Disboard
   if (message.author.id == "302050872383242240") {
     if (message.embeds[0].description.includes("Bump done")) {
