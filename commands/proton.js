@@ -30,6 +30,11 @@ module.exports = {
                 json: true
             }, (err, res, body) => {
                 if (err) return message.channel.send(err);
+                if (!game.price_overview) {
+                    var prices = "Not found";
+                } else {
+                    var prices = game.price_overview.final_formatted;
+                }
                 const embed = new Discord.RichEmbed()
                     .setTitle(game.name)
                     .setURL('https://www.protondb.com/app/' + parsedtext)
@@ -41,7 +46,7 @@ module.exports = {
                     .addField('Best rating given', body.bestReportedTier)
                     .addField('Steam Link', 'https://store.steampowered.com/app/' + parsedtext)
                     .addField('ProtonDB Link: ', 'https://www.protondb.com/app/' + parsedtext)
-                    .setFooter('Price: ' + game.price_overview.final_formatted)
+                    .setFooter('Price: ' + prices)
                     .setColor('#RANDOM')
                 message.channel.send({
                     embed: embed

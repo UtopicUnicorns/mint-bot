@@ -1556,7 +1556,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         return reaction.remove(reaction.message.author.id);
       if (!reaction.message.attachments.size > 0) {
         try {
-          logsChannel1.send("<@&628980538274873345> <@&628980016813703178>");
+          logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
           const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setAuthor(
@@ -1569,6 +1569,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .addField("Reported Message:\n", reaction.message.content, true)
             .addField("Channel", reaction.message.channel, true)
             .addField("Reported by: ", reaction.users.first())
+            .addField("Raw link: ", reaction.message.url)
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
           return logsChannel1.send({
@@ -1583,7 +1584,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
       }
       if (reaction.message.content === "") {
         try {
-          logsChannel1.send("<@&628980538274873345> <@&628980016813703178>");
+          logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
           const image = reaction.message.attachments.array()[0].url;
           const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
@@ -1596,6 +1597,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setColor("RANDOM")
             .addField("Channel", reaction.message.channel, true)
             .addField("Reported by: ", reaction.users.first())
+            .addField("Raw link: ", reaction.message.url)
             .setFooter("Message ID: " + reaction.message.id)
             .setImage(image)
             .setTimestamp();
@@ -1610,7 +1612,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
       }
       try {
-        logsChannel1.send("<@&628980538274873345> <@&628980016813703178>");
+        logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
         const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
           .setTitle("A message got reported!")
@@ -1622,6 +1624,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setURL(reaction.message.url)
           .setColor("RANDOM")
           .addField("Reported Message:\n", reaction.message.content, true)
+          .addField("Raw link: ", reaction.message.url)
           .addField("Reported by: ", reaction.users.first())
           .addField("Channel", reaction.message.channel, true)
           .setFooter("Message ID: " + reaction.message.id)
@@ -1641,7 +1644,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     let limit2 = 3;
     if (reaction.emoji.name == "❌" && reaction.count == limit2) {
       try {
-        logsChannel1.send("<@&628980538274873345> <@&628980016813703178>");
+        logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
         if (reaction.message.author.id == "440892659264126997") return;
         if (reaction.message.author.id == "127708549118689280") return;
         if (reaction.users.first() == reaction.message.author)
@@ -1659,6 +1662,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .addField("Reported Message:\n", reaction.message.content, true)
           .addField("Deleted by: ", reaction.users.last())
           .addField("Channel", reaction.message.channel, true)
+          .addField("Raw link: ", reaction.message.url)
           .setFooter("Message ID: " + reaction.message.id)
           .setTimestamp();
         return logsChannel1.send({
@@ -1696,6 +1700,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setColor("RANDOM")
           .addField("Mintiest Message:\n", reaction.message.content, true)
           .addField("Channel", reaction.message.channel, true)
+          .addField("Raw link: ", reaction.message.url)
           .setFooter("Message ID: " + reaction.message.id)
           .setTimestamp();
         return highlightChannel1.send({
@@ -1728,6 +1733,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setURL(reaction.message.url)
           .setColor("RANDOM")
           .addField("Channel", reaction.message.channel, true)
+          .addField("Raw link: ", reaction.message.url)
           .setFooter("Message ID: " + reaction.message.id)
           .setImage(image)
           .setTimestamp();
@@ -1761,6 +1767,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         .setColor("RANDOM")
         .addField("Mintiest Message:\n", reaction.message.content, true)
         .addField("Channel", reaction.message.channel, true)
+        .addField("Raw link: ", reaction.message.url)
         .setFooter("Message ID: " + reaction.message.id)
         .setImage(image)
         .setTimestamp();
