@@ -1,70 +1,99 @@
-const Discord = module.require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
+const Discord = module.require("discord.js");
+const db = require("better-sqlite3")("./scores.sqlite");
 const ln = require("nodejs-linenumber");
 module.exports = {
-    name: 'purge',
-    description: '[mod] Purge a mentioned user or a specified ammount',
-    async execute(message) {
-        const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
-        const prefixstart = getGuild.get(message.guild.id);
-        const prefix = prefixstart.prefix;
-        if (!message.member.hasPermission('KICK_MEMBERS')) return;
+  name: "purge",
+  description: "[mod] Purge a mentioned user or a specified ammount",
+  async execute(message) {
+    const getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+    const prefixstart = getGuild.get(message.guild.id);
+    const prefix = prefixstart.prefix;
+    if (!message.member.hasPermission("KICK_MEMBERS")) return;
+    //
+    let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+    let setUsage = db.prepare(
+      "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
+    );
+    usage = getUsage.get("purge");
+    usage.number++;
+    setUsage.run(usage);
+    //
+    const user = message.mentions.users.first();
+    const amount = !!parseInt(message.content.split(" ")[1])
+      ? parseInt(message.content.split(" ")[1])
+      : parseInt(message.content.split(" ")[2]);
+    if (!amount) return message.reply("Must specify an amount to delete!");
+    if (!amount && !user)
+      return message.reply(
+        "Must specify a user and amount, or just an amount, of messages to purge!"
+      );
+
+/*     message.channel
+      .fetchMessages({
+        limit: 100
+      })
+      .then(messages => {
+        messages = messages
+          .filter(m => m.author.id === "127708549118689280")
+          .array()
+          .slice(0, AMOUNT);
+        message.channel
+          .bulkDelete(messages)
+          .catch(error => console.log(error.stack));
+      }); */
+
+    message.channel
+      .fetchMessages({
+        limit: 100
+      })
+      .then(messages => {
+        if (user) {
+          const filterBy = user ? user.id : Client.user.id;
+          messages = messages
+            .filter(m => m.author.id === filterBy)
+            .array()
+            .slice(0, amount);
+        } else {
+          messages = messages.array().slice(0, amount);
+        }
+        message.channel
+          .bulkDelete(messages)
+          .catch(error => console.log(error.stack));
+        //LOGS
+        const guildChannels = getGuild.get(message.guild.id);
+        var logger = message.guild.channels.get(guildChannels.logsChannel);
+        if (!logger) {
+          var logger = "0";
+        }
+        if (logger == "0") {
+        } else {
+          const logsmessage = new Discord.RichEmbed()
+            .setTitle(prefix + "purge")
+            .setAuthor(message.author.username, message.author.avatarURL)
+            .setDescription("Used by: " + message.author)
+            .setURL(message.url)
+            .setColor("RANDOM")
+            .addField("Usage:\n", message.content, true)
+            .addField("Channel", message.channel, true)
+            .setFooter("Message ID: " + message.id)
+            .setTimestamp();
+          logger
+            .send({
+              embed: logsmessage
+            })
+            .catch(error =>
+              console.log(
+                new Date() +
+                  "\n" +
+                  message.guild.id +
+                  " " +
+                  message.guild.owner.user.username +
+                  ": index.js:" +
+                  Math.floor(ln() - 4)
+              )
+            );
+        }
         //
-        let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
-        let setUsage = db.prepare("INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);");
-        usage = getUsage.get('purge');
-        usage.number++;
-        setUsage.run(usage);
-        //
-        const user = message.mentions.users.first();
-        const amount = !!parseInt(message.content.split(' ')[1]) ? parseInt(message.content.split(' ')[1]) : parseInt(message.content.split(' ')[2])
-        if (!amount) return message.reply('Must specify an amount to delete!');
-        if (!amount && !user) return message.reply('Must specify a user and amount, or just an amount, of messages to purge!');
-        message.delete();
-        message.channel.fetchMessages({
-            limit: 100,
-        }).then((messages) => {
-            if (user) {
-                const filterBy = user ? user.id : Client.user.id;
-                messages = messages.filter(m => m.author.id === filterBy).array().slice(0, amount);
-            } else {
-                messages = messages.array().slice(0, amount);
-            }
-            message.channel.bulkDelete(messages).catch(error => console.log(error.stack));
-            const embed = new Discord.RichEmbed()
-                .setTitle('Purging')
-                .setImage('attachment://image.gif')
-            message.channel.send({
-                embed: embed,
-                files: [{
-                    attachment: './pics/purge.gif',
-                    name: 'image.gif'
-                }]
-            });
-            //LOGS
-            const guildChannels = getGuild.get(message.guild.id);
-            var logger = message.guild.channels.get(guildChannels.logsChannel);
-            if (!logger) {
-                var logger = '0';
-            }
-            if (logger == '0') {} else {
-                const logsmessage = new Discord.RichEmbed()
-                    .setTitle(prefix + 'purge')
-                    .setAuthor(message.author.username, message.author.avatarURL)
-                    .setDescription("Used by: " + message.author)
-                    .setURL(message.url)
-                    .setColor('RANDOM')
-                    .addField('Usage:\n', message.content, true)
-                    .addField('Channel', message.channel, true)
-                    .setFooter("Message ID: " + message.id)
-                    .setTimestamp();
-                logger.send({
-                    embed: logsmessage
-                }).catch(error =>
-                    console.log(new Date() + '\n' + message.guild.id + ' ' + message.guild.owner.user.username + ': index.js:' + Math.floor(ln() - 4))
-                );
-            }
-            //
-        });
-    },
+      });
+  }
 };

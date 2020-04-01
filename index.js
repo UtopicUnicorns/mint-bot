@@ -26,7 +26,6 @@ const borgRecently = new Set();
 const spamRecently = new Set();
 const noticeset = new Set();
 const congratulationsRecently = new Set();
-const reminder2 = new Set();
 const ln = require("nodejs-linenumber");
 const { FeedEmitter } = require("rss-emitter-ts");
 const emitter = new FeedEmitter();
@@ -70,7 +69,9 @@ client.once("ready", () => {
         .join("\n\n") +
       "\n\n"
   );
-  //Level DB
+  //////////////////////
+  //user info/level DB//
+  //////////////////////
   const table = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';"
@@ -86,13 +87,16 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //Run user info/scores
   client.getScore = sql.prepare(
     "SELECT * FROM scores WHERE user = ? AND guild = ?"
   );
   client.setScore = sql.prepare(
     "INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);"
   );
-  //Guild Channel DB
+  ////////////////////
+  //Channelmanage DB//
+  ////////////////////
   const table2 = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'guildhub';"
@@ -110,11 +114,14 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //run channelmanage
   client.getGuild = sql.prepare("SELECT * FROM guildhub WHERE guild = ?");
   client.setGuild = sql.prepare(
     "INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);"
   );
-  //role DB
+  ////////////////////
+  //Rolemanage    DB//
+  ////////////////////
   const table3 = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'roles';"
@@ -128,11 +135,14 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //run rolemanage
   client.getRoles = sql.prepare("SELECT * FROM roles WHERE guild = ?");
   client.setRoles = sql.prepare(
     "INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);"
   );
-  //words DB
+  ////////////////////
+  //Word filter   DB//
+  ////////////////////
   const table5 = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'words';"
@@ -150,11 +160,14 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //run word filter
   client.getWords = sql.prepare("SELECT * FROM words WHERE guild = ?");
   client.setWords = sql.prepare(
     "INSERT OR REPLACE INTO words (guild, words) VALUES (@guild, @words);"
   );
-  //levelup DB
+  ////////////////////
+  //level up      DB//
+  ////////////////////
   const table4 = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'level';"
@@ -170,11 +183,14 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //run level up
   client.getLevel = sql.prepare("SELECT * FROM level WHERE guild = ?");
   client.setLevel = sql.prepare(
     "INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);"
   );
-  //command usage DB
+  ////////////////////
+  //command usage DB//
+  ////////////////////
   const table9 = sql
     .prepare(
       "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'usage';"
@@ -188,9 +204,33 @@ client.once("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
+  //loadusage
   client.getUsage = sql.prepare("SELECT * FROM usage WHERE command = ?");
   client.setUsage = sql.prepare(
     "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
+  );
+  //////////////////////
+  //Remind          DB//
+  //////////////////////
+  const tableremind = sql
+    .prepare(
+      "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'remind';"
+    )
+    .get();
+  if (!tableremind["count(*)"]) {
+    sql
+      .prepare(
+        "CREATE TABLE remind (mid TEXT PRIMARY KEY, cid TEXT, gid TEXT, uid TEXT, time TEXT, reminder TEXT);"
+      )
+      .run();
+    sql.prepare("CREATE UNIQUE INDEX idx_remind_id ON remind (mid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  }
+  //Run remind DB
+  client.getRemind = sql.prepare("SELECT * FROM remind WHERE time = ?");
+  client.setRemind = sql.prepare(
+    "INSERT OR REPLACE INTO remind (mid, cid, gid, uid, time, reminder) VALUES (@mid, @cid, @gid, @uid, @time, @reminder);"
   );
 
   //change bot Status
@@ -200,6 +240,30 @@ client.once("ready", () => {
       type: "LISTENING"
     });
   }, 60000);
+  //Reminder run
+  setInterval(() => {
+    const remindersdb = sql
+      .prepare("SELECT * FROM remind ORDER BY time DESC;")
+      .all();
+    for (const data of remindersdb) {
+      let timenow = moment().format("YYYYMMDDHmmss");
+      if (timenow >= data.time) {
+        let gettheguild = client.guilds.get(data.gid);
+        let reminduser = gettheguild.members.get(data.uid);
+        client.channels.get(data.cid).send('<@' + data.uid + '> PING!');
+        const reminderemb2 = new Discord.RichEmbed()
+          .setTitle("REMIND ALERT")
+          .setAuthor(reminduser.user.username + '#' + reminduser.user.discriminator, reminduser.user.displayAvatarURL)
+          .setDescription(reminduser)
+          .addField("Reminder: ", data.reminder + "!")
+          .setColor("RANDOM");
+        client.channels.get(data.cid).send({
+          embed: reminderemb2
+        });
+        sql.prepare(`DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`).run();
+      }
+    }
+  }, 5000);
   //preload messages on reconnect
   const fetch2 = sql.prepare("SELECT * FROM guildhub").all();
   let array4 = [];
@@ -542,10 +606,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
         return logsChannel1.send({
           embed
         });
-      } catch {
-        let nowtime = new Date();
-        console.log(nowtime + "\n" + newMember.guild.id + ": index.js:" + ln());
-      }
+      } catch {}
     }
   }
 });
@@ -797,10 +858,156 @@ emitter.on("item:new", item => {
 emitter.on("feed:error", error => {
   //console.error(error.message)
 });
+//auditlogs message del
+client.on("messageDelete", async message => {
+  //load shit
+  const guildChannels = client.getGuild.get(message.guild.id);
+  if (guildChannels) {
+    var thisguild = client.guilds.get(guildChannels.guild);
+  }
+  if (thisguild) {
+    var logsChannel1 = message.guild.channels.get(guildChannels.logsChannel);
+    if (!logsChannel1) {
+      var logsChannel1 = "0";
+    }
+  } else {
+    var logsChannel1 = "0";
+  }
+  if (logsChannel1 == "0") {
+  } else {
+    if (message.author.id == "440892659264126997") return;
+    if (message.attachments.size > 0) return;
+    const fetchedLogs = await message.guild.fetchAuditLogs({
+      limit: 1,
+      type: "MESSAGE_DELETE"
+    });
+    const deletionLog = fetchedLogs.entries.first();
+    if (!deletionLog) {
+      return console.log(
+        `A message by ${message.author.tag} was deleted, but no relevant audit logs were found.`
+      );
+    }
+    const { executor, target } = deletionLog;
+    if (target.id === message.author.id) {
+      if (executor.id == "440892659264126997") return;
+      const delmessage = new Discord.RichEmbed()
+        .setTitle("A message got Deleted!!")
+        .setAuthor(message.author.username, message.author.avatarURL)
+        .setDescription(
+          "Message by: " + message.author + "\nDeleted by: " + executor
+        )
+        .setColor("RANDOM")
+        .addField("Deleted Message:\n", message.content)
+        .addField("Channel", message.channel)
+        .setFooter(
+          "Message ID: " +
+            message.id +
+            "\nUser ID: " +
+            message.author.id +
+            "\nUser: " +
+            message.author.tag
+        )
+        .setTimestamp();
+      return logsChannel1.send({
+        embed: delmessage
+      });
+    } else {
+      /*  const prefixstart = client.getGuild.get(message.guild.id);
+      const prefix = prefixstart.prefix;
+      if (message.content.startsWith(prefix)) return;
+      const delmessage = new Discord.RichEmbed()
+        .setTitle("A message got Deleted!!")
+        .setAuthor(message.author.username, message.author.avatarURL)
+        .setDescription("Message by: " + message.author)
+        .setColor("RANDOM")
+        .addField("Deleted Message:\n", message.content)
+        .addField("Channel", message.channel)
+        .setFooter(
+          "Message ID: " +
+            message.id +
+            "\nUser ID: " +
+            message.author.id +
+            "\nUser: " +
+            message.author.tag
+        )
+        .setTimestamp();
+      return logsChannel1.send({
+        embed: delmessage
+      }); */
+    }
+  }
+});
+//auditlog ban
+client.on("guildBanAdd", async (guild, user) => {
+  //load shit
+  const guildChannels = client.getGuild.get(guild.id);
+  if (guildChannels) {
+    var thisguild = client.guilds.get(guildChannels.guild);
+  }
+  if (thisguild) {
+    var logsChannel1 = guild.channels.get(guildChannels.logsChannel);
+    if (!logsChannel1) {
+      var logsChannel1 = "0";
+    }
+  } else {
+    var logsChannel1 = "0";
+  }
+  if (logsChannel1 == "0") {
+  } else {
+    const fetchedLogs = await guild.fetchAuditLogs({
+      limit: 1,
+      type: "MEMBER_BAN_ADD"
+    });
+    const banLog = fetchedLogs.entries.first();
+    if (!banLog) {
+      const banmessage = new Discord.RichEmbed()
+        .setTitle("A user got banned!!")
+        .setAuthor(user.username, user.avatarURL)
+        .setDescription("Banned user: " + user)
+        .setColor("RANDOM")
+        .addField("Banned by:\n", "Probably Artemis")
+        .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
+        .setTimestamp();
+      return logsChannel1.send({
+        embed: banmessage
+      });
+    }
+    const { executor, target } = banLog;
+    if (target.id === user.id) {
+      const banmessage = new Discord.RichEmbed()
+        .setTitle("A user got banned!!")
+        .setAuthor(user.username, user.avatarURL)
+        .setDescription("Banned user: " + user)
+        .setColor("RANDOM")
+        .addField("Banned by:\n", executor)
+        .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
+        .setTimestamp();
+      return logsChannel1.send({
+        embed: banmessage
+      });
+    } else {
+      const banmessage = new Discord.RichEmbed()
+        .setTitle("A user got banned!!")
+        .setAuthor(user.username, user.avatarURL)
+        .setDescription("Banned user: " + user)
+        .setColor("RANDOM")
+        .addField("Banned by:\n", "Probably Artemis")
+        .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
+        .setTimestamp();
+      return logsChannel1.send({
+        embed: banmessage
+      });
+    }
+  }
+});
 //On edit execute command
 client.on("messageUpdate", (oldMessage, newMessage) => {
   //ignoredbl
-  if (newMessage.guild.id == "264445053596991498") return;
+  if (newMessage.guild) {
+    if (newMessage.guild.id == "264445053596991498") return;
+  } else {
+    return;
+  }
   if (newMessage.author.bot) return;
   const prefixstart = client.getGuild.get(newMessage.guild.id);
   const prefix = prefixstart.prefix;
@@ -826,42 +1033,6 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
   }
 });
 client.on("message", async message => {
-  //ignoredbl
-  if (message.guild.id == "264445053596991498") return;
-  //NOTICE!
-  /* if (noticeset.has(message.guild.id)) {
-  } else {
-    noticeset.add(message.guild.id);
-    const NOTICETHIS = new Discord.RichEmbed()
-      .setAuthor(message.author.username, message.author.avatarURL)
-      .setColor("RANDOM")
-      .setTitle("Notice")
-      .addField(
-        "Our apologies\n",
-        "Discords most recent outage caused our channel manage database and prefixes to reset.\nvisit https://artemisbot.eu and redo the channels and your prefix.\nNote that only mods and the guild owner can take this action.\nThis message may be repeated a few times over the next week."
-      )
-      .setTimestamp();
-    message.channel.send({
-      embed: NOTICETHIS
-    });
-  } */
-  //Failsafe
-  newGuild3 = client.getGuild.get(message.guild.id);
-  if (!newGuild3) {
-    newGuild3 = {
-      guild: message.guild.id,
-      generalChannel: `0`,
-      highlightChannel: `0`,
-      muteChannel: `0`,
-      logsChannel: `0`,
-      streamChannel: `0`,
-      reactionChannel: `0`,
-      streamHere: `0`,
-      autoMod: `0`,
-      prefix: `!`
-    };
-    client.setGuild.run(newGuild3);
-  }
   //Disboard
   if (message.author.id == "302050872383242240") {
     if (message.embeds[0].description.includes("Bump done")) {
@@ -880,11 +1051,22 @@ client.on("message", async message => {
         let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
         userscore.level = userLevel;
         client.setScore.run(userscore);
-        setTimeout(() => {
-          message.channel.send(
-            "Time for your next !d bump\n<@" + dbumper[0] + "> !"
-          );
-        }, 7200000);
+        //
+        let settime = 7200000;
+        let remindtext = "Time for your next `!d bump`";
+        let datefor = moment()
+          .add(settime, "ms")
+          .format("YYYYMMDDHmmss");
+        timerset = {
+          mid: message.id,
+          cid: message.channel.id,
+          gid: message.guild.id,
+          uid: dbumper[0],
+          time: datefor,
+          reminder: remindtext
+        };
+        client.setRemind.run(timerset);
+        //
       });
     }
   }
@@ -895,28 +1077,45 @@ client.on("message", async message => {
     console.log(
       new Date() + "\n" + message.author.username + "\n" + message.content
     );
-    try {
-      const whoartemis = new Discord.RichEmbed()
-        .setTitle("Artemis")
-        .setColor("RANDOM")
-        .setDescription(
-          "Hello, I am Artemis!\nMy master is UtopicUnicorn#0383\n\nI am open-source: https://github.com/UtopicUnicorns/mint-bot\nMy main discord server is: https://discord.gg/EVVtPpw\nInvite me to your server: https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot\nReport bugs and issues on Github or the main server. I also have a website: https://artemisbot.eu/"
-        )
-        .setTimestamp();
-      return message.channel.send({
-        embed: whoartemis
-      });
-    } catch {
-      console.log(
-        new Date() +
-          "\n" +
-          message.guild.id +
-          " " +
-          message.guild.owner.user.username +
-          ": index.js:" +
-          ln()
-      );
-    }
+    const whoartemis = new Discord.RichEmbed()
+      .setTitle("Invite")
+      .setAuthor(message.author.username, message.author.avatarURL)
+      .setColor("RANDOM")
+      .setDescription("Hello, I am Artemis!")
+      .addField("Main discord server: ", "https://discord.gg/EVVtPpw")
+      .addField("Bot Website: ", "https://artemisbot.eu")
+      .addField("Bot Github: ", "https://github.com/UtopicUnicorns/mint-bot")
+      .addField(
+        "Bot Invite: ",
+        "https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot"
+      )
+      .setFooter("Bot owner: <@127708549118689280> | UtopicUnicorn#0383");
+    return message.channel.send({
+      embed: whoartemis
+    });
+  }
+  //Failsafe
+  newGuild3 = client.getGuild.get(message.guild.id);
+  if (!newGuild3) {
+    newGuild3 = {
+      guild: message.guild.id,
+      generalChannel: `0`,
+      highlightChannel: `0`,
+      muteChannel: `0`,
+      logsChannel: `0`,
+      streamChannel: `0`,
+      reactionChannel: `0`,
+      streamHere: `0`,
+      autoMod: `0`,
+      prefix: `!`
+    };
+    client.setGuild.run(newGuild3);
+  }
+  //ignoredbl
+  if (message.guild) {
+    if (message.guild.id == "264445053596991498") return;
+  } else {
+    return;
   }
   //load shit
   const guildChannels = client.getGuild.get(message.guild.id);
@@ -1145,7 +1344,7 @@ client.on("message", async message => {
       }
     }
   }
-  //EVENT
+/*   //EVENT
   if (message.guild.id == "628978428019736619") {
     let eventnumber = 25;
     let eventnumber2 = Math.floor(Math.random() * 50);
@@ -1168,7 +1367,7 @@ client.on("message", async message => {
         });
       }
     }
-  }
+  } */
   //ping
   if (message.content === prefix + "ping") {
     const m = await message.channel.send("Ping?");
@@ -1357,12 +1556,15 @@ client.on("message", async message => {
         notes: 0
       };
     }
-    score.points++;
-    const curLevel = Math.floor(0.5 * Math.sqrt(score.points));
-    if (score.level < curLevel) {
-      score.level++;
+    if (message.author.id == "121723489014120448") {
+    } else {
+      score.points++;
+      const curLevel = Math.floor(0.5 * Math.sqrt(score.points));
+      if (score.level < curLevel) {
+        score.level++;
+      }
+      client.setScore.run(score);
     }
-    client.setScore.run(score);
   }
   //start level rewards
   const levelups = client.getLevel.get(message.guild.id);
@@ -1556,7 +1758,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         return reaction.remove(reaction.message.author.id);
       if (!reaction.message.attachments.size > 0) {
         try {
-          logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
+          logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
           const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
             .setAuthor(
@@ -1584,7 +1786,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
       }
       if (reaction.message.content === "") {
         try {
-          logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
+          logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
           const image = reaction.message.attachments.array()[0].url;
           const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
@@ -1612,7 +1814,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         }
       }
       try {
-        logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
+        logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
         const image = reaction.message.attachments.array()[0].url;
         const editmessage = new Discord.RichEmbed()
           .setTitle("A message got reported!")
@@ -1644,7 +1846,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     let limit2 = 3;
     if (reaction.emoji.name == "❌" && reaction.count == limit2) {
       try {
-        logsChannel1.send('<@' +reaction.message.guild.owner.id + '>');
+        logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
         if (reaction.message.author.id == "440892659264126997") return;
         if (reaction.message.author.id == "127708549118689280") return;
         if (reaction.users.first() == reaction.message.author)
