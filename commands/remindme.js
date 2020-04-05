@@ -32,19 +32,21 @@ module.exports = {
       for (const data of reminders) {
         let guildname = message.client.guilds.get(data.gid);
         let channelname = guildname.channels.find(
-          channel => channel.id === data.cid
+          (channel) => channel.id === data.cid
         );
         let timers = data.time;
         str +=
           "\nWhen: " +
-          moment(timers, "YYYYMMDDHmmss").fromNow() +
+          moment(timers, "YYYYMMDDHHmmss").fromNow() +
           "\n" +
           guildname +
           "\n" +
           channelname +
           "\nReminder: " +
           data.reminder +
-          "\nDeletion key: " + data.mid + "\n";
+          "\nDeletion key: " +
+          data.mid +
+          "\n";
       }
       const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username, message.author.avatarURL)
@@ -54,9 +56,10 @@ module.exports = {
         .addField(prefix + "remindme ", "10 s reason")
         .addField(prefix + "remindme ", "10 m reason")
         .addField(prefix + "remindme ", "10 h reason")
-        .addField(prefix + "remindme ", "delete DELETIONKEY");
+        .addField(prefix + "remindme ", "delete DELETIONKEY")
+        .addField(prefix + "remindme ", "delete clear");
       return message.channel.send({
-        embed
+        embed,
       });
     }
     if (!args[1]) {
@@ -68,80 +71,87 @@ module.exports = {
         .addField(prefix + "remindme ", "10 s reason")
         .addField(prefix + "remindme ", "10 m reason")
         .addField(prefix + "remindme ", "10 h reason")
-        .addField(prefix + "remindme ", "delete DELETIONKEY");
+        .addField(prefix + "remindme ", "delete DELETIONKEY")
+        .addField(prefix + "remindme ", "delete clear");
       return message.channel.send({
-        embed
+        embed,
       });
     }
     if (args[0] == "delete") {
+      if (args[1] == "clear") {
         try {
-        db.prepare(`DELETE FROM remind WHERE mid = ${args[1]} AND uid = ${message.author.id}`).run();
+          db.prepare(
+            `DELETE FROM remind WHERE uid = ${message.author.id}`
+          ).run();
         } catch {
-            return message.reply("Wrong deletion key, or not owned by you.");
+          return message.reply("Wrong deletion key, or not owned by you.");
         }
         return message.reply("Done, check " + prefix + "remindme");
+      }
+      try {
+        db.prepare(
+          `DELETE FROM remind WHERE mid = ${args[1]} AND uid = ${message.author.id}`
+        ).run();
+      } catch {
+        return message.reply("Wrong deletion key, or not owned by you.");
+      }
+      return message.reply("Done, check " + prefix + "remindme");
     }
     if (args[1] == "s" || args[1] == "sec" || args[1] == "seconds") {
       let settime = Math.floor(args[0] * 1000);
       let remindtext = args.slice(2).join(" ");
-      let datefor = moment()
-        .add(settime, "ms")
-        .format("YYYYMMDDHmmss");
+      let datefor = moment().add(settime, "ms").format("YYYYMMDDHHmmss");
       timerset = {
         mid: message.id,
         cid: message.channel.id,
         gid: message.guild.id,
         uid: message.author.id,
         time: datefor,
-        reminder: remindtext
+        reminder: remindtext,
       };
       setRemind.run(timerset);
       return message.reply(
-        moment(datefor, "YYYYMMDDHmmss").format("DD/MM/YYYY H:mm:ss") +
+        moment(datefor, "YYYYMMDDHHmmss").format("DD/MM/YYYY H:mm:ss") +
           " " +
-          moment(datefor, "YYYYMMDDHmmss").fromNow()
+          moment(datefor, "YYYYMMDDHHmmss").fromNow()
       );
     }
     if (args[1] == "m" || args[1] == "min" || args[1] == "minutes") {
       let settime = Math.floor(args[0] * 60000);
       let remindtext = args.slice(2).join(" ");
-      let datefor = moment()
-        .add(settime, "ms")
-        .format("YYYYMMDDHmmss");
+      let datefor = moment().add(settime, "ms").format("YYYYMMDDHHmmss");
       timerset = {
         mid: message.id,
         cid: message.channel.id,
         gid: message.guild.id,
         uid: message.author.id,
         time: datefor,
-        reminder: remindtext
+        reminder: remindtext,
       };
       setRemind.run(timerset);
       return message.reply(
-        moment(datefor, "YYYYMMDDHmmss").format("DD/MM/YYYY H:mm:ss") +
+        moment(datefor, "YYYYMMDDHHmmss").format("DD/MM/YYYY H:mm:ss") +
           " " +
-          moment(datefor, "YYYYMMDDHmmss").fromNow()
+          moment(datefor, "YYYYMMDDHHmmss").fromNow()
       );
     }
     if (args[1] == "h" || args[1] == "hour" || args[1] == "hours") {
       let settime = Math.floor(args[0] * 3600000);
       let remindtext = args.slice(2).join(" ");
-      let datefor = moment()
-        .add(settime, "ms")
-        .format("YYYYMMDDHmmss");
+      let datefor = moment().add(settime, "ms").format("YYYYMMDDHHmmss");
       timerset = {
         mid: message.id,
         cid: message.channel.id,
         gid: message.guild.id,
         uid: message.author.id,
         time: datefor,
-        reminder: remindtext
+        reminder: remindtext,
       };
       setRemind.run(timerset);
       return message.reply(
-        moment(datefor, "YYYYMMDDHmmss").format("DD/MM/YYYY H:mm:ss") +
+        moment(datefor, "YYYYMMDDHHmmss").format("DD/MM/YYYY H:mm:ss") +
           " " +
-          moment(datefor, "YYYYMMDDHmmss").fromNow()
+          moment(datefor, "YYYYMMDDHHmmss").fromNow()
       );
     }
     const embed = new Discord.RichEmbed()
@@ -152,9 +162,10 @@ module.exports = {
       .addField(prefix + "remindme ", "10 s reason")
       .addField(prefix + "remindme ", "10 m reason")
       .addField(prefix + "remindme ", "10 h reason")
-      .addField(prefix + "remindme ", "delete DELETIONKEY");
+      .addField(prefix + "remindme ", "delete DELETIONKEY")
+      .addField(prefix + "remindme ", "delete clear");
     return message.channel.send({
-      embed
+      embed,
     });
-  }
+  },
 };

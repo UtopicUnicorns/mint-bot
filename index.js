@@ -10,7 +10,7 @@ const {
   yandex,
   SESSION_SECRET,
   CLIENT_SECRET,
-  REDIRECT_URI
+  REDIRECT_URI,
 } = require("./config.json");
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./scores.sqlite");
@@ -18,7 +18,7 @@ const client = new Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs
   .readdirSync("./commands")
-  .filter(file => file.endsWith(".js"));
+  .filter((file) => file.endsWith(".js"));
 const thankedRecently = new Set();
 const streamedRecently = new Set();
 const lovedRecently = new Set();
@@ -46,7 +46,7 @@ for (const file of commandFiles) {
   if (!usagecheck) {
     usagecheck = {
       command: command.name,
-      number: `0`
+      number: `0`,
     };
     setUsage.run(usagecheck);
   }
@@ -57,9 +57,9 @@ client.once("ready", () => {
   console.log(
     `${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
       client.guilds
-        .filter(guild => guild.owner !== undefined)
+        .filter((guild) => guild.owner !== undefined)
         .map(
-          guild =>
+          (guild) =>
             guild.name +
             " \nUsers: " +
             guild.memberCount +
@@ -237,7 +237,7 @@ client.once("ready", () => {
   setInterval(() => {
     var RAN = [`https://artemisbot.eu`, `${client.guilds.size} servers`];
     client.user.setActivity(RAN[~~(Math.random() * RAN.length)], {
-      type: "LISTENING"
+      type: "LISTENING",
     });
   }, 60000);
   //Reminder run
@@ -246,21 +246,28 @@ client.once("ready", () => {
       .prepare("SELECT * FROM remind ORDER BY time DESC;")
       .all();
     for (const data of remindersdb) {
-      let timenow = moment().format("YYYYMMDDHmmss");
-      if (timenow >= data.time) {
+      let timenow = moment().format("YYYYMMDDHHmmss");
+      if (timenow > data.time) {
         let gettheguild = client.guilds.get(data.gid);
         let reminduser = gettheguild.members.get(data.uid);
-        client.channels.get(data.cid).send('<@' + data.uid + '> PING!');
+        client.channels.get(data.cid).send("<@" + data.uid + "> PING!");
         const reminderemb2 = new Discord.RichEmbed()
           .setTitle("REMIND ALERT")
-          .setAuthor(reminduser.user.username + '#' + reminduser.user.discriminator, reminduser.user.displayAvatarURL)
+          .setAuthor(
+            reminduser.user.username + "#" + reminduser.user.discriminator,
+            reminduser.user.displayAvatarURL
+          )
           .setDescription(reminduser)
           .addField("Reminder: ", data.reminder + "!")
           .setColor("RANDOM");
         client.channels.get(data.cid).send({
-          embed: reminderemb2
+          embed: reminderemb2,
         });
-        sql.prepare(`DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`).run();
+        sql
+          .prepare(
+            `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
+          )
+          .run();
       }
     }
   }, 5000);
@@ -290,7 +297,7 @@ client.once("ready", () => {
     {
       port: 80,
       clientSecret: CLIENT_SECRET,
-      redirectURI: REDIRECT_URI
+      redirectURI: REDIRECT_URI,
     },
     oAuth
   );
@@ -300,9 +307,9 @@ client.once("reconnecting", () => {
   console.log(
     `${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
       client.guilds
-        .filter(guild => guild.owner !== undefined)
+        .filter((guild) => guild.owner !== undefined)
         .map(
-          guild =>
+          (guild) =>
             guild.name +
             " \nUsers: " +
             guild.memberCount +
@@ -316,7 +323,7 @@ client.once("reconnecting", () => {
 client.once("disconnect", () => {
   console.log("Disconnect!");
 });
-client.on("guildMemberAdd", async guildMember => {
+client.on("guildMemberAdd", async (guildMember) => {
   //ignoredbl
   if (guildMember.guild.id == "264445053596991498") return;
   //load shit
@@ -348,16 +355,16 @@ client.on("guildMemberAdd", async guildMember => {
       "674208095626592266",
       "674208167437139979",
       "674207678347608064",
-      "674207950822440970"
+      "674207950822440970",
     ];
     for (let i of rolearray) {
-      let role = guildMember.guild.roles.find(r => r.id === `${i}`);
+      let role = guildMember.guild.roles.find((r) => r.id === `${i}`);
       guildMember.addRole(role);
     }
   }
   //account age check
-  let roleadd1 = guildMember.guild.roles.find(r => r.name === "~/Members");
-  let roledel1 = guildMember.guild.roles.find(r => r.name === "Muted");
+  let roleadd1 = guildMember.guild.roles.find((r) => r.name === "~/Members");
+  let roledel1 = guildMember.guild.roles.find((r) => r.name === "Muted");
   let user = guildMember.user;
   let userscore2 = client.getScore.get(user.id, guildMember.guild.id);
   if (!userscore2) {
@@ -371,7 +378,7 @@ client.on("guildMemberAdd", async guildMember => {
       muted: 0,
       translate: 0,
       stream: 0,
-      notes: 0
+      notes: 0,
     };
     client.setScore.run(userscore2);
   } else {
@@ -408,7 +415,7 @@ client.on("guildMemberAdd", async guildMember => {
         )
         .setTimestamp();
       logsChannel1.send({
-        embed
+        embed,
       });
     } catch {
       let nowtime = new Date();
@@ -435,7 +442,7 @@ client.on("guildMemberAdd", async guildMember => {
     }
   }
   //make nice image for welcoming
-  guildMember.addRole(roleadd1).catch(error => {});
+  guildMember.addRole(roleadd1).catch((error) => {});
   if (generalChannel1 == "0") {
   } else {
     try {
@@ -445,7 +452,7 @@ client.on("guildMemberAdd", async guildMember => {
         "\nis using Arch BTW!",
         "\necho 'is here!'",
         "\nis sipping minty tea!",
-        "\nuseradd -m -g users /bin/sh @"
+        "\nuseradd -m -g users /bin/sh @",
       ];
       var moon = bel[~~(Math.random() * bel.length)];
       moon = moon.replace("@", ReBeL);
@@ -480,7 +487,7 @@ client.on("guildMemberAdd", async guildMember => {
     }
   }
 });
-client.on("guildMemberRemove", async guildMember => {
+client.on("guildMemberRemove", async (guildMember) => {
   //ignoredbl
   if (guildMember.guild.id == "264445053596991498") return;
   //load shit
@@ -506,12 +513,12 @@ client.on("guildMemberRemove", async guildMember => {
         )
         .setTimestamp();
       return logsChannel1.send({
-        embed
+        embed,
       });
     } catch {}
   }
 });
-client.on("guildCreate", guild => {
+client.on("guildCreate", (guild) => {
   console.log(
     "Joined a new guild: " +
       guild.name +
@@ -524,14 +531,14 @@ client.on("guildCreate", guild => {
   if (!newGuild1) {
     newGuild = client.getGuild.get(guild.id);
     if (!newGuild) {
-      if (!guild.roles.find(r => r.name === `Muted`)) {
+      if (!guild.roles.find((r) => r.name === `Muted`)) {
         guild.createRole({
-          name: `Muted`
+          name: `Muted`,
         });
       }
-      if (!guild.roles.find(r => r.name === `~/Members`)) {
+      if (!guild.roles.find((r) => r.name === `~/Members`)) {
         guild.createRole({
-          name: `~/Members`
+          name: `~/Members`,
         });
       }
       newGuild = {
@@ -544,13 +551,13 @@ client.on("guildCreate", guild => {
         reactionChannel: `0`,
         streamHere: `0`,
         autoMod: `0`,
-        prefix: `!`
+        prefix: `!`,
       };
       client.setGuild.run(newGuild);
     }
   }
 });
-client.on("guildDelete", guild => {
+client.on("guildDelete", (guild) => {
   console.log(
     "Left a guild: " +
       guild.name +
@@ -604,7 +611,7 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
           .setFooter(newMember.user.id)
           .setTimestamp();
         return logsChannel1.send({
-          embed
+          embed,
         });
       } catch {}
     }
@@ -651,7 +658,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
             muted: 0,
             translate: 0,
             stream: 0,
-            notes: 0
+            notes: 0,
           };
         }
         client.setScore.run(streamcheck);
@@ -668,9 +675,9 @@ client.on("presenceUpdate", (oldMember, newMember) => {
               "https://api.rawg.io/api/games?page_size=5&search=" +
                 newMember.presence.game.state,
               {
-                json: true
+                json: true,
               },
-              function(err, res, body) {
+              function (err, res, body) {
                 if (streamNotif == "2") {
                   try {
                     streamChannel1.send("@here");
@@ -686,7 +693,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                         )
                         .setTimestamp();
                       return streamChannel1.send({
-                        embed
+                        embed,
                       });
                     }
                     const embed = new Discord.RichEmbed()
@@ -701,7 +708,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                       )
                       .setTimestamp();
                     return streamChannel1.send({
-                      embed
+                      embed,
                     });
                   } catch {
                     let nowtime = new Date();
@@ -723,7 +730,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                         )
                         .setTimestamp();
                       return streamChannel1.send({
-                        embed
+                        embed,
                       });
                     } catch {
                       let nowtime = new Date();
@@ -749,7 +756,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
                       )
                       .setTimestamp();
                     return streamChannel1.send({
-                      embed
+                      embed,
                     });
                   } catch {
                     let nowtime = new Date();
@@ -789,7 +796,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
           .setFooter(newMember.user.id)
           .setTimestamp();
         return logsChannel1.send({
-          embed
+          embed,
         });
       } catch {
         let nowtime = new Date();
@@ -803,7 +810,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
       if (`${newMember.user.username}` === "UtopicUnicorn") {
         if (`${newMember.presence.status}` === "dnd") {
           client.channels
-            .get("628984660298563584")
+            .get("695182849476657223")
             .setTopic(
               `${newMember.user.username} has enlightened us with their presence!`
             );
@@ -811,7 +818,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
       }
       if (`${newMember.presence.status}` === "online") {
         client.channels
-          .get("628984660298563584")
+          .get("695182849476657223")
           .setTopic(`${newMember.user.username} just came online!`);
       }
     }
@@ -821,14 +828,14 @@ client.on("presenceUpdate", (oldMember, newMember) => {
 emitter.add({
   url: "https://www.reddit.com/r/linuxmint/new.rss",
   refresh: 10000,
-  ignoreFirst: true
+  ignoreFirst: true,
 });
-emitter.on("item:new", item => {
+emitter.on("item:new", (item) => {
   const reddittext = htmlToText.fromString(item.description, {
     wordwrap: false,
     ignoreHref: true,
     noLinkBrackets: true,
-    preserveNewlines: true
+    preserveNewlines: true,
   });
   let reddittext2 = reddittext.replace("[link]", "").replace("[comments]", "");
   let reddittext3 = reddittext2.substr(0, 1000);
@@ -841,7 +848,7 @@ emitter.on("item:new", item => {
       .addField(item.link + "\n", "https://www.reddit.com" + item.author, true)
       .setTimestamp();
     return client.channels.get("656194923107713024").send({
-      embed: redditmessage
+      embed: redditmessage,
     });
   } catch {
     if (spamRecently.has("REDDIT")) {
@@ -855,11 +862,11 @@ emitter.on("item:new", item => {
     }
   }
 });
-emitter.on("feed:error", error => {
+emitter.on("feed:error", (error) => {
   //console.error(error.message)
 });
 //auditlogs message del
-client.on("messageDelete", async message => {
+client.on("messageDelete", async (message) => {
   //load shit
   const guildChannels = client.getGuild.get(message.guild.id);
   if (guildChannels) {
@@ -879,7 +886,7 @@ client.on("messageDelete", async message => {
     if (message.attachments.size > 0) return;
     const fetchedLogs = await message.guild.fetchAuditLogs({
       limit: 1,
-      type: "MESSAGE_DELETE"
+      type: "MESSAGE_DELETE",
     });
     const deletionLog = fetchedLogs.entries.first();
     if (!deletionLog) {
@@ -909,7 +916,7 @@ client.on("messageDelete", async message => {
         )
         .setTimestamp();
       return logsChannel1.send({
-        embed: delmessage
+        embed: delmessage,
       });
     } else {
       /*  const prefixstart = client.getGuild.get(message.guild.id);
@@ -956,7 +963,7 @@ client.on("guildBanAdd", async (guild, user) => {
   } else {
     const fetchedLogs = await guild.fetchAuditLogs({
       limit: 1,
-      type: "MEMBER_BAN_ADD"
+      type: "MEMBER_BAN_ADD",
     });
     const banLog = fetchedLogs.entries.first();
     if (!banLog) {
@@ -969,7 +976,7 @@ client.on("guildBanAdd", async (guild, user) => {
         .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
         .setTimestamp();
       return logsChannel1.send({
-        embed: banmessage
+        embed: banmessage,
       });
     }
     const { executor, target } = banLog;
@@ -983,7 +990,7 @@ client.on("guildBanAdd", async (guild, user) => {
         .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
         .setTimestamp();
       return logsChannel1.send({
-        embed: banmessage
+        embed: banmessage,
       });
     } else {
       const banmessage = new Discord.RichEmbed()
@@ -995,7 +1002,7 @@ client.on("guildBanAdd", async (guild, user) => {
         .setFooter("User ID: " + user.id + "\nUser: " + user.tag)
         .setTimestamp();
       return logsChannel1.send({
-        embed: banmessage
+        embed: banmessage,
       });
     }
   }
@@ -1032,14 +1039,14 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
     );
   }
 });
-client.on("message", async message => {
+client.on("message", async (message) => {
   //Disboard
   if (message.author.id == "302050872383242240") {
     if (message.embeds[0].description.includes("Bump done")) {
-      message.channel.fetchMessages().then(messages => {
+      message.channel.fetchMessages().then((messages) => {
         let dbumper = messages
-          .filter(msg => msg.content.toLowerCase().startsWith("!d bump"))
-          .map(msg => msg.author.id);
+          .filter((msg) => msg.content.toLowerCase().startsWith("!d bump"))
+          .map((msg) => msg.author.id);
         message.channel.send(
           "You bumped!\nThis action gave you 20 points, and we will ping you in 2 hours for your next bump.\n<@" +
             dbumper[0] +
@@ -1054,16 +1061,14 @@ client.on("message", async message => {
         //
         let settime = 7200000;
         let remindtext = "Time for your next `!d bump`";
-        let datefor = moment()
-          .add(settime, "ms")
-          .format("YYYYMMDDHmmss");
+        let datefor = moment().add(settime, "ms").format("YYYYMMDDHHmmss");
         timerset = {
           mid: message.id,
           cid: message.channel.id,
           gid: message.guild.id,
           uid: dbumper[0],
           time: datefor,
-          reminder: remindtext
+          reminder: remindtext,
         };
         client.setRemind.run(timerset);
         //
@@ -1091,7 +1096,7 @@ client.on("message", async message => {
       )
       .setFooter("Bot owner: <@127708549118689280> | UtopicUnicorn#0383");
     return message.channel.send({
-      embed: whoartemis
+      embed: whoartemis,
     });
   }
   //Failsafe
@@ -1107,7 +1112,7 @@ client.on("message", async message => {
       reactionChannel: `0`,
       streamHere: `0`,
       autoMod: `0`,
-      prefix: `!`
+      prefix: `!`,
     };
     client.setGuild.run(newGuild3);
   }
@@ -1158,9 +1163,25 @@ client.on("message", async message => {
       lvl20: `0`,
       lvl30: `0`,
       lvl50: `0`,
-      lvl85: `0`
+      lvl85: `0`,
     };
     client.setLevel.run(newLevel);
+  }
+  //non-prefix help
+  if (message.isMemberMentioned(client.user) && message.content.toLowerCase().includes("help")) {
+    const nonprefix = new Discord.RichEmbed()
+      .setTitle("Non prefix help menu")
+      .setAuthor(message.author.username, message.author.avatarURL)
+      .setDescription(
+        "This message was triggered by mentioning me with the help argument"
+      )
+      .setColor("RANDOM")
+      .addField("My prefix for this server:\n", prefix)
+      .addField("Example command usage: \n", prefix + "help")
+      .setTimestamp();
+    message.channel.send({
+      embed: nonprefix,
+    });
   }
   //autoMod START
   if (message.member.hasPermission("KICK_MEMBERS")) {
@@ -1206,7 +1227,7 @@ client.on("message", async message => {
             READ_MESSAGES: false,
             SEND_MESSAGES: false,
             READ_MESSAGE_HISTORY: false,
-            ADD_REACTIONS: false
+            ADD_REACTIONS: false,
           });
         });
         setTimeout(() => {
@@ -1215,7 +1236,7 @@ client.on("message", async message => {
             READ_MESSAGES: true,
             SEND_MESSAGES: true,
             READ_MESSAGE_HISTORY: true,
-            ATTACH_FILES: false
+            ATTACH_FILES: false,
           });
         }, 2000);
         const user = message.mentions.users.first();
@@ -1231,13 +1252,15 @@ client.on("message", async message => {
             muted: 1,
             translate: 0,
             stream: 0,
-            notes: 0
+            notes: 0,
           };
         }
         userscore.muted = `1`;
         client.setScore.run(userscore);
-        let mutedrole = message.guild.roles.find(r => r.name === `Muted`);
-        let memberrole = message.guild.roles.find(r => r.name === `~/Members`);
+        let mutedrole = message.guild.roles.find((r) => r.name === `Muted`);
+        let memberrole = message.guild.roles.find(
+          (r) => r.name === `~/Members`
+        );
         message.member.removeRole(memberrole).catch(console.error);
         message.member.addRole(mutedrole).catch(console.error);
         muteChannel1
@@ -1245,7 +1268,7 @@ client.on("message", async message => {
             member +
               `\nYou have tagged more than 3 users in the same message, for our safety,\nyou have been muted!\nYou may mention ONE Mod OR Admin to change their mind and unmute you.\n\nGoodluck!`
           )
-          .catch(error =>
+          .catch((error) =>
             console.log(
               new Date() +
                 "\n" +
@@ -1281,8 +1304,8 @@ client.on("message", async message => {
                 "You have been muted by our system due to breaking rules, the verification system is not for you!"
               );
           }
-          let roleadd = message.guild.roles.find(r => r.name === "~/Members");
-          let roledel = message.guild.roles.find(r => r.name === "Muted");
+          let roleadd = message.guild.roles.find((r) => r.name === "~/Members");
+          let roledel = message.guild.roles.find((r) => r.name === "Muted");
           let member = message.member;
           message.member.addRole(roleadd).catch(console.error);
           message.member.removeRole(roledel).catch(console.error);
@@ -1292,7 +1315,7 @@ client.on("message", async message => {
             "\nis using Arch BTW!",
             "\necho 'is here!'",
             "\nis sipping minty tea!",
-            "\nuseradd -m -g users /bin/sh @"
+            "\nuseradd -m -g users /bin/sh @",
           ];
           var moon = bel[~~(Math.random() * bel.length)];
           moon = moon.replace("@", message.author.username);
@@ -1328,7 +1351,7 @@ client.on("message", async message => {
           );
           await generalChannel1
             .send(attachment)
-            .catch(error =>
+            .catch((error) =>
               console.log(
                 new Date() +
                   "\n" +
@@ -1344,7 +1367,7 @@ client.on("message", async message => {
       }
     }
   }
-/*   //EVENT
+  /*   //EVENT
   if (message.guild.id == "628978428019736619") {
     let eventnumber = 25;
     let eventnumber2 = Math.floor(Math.random() * 50);
@@ -1372,10 +1395,9 @@ client.on("message", async message => {
   if (message.content === prefix + "ping") {
     const m = await message.channel.send("Ping?");
     m.edit(
-      `Pong! Latency is ${m.createdTimestamp -
-        message.createdTimestamp}ms. API Latency is ${Math.round(
-        client.ping
-      )}ms`
+      `Pong! Latency is ${
+        m.createdTimestamp - message.createdTimestamp
+      }ms. API Latency is ${Math.round(client.ping)}ms`
     );
   }
   //Artemis Talk
@@ -1383,15 +1405,12 @@ client.on("message", async message => {
     if (message.author.id !== "440892659264126997") {
       let cargs = message.content.slice(5);
       if (message.content.startsWith(prefix + "channel")) {
-        let readname = fs
-          .readFileSync("channelset.txt")
-          .toString()
-          .split("\n");
+        let readname = fs.readFileSync("channelset.txt").toString().split("\n");
         let channelname = client.channels.get(`${readname}`);
         return message.channel.send(channelname.name);
       }
       if (message.content.startsWith(prefix + "set")) {
-        fs.writeFile("channelset.txt", cargs, function(err) {
+        fs.writeFile("channelset.txt", cargs, function (err) {
           if (err) throw err;
         });
         return message.channel.send(
@@ -1462,7 +1481,7 @@ client.on("message", async message => {
       muted: 0,
       translate: 0,
       stream: 0,
-      notes: 0
+      notes: 0,
     };
   }
   client.setScore.run(translateopt);
@@ -1490,7 +1509,7 @@ client.on("message", async message => {
     request(
       url,
       {
-        json: true
+        json: true,
       },
       (err, res, body) => {
         if (!body.text) {
@@ -1503,9 +1522,9 @@ client.on("message", async message => {
           }
         }
         translate(text, {
-          to: "en"
+          to: "en",
         })
-          .then(res => {
+          .then((res) => {
             if (message.content.includes("ツ")) return;
             if (res == message.content) return;
             try {
@@ -1516,7 +1535,7 @@ client.on("message", async message => {
                 .setFooter("Translated from: " + body.lang)
                 .setTimestamp();
               message.channel.send({
-                embed: translationtext
+                embed: translationtext,
               });
             } catch {
               let nowtime = new Date();
@@ -1531,7 +1550,7 @@ client.on("message", async message => {
               );
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
         if (err) return message.channel.send(err);
@@ -1553,7 +1572,7 @@ client.on("message", async message => {
         muted: 0,
         translate: 0,
         stream: 0,
-        notes: 0
+        notes: 0,
       };
     }
     if (message.author.id == "121723489014120448") {
@@ -1575,7 +1594,7 @@ client.on("message", async message => {
     levelups.lvl20,
     levelups.lvl30,
     levelups.lvl50,
-    levelups.lvl85
+    levelups.lvl85,
   ];
   let levelerstxt = ["5", "10", "15", "20", "30", "50", "85", "1000"];
   let count = -1;
@@ -1585,9 +1604,9 @@ client.on("message", async message => {
       score.level >= levelerstxt[count] &&
       score.level < levelerstxt[count + 1]
     ) {
-      const level = message.guild.roles.find(r => r.id === i);
+      const level = message.guild.roles.find((r) => r.id === i);
       if (level) {
-        let checking = message.member.roles.find(r => r.id === i);
+        let checking = message.member.roles.find((r) => r.id === i);
         if (!checking) {
           let remove = [
             levelups.lvl5,
@@ -1596,13 +1615,13 @@ client.on("message", async message => {
             levelups.lvl20,
             levelups.lvl30,
             levelups.lvl50,
-            levelups.lvl85
+            levelups.lvl85,
           ];
           for (let n of remove) {
-            const level2 = message.guild.roles.find(r => r.id === n);
+            const level2 = message.guild.roles.find((r) => r.id === n);
             if (level2) {
-              if (message.member.roles.find(r => r.id === n)) {
-                message.member.removeRole(level2).catch(error => {
+              if (message.member.roles.find((r) => r.id === n)) {
+                message.member.removeRole(level2).catch((error) => {
                   console.log(
                     new Date() +
                       "\n" +
@@ -1616,7 +1635,7 @@ client.on("message", async message => {
               }
             }
           }
-          message.member.addRole(level).catch(error => {
+          message.member.addRole(level).catch((error) => {
             console.log(
               new Date() +
                 "\n" +
@@ -1775,7 +1794,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setFooter("Message ID: " + reaction.message.id)
             .setTimestamp();
           return logsChannel1.send({
-            embed: editmessage
+            embed: editmessage,
           });
         } catch {
           let nowtime = new Date();
@@ -1804,7 +1823,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             .setImage(image)
             .setTimestamp();
           return logsChannel1.send({
-            embed: editmessage
+            embed: editmessage,
           });
         } catch {
           let nowtime = new Date();
@@ -1833,7 +1852,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setImage(image)
           .setTimestamp();
         return logsChannel1.send({
-          embed: editmessage
+          embed: editmessage,
         });
       } catch {
         let nowtime = new Date();
@@ -1868,7 +1887,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setFooter("Message ID: " + reaction.message.id)
           .setTimestamp();
         return logsChannel1.send({
-          embed: editmessage
+          embed: editmessage,
         });
       } catch {
         let nowtime = new Date();
@@ -1906,7 +1925,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setFooter("Message ID: " + reaction.message.id)
           .setTimestamp();
         return highlightChannel1.send({
-          embed: editmessage
+          embed: editmessage,
         });
       } catch {
         let nowtime = new Date();
@@ -1940,7 +1959,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
           .setImage(image)
           .setTimestamp();
         return highlightChannel1.send({
-          embed: editmessage
+          embed: editmessage,
         });
       } catch {
         let nowtime = new Date();
@@ -1974,7 +1993,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
         .setImage(image)
         .setTimestamp();
       return highlightChannel1.send({
-        embed: editmessage
+        embed: editmessage,
       });
     } catch {
       let nowtime = new Date();
@@ -1996,7 +2015,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
       for (const data of allroles) {
         try {
           array2.push(
-            reaction.message.guild.roles.find(r => r.id == data.roles).name
+            reaction.message.guild.roles.find((r) => r.id == data.roles).name
           );
         } catch {
           let nowtime = new Date();
@@ -2008,7 +2027,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
       for (let n in array2) {
         if (reaction.emoji.name == array2[n]) {
           const role = reaction.message.guild.roles.find(
-            r => r.name == array2[n]
+            (r) => r.name == array2[n]
           );
           const guildMember = reaction.message.guild.members.get(user.id);
           let haverole = guildMember.roles.has(role.id);
@@ -2023,7 +2042,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             client.channels
               .get(reactionChannel1.id)
               .send(embed)
-              .then(message => {
+              .then((message) => {
                 message.delete(5000);
               });
           } else {
@@ -2037,7 +2056,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
             client.channels
               .get(reactionChannel1.id)
               .send(embed)
-              .then(message => {
+              .then((message) => {
                 message.delete(5000);
               });
           }
@@ -2046,7 +2065,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     }
   }
 });
-client.on("error", e => {});
-client.on("warn", e => {});
-client.on("debug", e => {});
+client.on("error", (e) => {});
+client.on("warn", (e) => {});
+client.on("debug", (e) => {});
 client.login(token);

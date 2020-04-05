@@ -42,7 +42,7 @@ module.exports = {
         if (message.content.includes("reset")) {
             userscore.warning = 0;
             setScore.run(userscore);
-            message.channel.send("Warnings for this user have been reset to 0!");
+            return message.channel.send("Warnings for this user have been reset to 0!");
         }
         const embeds = new Discord.RichEmbed()
             .setAuthor(user.username, user.displayAvatarURL)
