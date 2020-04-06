@@ -1,8 +1,5 @@
-const Discord = module.require("discord.js");
-const fs = require("fs");
-const db = require("better-sqlite3")("./scores.sqlite");
-const mutedtime = new Set();
-const ln = require("nodejs-linenumber");
+const npm = require("../NPM.js");
+npm.npm();
 module.exports = {
   name: "set",
   description:
@@ -69,21 +66,27 @@ module.exports = {
           if (userscore.muted == `1`) {
             return message.reply(member + " is already muted!");
           } else {
-            await member.removeRole(memberrole).catch(console.log());
-            message.guild.channels.forEach(async (channel, id) => {
-              await channel.overwritePermissions(member, {
-                VIEW_CHANNEL: false,
-                READ_MESSAGES: false,
-                SEND_MESSAGES: false,
-                READ_MESSAGE_HISTORY: false,
-                ADD_REACTIONS: false,
-              });
+            if (memberrole) {
+              setTimeout(() => {
+                member.removeRole(memberrole).catch(console.log());
+              }, 2500);
+            }
+            message.guild.channels.forEach((channel, id) => {
+              setTimeout(() => {
+                channel.overwritePermissions(member, {
+                  VIEW_CHANNEL: false,
+                  READ_MESSAGES: false,
+                  SEND_MESSAGES: false,
+                  READ_MESSAGE_HISTORY: false,
+                  ADD_REACTIONS: false,
+                });
+              }, 200);
             });
             if (muteChannel1) {
-              setTimeout(async () => {
-                message.guild.channels.forEach(async (channel, id) => {
+              setTimeout(() => {
+                message.guild.channels.forEach((channel, id) => {
                   if (channel.id == muteChannel1.id) {
-                    await channel.overwritePermissions(member, {
+                    channel.overwritePermissions(member, {
                       VIEW_CHANNEL: true,
                       READ_MESSAGES: true,
                       SEND_MESSAGES: true,
@@ -140,9 +143,11 @@ module.exports = {
           if (userscore.muted == `0`)
             return message.channel.send(member + " Is not muted!");
           member.addRole(memberrole).catch(console.error);
-          message.guild.channels.forEach(async (channel, id) => {
+          message.guild.channels.forEach((channel, id) => {
             if (channel.permissionOverwrites.get(member.id)) {
-              await channel.permissionOverwrites.get(member.id).delete();
+              setTimeout(() => {
+                channel.permissionOverwrites.get(member.id).delete();
+              }, 200);
             }
           });
           userscore.muted = `0`;

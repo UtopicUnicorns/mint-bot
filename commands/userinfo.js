@@ -1,7 +1,5 @@
-const Discord = module.require("discord.js");
-const moment = require("moment");
-const fs = require("fs");
-const db = require("better-sqlite3")("./scores.sqlite");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
   name: "userinfo",
   description: "[general] Displays your own or mentioned user info",

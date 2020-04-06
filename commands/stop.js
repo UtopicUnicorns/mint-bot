@@ -1,4 +1,5 @@
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'stop',
     description: '[music] Stop all songs in the queue!',

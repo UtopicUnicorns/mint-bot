@@ -1,5 +1,5 @@
-const Discord = require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'wordlist',
     description: '[server] Add or remove bad words from the wordlist',

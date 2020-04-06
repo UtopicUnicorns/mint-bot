@@ -1,6 +1,5 @@
-const Discord = require("discord.js");
-const googleIt = require("google-it");
-const db = require("better-sqlite3")("./scores.sqlite");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
   name: "search",
   description: "[general] Search the internet",

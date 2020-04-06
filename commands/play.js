@@ -1,13 +1,5 @@
-const {
-    Util
-} = require('discord.js');
-const YouTube = require('simple-youtube-api');
-const ytdl = require('ytdl-core');
-const {
-    youtubekey,
-} = require('../config.json');
-const youtube = new YouTube(youtubekey);
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'play',
     description: '[music] Play a song!',

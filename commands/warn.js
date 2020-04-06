@@ -1,6 +1,5 @@
-const Discord = require("discord.js");
-const db = require("better-sqlite3")("./scores.sqlite");
-const ln = require("nodejs-linenumber");
+const npm = require("../NPM.js");
+npm.npm();
 module.exports = {
   name: "warn",
   description: "[mod] Warn a user",
@@ -54,31 +53,55 @@ module.exports = {
     userscore.warning += pointsToAdd;
     if (userscore.warning > 2) {
       const member = message.mentions.members.first();
-      message.guild.channels.forEach(async (channel, id) => {
-        await channel.overwritePermissions(member, {
-          VIEW_CHANNEL: false,
-          READ_MESSAGES: false,
-          SEND_MESSAGES: false,
-          READ_MESSAGE_HISTORY: false,
-          ADD_REACTIONS: false,
-        });
+      message.guild.channels.forEach((channel, id) => {
         setTimeout(() => {
-          muteChannel1.overwritePermissions(member, {
-            VIEW_CHANNEL: true,
-            READ_MESSAGES: true,
-            SEND_MESSAGES: true,
-            READ_MESSAGE_HISTORY: true,
-            ATTACH_FILES: false,
+          channel.overwritePermissions(member, {
+            VIEW_CHANNEL: false,
+            READ_MESSAGES: false,
+            SEND_MESSAGES: false,
+            READ_MESSAGE_HISTORY: false,
+            ADD_REACTIONS: false,
+          });
+        }, 200);
+      });
+      if (muteChannel1) {
+        setTimeout(() => {
+          message.guild.channels.forEach((channel, id) => {
+            if (channel.id == muteChannel1.id) {
+              channel.overwritePermissions(member, {
+                VIEW_CHANNEL: true,
+                READ_MESSAGES: true,
+                SEND_MESSAGES: true,
+                READ_MESSAGE_HISTORY: true,
+                ATTACH_FILES: false,
+              });
+            }
           });
         }, 2000);
-      });
+        muteChannel1
+          .send(
+            user +
+              ", You have collected 3 warnings, you have been muted by our system."
+          )
+          .catch((error) =>
+            console.log(
+              new Date() +
+                "\n" +
+                message.guild.id +
+                " " +
+                message.guild.owner.user.username +
+                ": index.js:" +
+                Math.floor(ln() - 4)
+            )
+          );
+      }
       let memberrole = message.guild.roles.find((r) => r.name === `~/Members`);
-      await member.removeRole(memberrole).catch(console.log());
+      if (memberrole) {
+        setTimeout(() => {
+          member.removeRole(memberrole).catch(console.log());
+        }, 2500);
+      }
       userscore.muted = `1`;
-      muteChannel1.send(
-        user +
-          ", You have collected 3 warnings, you have been muted by our system."
-      );
     }
     setScore.run(userscore);
     //LOGS

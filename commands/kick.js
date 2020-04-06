@@ -1,6 +1,5 @@
-const Discord = module.require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
-const ln = require("nodejs-linenumber");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'kick',
     description: '[mod] Kick a user from the server',

@@ -1,10 +1,5 @@
-const Discord = require('discord.js');
-const request = require(`request`);
-const moment = require('moment');
-const {
-    askkey,
-} = require('../config.json');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'ask',
     description: '[linux] Ask Ubuntu api',
@@ -14,7 +9,7 @@ module.exports = {
         const prefix = prefixstart.prefix;
         let baseurl = "https://api.stackexchange.com/2.2/search/advanced?pagesize=1&order=desc&sort=votes&q=";
         let q = message.content.slice(prefix.length + 4);
-        let key = '&site=askubuntu&key=' + askkey;
+        let key = '&site=askubuntu&key=' + configfile.askkey;
         let url = baseurl + q + key;
         request(url, {
             gzip: true,

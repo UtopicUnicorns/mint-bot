@@ -1,6 +1,5 @@
-const Discord = require("discord.js");
-const request = require("request");
-const db = require("better-sqlite3")("./scores.sqlite");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
   name: "invite",
   description: "[general] bot invite and main server invite",

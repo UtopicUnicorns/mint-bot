@@ -1,7 +1,5 @@
-const Discord = require('discord.js');
-const request = require("request");
-const db = require('better-sqlite3')('./scores.sqlite');
-const ping = new Set();
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'p',
     description: '[fun] Ping a website',

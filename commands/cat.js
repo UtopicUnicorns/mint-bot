@@ -1,6 +1,5 @@
-const Discord = require('discord.js');
-const fs = require('fs')
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'cat',
     description: '[fun] Random cat picture',

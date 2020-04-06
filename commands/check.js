@@ -1,6 +1,5 @@
-const Discord = module.require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
-const ln = require('nodejs-linenumber');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'check',
     description: '[server] Role check',
@@ -32,7 +31,7 @@ module.exports = {
                     const check = new Discord.RichEmbed()
                         .setTitle('RoleCheck')
                         .setColor('RANDOM')
-                        .addField('These users do not have ' + role, str)
+                        .addField('These users do not have: ' , role + '\n\n' + str)
                         .setTimestamp();
                     return message.channel.send({
                         embed: check
@@ -55,7 +54,7 @@ module.exports = {
                     const check = new Discord.RichEmbed()
                         .setTitle('RoleCheck')
                         .setColor('RANDOM')
-                        .addField('These users have ' + role, str)
+                        .addField('These users have: ', role + '\n\n' + str)
                         .setTimestamp();
                     return message.channel.send({
                         embed: check

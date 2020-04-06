@@ -1,7 +1,5 @@
-const Discord = module.require("discord.js");
-const curl = require("curl");
-const htmlText = require("html-text");
-const db = require("better-sqlite3")("./scores.sqlite");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
   name: "man",
   description: "[linux] Shows linux manual pages",

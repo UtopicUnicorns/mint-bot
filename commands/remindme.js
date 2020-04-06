@@ -1,7 +1,5 @@
-const Discord = module.require("discord.js");
-const reminder = new Set();
-const db = require("better-sqlite3")("./scores.sqlite");
-const moment = require("moment");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
   name: "remindme",
   description: "[general] set a reminder",

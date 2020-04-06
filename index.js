@@ -1,17 +1,6 @@
-const fs = require("fs");
-const Discord = require("discord.js");
-const Canvas = require("canvas");
-const request = require("request");
-const translate = require("translate-google");
-const moment = require("moment");
-const Client = require("./client/Client");
-const {
-  token,
-  yandex,
-  SESSION_SECRET,
-  CLIENT_SECRET,
-  REDIRECT_URI,
-} = require("./config.json");
+const npm = require("./NPM.js");
+npm.npm();
+
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./scores.sqlite");
 const client = new Client();
@@ -19,23 +8,10 @@ client.commands = new Discord.Collection();
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
-const thankedRecently = new Set();
-const streamedRecently = new Set();
-const lovedRecently = new Set();
-const borgRecently = new Set();
-const spamRecently = new Set();
-const noticeset = new Set();
-const congratulationsRecently = new Set();
-const ln = require("nodejs-linenumber");
 const { FeedEmitter } = require("rss-emitter-ts");
 const emitter = new FeedEmitter();
 const oAuth = Discord.OAuth2Application;
-// dotenv
 require("dotenv").config();
-// Dashboard package
-const dashboard = require("./discord-bot-dashboard.js");
-//
-const htmlToText = require("html-to-text");
 const getUsage = sql.prepare("SELECT * FROM usage WHERE command = ?");
 const setUsage = sql.prepare(
   "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
@@ -250,6 +226,13 @@ client.once("ready", () => {
       if (timenow > data.time) {
         let gettheguild = client.guilds.get(data.gid);
         let reminduser = gettheguild.members.get(data.uid);
+        if (!reminduser) {
+          return sql
+            .prepare(
+              `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
+            )
+            .run();
+        }
         client.channels.get(data.cid).send("<@" + data.uid + "> PING!");
         const reminderemb2 = new Discord.RichEmbed()
           .setTitle("REMIND ALERT")
@@ -296,8 +279,8 @@ client.once("ready", () => {
     client,
     {
       port: 80,
-      clientSecret: CLIENT_SECRET,
-      redirectURI: REDIRECT_URI,
+      clientSecret: configfile.CLIENT_SECRET,
+      redirectURI: configfile.REDIRECT_URI,
     },
     oAuth
   );
@@ -424,6 +407,22 @@ client.on("guildMemberAdd", async (guildMember) => {
   }
   if (muteChannel1 == `0`) {
   } else {
+    if (guildChannels.autoMod == "strict") {
+      guildMember.addRole(roledel1);
+      try {
+        return muteChannel1.send(
+          ageA +
+            " " +
+            guildMember.user +
+            "\nAutomod Strict is on!\nThis means that every user gets dumped into this channel.\nAutomod strict is usually enabled if there is a raid going on."
+        );
+      } catch {
+        let nowtime = new Date();
+        console.log(
+          nowtime + "\n" + guildMember.guild.id + ": index.js:" + ln()
+        );
+      }
+    }
     if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
       guildMember.addRole(roledel1);
       try {
@@ -1168,7 +1167,10 @@ client.on("message", async (message) => {
     client.setLevel.run(newLevel);
   }
   //non-prefix help
-  if (message.isMemberMentioned(client.user) && message.content.toLowerCase().includes("help")) {
+  if (
+    message.isMemberMentioned(client.user) &&
+    message.content.toLowerCase().includes("help")
+  ) {
     const nonprefix = new Discord.RichEmbed()
       .setTitle("Non prefix help menu")
       .setAuthor(message.author.username, message.author.avatarURL)
@@ -1391,15 +1393,6 @@ client.on("message", async (message) => {
       }
     }
   } */
-  //ping
-  if (message.content === prefix + "ping") {
-    const m = await message.channel.send("Ping?");
-    m.edit(
-      `Pong! Latency is ${
-        m.createdTimestamp - message.createdTimestamp
-      }ms. API Latency is ${Math.round(client.ping)}ms`
-    );
-  }
   //Artemis Talk
   if (message.channel.id === "642882039372185609") {
     if (message.author.id !== "440892659264126997") {
@@ -1492,7 +1485,7 @@ client.on("message", async (message) => {
   ) {
     //commence translate if opt
     let baseurl = "https://translate.yandex.net/api/v1.5/tr.json/translate";
-    let key = yandex;
+    let key = configfile.yandex;
     if (message.content.startsWith(prefix + "tr")) {
       var text = message.content.slice(prefix.length + 3);
     } else {
@@ -2068,4 +2061,4 @@ client.on("messageReactionAdd", async (reaction, user) => {
 client.on("error", (e) => {});
 client.on("warn", (e) => {});
 client.on("debug", (e) => {});
-client.login(token);
+client.login(configfile.token);

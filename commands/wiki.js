@@ -1,6 +1,5 @@
-const Discord = require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
-const wtf = require('wtf_wikipedia')
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'wiki',
     description: '[fun] Wikipedia stuff',

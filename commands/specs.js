@@ -1,5 +1,5 @@
-const fs = require('fs');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'specs',
     description: '[linux] Add your hardware specifications to !userinfo',

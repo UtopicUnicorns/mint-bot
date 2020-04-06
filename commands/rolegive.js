@@ -1,5 +1,5 @@
-const db = require('better-sqlite3')('./scores.sqlite');
-const ln = require("nodejs-linenumber");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: `rolegive`,
     description: `[mod] Give a role to a member. rolegive @USER ROLENAME`,

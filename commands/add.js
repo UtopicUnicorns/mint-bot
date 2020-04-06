@@ -1,6 +1,5 @@
-const Discord = require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
-const ln = require("nodejs-linenumber");
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'add',
     description: '[mscore] Give a user points or take them',

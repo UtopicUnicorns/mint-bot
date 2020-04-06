@@ -1,6 +1,5 @@
-const Discord = require('discord.js');
-const Canvas = require('canvas');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'level',
     description: '[level] Show your points and level',

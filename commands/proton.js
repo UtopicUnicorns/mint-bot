@@ -1,7 +1,5 @@
-const Discord = require('discord.js');
-const request = require(`request`);
-const steam = require('steam-searcher');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'proton',
     description: '[linux] Search the ProtonDB',

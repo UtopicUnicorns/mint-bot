@@ -1,5 +1,5 @@
-const Discord = module.require('discord.js');
-const db = require('better-sqlite3')('./scores.sqlite');
+const npm = require('../NPM.js');
+npm.npm();
 module.exports = {
     name: 'opt',
     description: `[general] opt in out out from translation`,
