@@ -26,7 +26,7 @@ module.exports = {
     if (args[0].startsWith('<@') && args[0].endsWith('>')) {
       var user = message.guild.members.get(message.mentions.users.first().id);
     }
-    fs.stat(`./specs/${user.id}.txt`, function(err, fileStat) {
+    fs.stat(`./specs/${user.user.id}.txt`, function(err, fileStat) {
       if (err) {
         if (err.code == "ENOENT") {
           let embed = new Discord.RichEmbed()

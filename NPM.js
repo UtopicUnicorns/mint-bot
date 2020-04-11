@@ -18,6 +18,7 @@ exports.npm = function () {
   configfile = require("./config.json");
   dashboard = require("./discord-bot-dashboard.js");
   htmlToText = require("html-to-text");
+  yas = require('youtube-audio-server')
   youtube = new YouTube(configfile.youtubekey);
   mutedtime = new Set();
   ping = new Set();

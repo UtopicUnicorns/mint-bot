@@ -164,6 +164,7 @@ module.exports = {
         .setColor("RANDOM")
         .addField("My prefix for this server:\n", prefix)
         .addField("Example command usage: \n", prefix + "help")
+        .addField("Support my work: ", "https://www.patreon.com/utopicunicorn\nhttps://artemisbot.eu")
         .setTimestamp();
       message.channel.send({
         embed: nonprefix,

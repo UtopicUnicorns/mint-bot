@@ -19,6 +19,7 @@ module.exports = {
         "Bot Invite: ",
         "https://discordapp.com/api/oauth2/authorize?client_id=440892659264126997&permissions=2147483127&scope=bot"
       )
+      .addField("Support my work: ", "https://www.patreon.com/utopicunicorn")
       .setFooter("Bot owner: <@127708549118689280> | UtopicUnicorn#0383")
       .setTimestamp();
     return message.channel.send({

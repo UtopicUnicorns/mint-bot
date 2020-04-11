@@ -53,6 +53,17 @@ client.once("ready", () => {
       type: "LISTENING",
     });
   }, 60000);
+  //Wipe music
+  const musicf = fs.readdirSync("./music");
+  for (const file of musicf) {
+    fs.unlink("./music/" + file, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+  //
   //Reminder run
   setInterval(() => {
     const remindersdb = db
@@ -64,7 +75,7 @@ client.once("ready", () => {
         let gettheguild = client.guilds.get(data.gid);
         let reminduser = gettheguild.members.get(data.uid);
         if (!reminduser) {
-          return sql
+          return db
             .prepare(
               `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
             )
@@ -83,11 +94,9 @@ client.once("ready", () => {
         client.channels.get(data.cid).send({
           embed: reminderemb2,
         });
-        sql
-          .prepare(
-            `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
-          )
-          .run();
+        db.prepare(
+          `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
+        ).run();
       }
     }
   }, 5000);
@@ -114,6 +123,17 @@ client.once("ready", () => {
   );
 });
 client.once("reconnecting", () => {
+  //Wipe music
+  const musicf = fs.readdirSync("./music");
+  for (const file of musicf) {
+    fs.unlink("./music/" + file, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+  //
   let nowtime = new Date();
   console.log(
     `${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +

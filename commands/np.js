@@ -16,7 +16,14 @@ module.exports = {
         //
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!serverQueue) return message.channel.send('There is nothing playing.');
-        message.channel.send(`Now playing: ${serverQueue.songs[0].title}\n\n`);
-        message.channel.send(`Queue list:\n${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}`);
+        let array = [];
+        serverQueue.songs.map(song => array.push(song.title));
+        const rembed = new Discord.RichEmbed()
+            .setTitle('Now playing:' + serverQueue.songs[0].title)
+            .setAuthor(message.author.username, message.author.avatarURL)
+            .setThumbnail(serverQueue.songs[0].thumb)
+            .setColor("RANDOM")
+            .setDescription("Queue below:\n" + array.slice(1).join('\n'))
+           message.channel.send(rembed);
     },
 };

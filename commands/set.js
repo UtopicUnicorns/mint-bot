@@ -42,19 +42,21 @@ module.exports = {
       const member = message.mentions.members.first();
       function logMe() {
         if (logger) {
-          const logsmessage = new Discord.RichEmbed()
-            .setTitle(prefix + "set")
-            .setAuthor(message.author.username, message.author.avatarURL)
-            .setDescription("Used by: " + message.author)
-            .setURL(message.url)
-            .setColor("RANDOM")
-            .addField("Usage:\n", message.content, true)
-            .addField("Channel", message.channel, true)
-            .setFooter("Message ID: " + message.id)
-            .setTimestamp();
-          logger.send({
-            embed: logsmessage,
-          });
+          setTimeout(() => {
+            const logsmessage = new Discord.RichEmbed()
+              .setTitle(prefix + "set")
+              .setAuthor(message.author.username, message.author.avatarURL)
+              .setDescription("Used by: " + message.author)
+              .setURL(message.url)
+              .setColor("RANDOM")
+              .addField("Usage:\n", message.content, true)
+              .addField("Channel", message.channel, true)
+              .setFooter("Message ID: " + message.id)
+              .setTimestamp();
+            logger.send({
+              embed: logsmessage,
+            });
+          }, 3500);
         }
       }
       async function HitOrMiss(isMuted, isTime) {
@@ -71,32 +73,39 @@ module.exports = {
                 member.removeRole(memberrole).catch(console.log());
               }, 2500);
             }
-            message.guild.channels.forEach((channel, id) => {
+            let array = [];
+            message.client.channels
+              .filter((channel) => channel.guild.id === message.guild.id)
+              .map((channels) => array.push(channels.id));
+            for (let i of array) {
               setTimeout(() => {
-                channel.overwritePermissions(member, {
-                  VIEW_CHANNEL: false,
-                  READ_MESSAGES: false,
-                  SEND_MESSAGES: false,
-                  READ_MESSAGE_HISTORY: false,
-                  ADD_REACTIONS: false,
-                });
-              }, 200);
-            });
-            if (muteChannel1) {
-              setTimeout(() => {
-                message.guild.channels.forEach((channel, id) => {
-                  if (channel.id == muteChannel1.id) {
-                    channel.overwritePermissions(member, {
-                      VIEW_CHANNEL: true,
-                      READ_MESSAGES: true,
-                      SEND_MESSAGES: true,
-                      READ_MESSAGE_HISTORY: true,
-                      ATTACH_FILES: false,
-                    });
+                let channel = message.guild.channels.find(
+                  (channel) => channel.id === i
+                );
+                if (channel) {
+                  if (muteChannel1) {
+                    if (i == muteChannel1.id) {
+                      channel.overwritePermissions(member, {
+                        VIEW_CHANNEL: true,
+                        READ_MESSAGES: true,
+                        SEND_MESSAGES: true,
+                        READ_MESSAGE_HISTORY: true,
+                        ATTACH_FILES: false,
+                      });
+                      return channel.send(member + "\nYou have been muted!");
+                    }
                   }
-                });
-              }, 2000);
+                  channel.overwritePermissions(member, {
+                    VIEW_CHANNEL: false,
+                    READ_MESSAGES: false,
+                    SEND_MESSAGES: false,
+                    READ_MESSAGE_HISTORY: false,
+                    ADD_REACTIONS: false,
+                  });
+                }
+              }, 200);
             }
+
             let userscore = getScore.get(member.id, message.guild.id);
             if (!userscore) {
               userscore = {
@@ -143,20 +152,31 @@ module.exports = {
           if (userscore.muted == `0`)
             return message.channel.send(member + " Is not muted!");
           member.addRole(memberrole).catch(console.error);
-          message.guild.channels.forEach((channel, id) => {
-            if (channel.permissionOverwrites.get(member.id)) {
-              setTimeout(() => {
-                channel.permissionOverwrites.get(member.id).delete();
-              }, 200);
-            }
-          });
+          let array2 = [];
+          message.client.channels
+            .filter((channel) => channel.guild.id === message.guild.id)
+            .map((channels) => array2.push(channels.id));
+          for (let i of array2) {
+            setTimeout(() => {
+              let channel = message.guild.channels.find(
+                (channel) => channel.id === i
+              );
+              if (channel) {
+                if (channel.permissionOverwrites.get(member.id)) {
+                  channel.permissionOverwrites.get(member.id).delete();
+                }
+              }
+            }, 200);
+          }
           userscore.muted = `0`;
           userscore.warning = `0`;
           setScore.run(userscore);
           try {
             message.reply(member + " has been unmuted!");
+            return logMe();
           } catch {
             message.reply(member + " has been unmuted!");
+            return logMe();
           }
         }
       }

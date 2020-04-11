@@ -215,6 +215,7 @@ module.exports = {
             .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
             .setTitle('Pick a category')
             .setDescription('When Artemis replies with an Arrow up emote, you leveled up!\nYou can report a message by reaction to it with :x: \nhaving 3 :tea: reactions to a message will highlight it!\n')
+            .addField('Also available on: ', 'https://artemisbot.eu')
             .addField(`${prefix}help general`, 'Display General help\n')
             .addField(`${prefix}help linux`, 'Display linux based commands\n')
             .addField(`${prefix}help level`, 'Display level/score/role commands\n')

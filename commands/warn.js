@@ -53,47 +53,39 @@ module.exports = {
     userscore.warning += pointsToAdd;
     if (userscore.warning > 2) {
       const member = message.mentions.members.first();
-      message.guild.channels.forEach((channel, id) => {
+      let array = [];
+      message.client.channels
+        .filter((channel) => channel.guild.id === message.guild.id)
+        .map((channels) => array.push(channels.id));
+      for (let i of array) {
         setTimeout(() => {
-          channel.overwritePermissions(member, {
-            VIEW_CHANNEL: false,
-            READ_MESSAGES: false,
-            SEND_MESSAGES: false,
-            READ_MESSAGE_HISTORY: false,
-            ADD_REACTIONS: false,
-          });
-        }, 200);
-      });
-      if (muteChannel1) {
-        setTimeout(() => {
-          message.guild.channels.forEach((channel, id) => {
-            if (channel.id == muteChannel1.id) {
-              channel.overwritePermissions(member, {
-                VIEW_CHANNEL: true,
-                READ_MESSAGES: true,
-                SEND_MESSAGES: true,
-                READ_MESSAGE_HISTORY: true,
-                ATTACH_FILES: false,
-              });
-            }
-          });
-        }, 2000);
-        muteChannel1
-          .send(
-            user +
-              ", You have collected 3 warnings, you have been muted by our system."
-          )
-          .catch((error) =>
-            console.log(
-              new Date() +
-                "\n" +
-                message.guild.id +
-                " " +
-                message.guild.owner.user.username +
-                ": index.js:" +
-                Math.floor(ln() - 4)
-            )
+          let channel = message.guild.channels.find(
+            (channel) => channel.id === i
           );
+          if (channel) {
+            if (muteChannel1) {
+              if (i == muteChannel1.id) {
+                channel.overwritePermissions(member, {
+                  VIEW_CHANNEL: true,
+                  READ_MESSAGES: true,
+                  SEND_MESSAGES: true,
+                  READ_MESSAGE_HISTORY: true,
+                  ATTACH_FILES: false,
+                });
+                return channel.send(
+                  member + "\nYou collected 3 warnings, you have been muted!"
+                );
+              }
+            }
+            channel.overwritePermissions(member, {
+              VIEW_CHANNEL: false,
+              READ_MESSAGES: false,
+              SEND_MESSAGES: false,
+              READ_MESSAGE_HISTORY: false,
+              ADD_REACTIONS: false,
+            });
+          }
+        }, 200);
       }
       let memberrole = message.guild.roles.find((r) => r.name === `~/Members`);
       if (memberrole) {
@@ -112,31 +104,33 @@ module.exports = {
     }
     if (logger == "0") {
     } else {
-      const logsmessage = new Discord.RichEmbed()
-        .setTitle(prefix + "warn")
-        .setAuthor(message.author.username, message.author.avatarURL)
-        .setDescription("Used by: " + message.author)
-        .setURL(message.url)
-        .setColor("RANDOM")
-        .addField("Usage:\n", message.content, true)
-        .addField("Channel", message.channel, true)
-        .setFooter("Message ID: " + message.id)
-        .setTimestamp();
-      logger
-        .send({
-          embed: logsmessage,
-        })
-        .catch((error) =>
-          console.log(
-            new Date() +
-              "\n" +
-              message.guild.id +
-              " " +
-              message.guild.owner.user.username +
-              ": index.js:" +
-              Math.floor(ln() - 4)
-          )
-        );
+      setTimeout(() => {
+        const logsmessage = new Discord.RichEmbed()
+          .setTitle(prefix + "warn")
+          .setAuthor(message.author.username, message.author.avatarURL)
+          .setDescription("Used by: " + message.author)
+          .setURL(message.url)
+          .setColor("RANDOM")
+          .addField("Usage:\n", message.content, true)
+          .addField("Channel", message.channel, true)
+          .setFooter("Message ID: " + message.id)
+          .setTimestamp();
+        logger
+          .send({
+            embed: logsmessage,
+          })
+          .catch((error) =>
+            console.log(
+              new Date() +
+                "\n" +
+                message.guild.id +
+                " " +
+                message.guild.owner.user.username +
+                ": index.js:" +
+                Math.floor(ln() - 4)
+            )
+          );
+      }, 3500);
     }
     //
     return message.channel.send(
