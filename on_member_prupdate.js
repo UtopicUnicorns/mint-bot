@@ -21,7 +21,9 @@ module.exports = {
           var thisguild = newMember.client.guilds.get(guildChannels.guild);
         }
         if (thisguild) {
-          var streamChannel1 = newMember.client.channels.get(guildChannels.streamChannel);
+          var streamChannel1 = newMember.client.channels.get(
+            guildChannels.streamChannel
+          );
           var streamNotif = guildChannels.streamHere;
         } else {
           var streamChannel1 = "0";
@@ -171,7 +173,9 @@ module.exports = {
       var thisguild = newMember.client.guilds.get(guildChannels.guild);
     }
     if (thisguild) {
-      var logsChannel1 = newMember.client.channels.get(guildChannels.logsChannel);
+      var logsChannel1 = newMember.client.channels.get(
+        guildChannels.logsChannel
+      );
     } else {
       var logsChannel1 = "0";
     }
@@ -197,25 +201,6 @@ module.exports = {
           console.log(
             nowtime + "\n" + newMember.guild.id + ": index.js:" + ln()
           );
-        }
-      }
-    }
-    //Change topic based on user activity
-    if (oldMember.presence.status !== newMember.presence.status) {
-      if (oldMember.guild.id === "628978428019736619") {
-        if (`${newMember.user.username}` === "UtopicUnicorn") {
-          if (`${newMember.presence.status}` === "dnd") {
-            newMember.client.channels
-              .get("695182849476657223")
-              .setTopic(
-                `${newMember.user.username} has enlightened us with their presence!`
-              );
-          }
-        }
-        if (`${newMember.presence.status}` === "online") {
-          newMember.client.channels
-            .get("695182849476657223")
-            .setTopic(`${newMember.user.username} just came online!`);
         }
       }
     }

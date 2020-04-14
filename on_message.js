@@ -164,14 +164,17 @@ module.exports = {
         .setColor("RANDOM")
         .addField("My prefix for this server:\n", prefix)
         .addField("Example command usage: \n", prefix + "help")
-        .addField("Support my work: ", "https://www.patreon.com/utopicunicorn\nhttps://artemisbot.eu")
+        .addField(
+          "Support my work: ",
+          "https://www.patreon.com/utopicunicorn\nhttps://artemisbot.eu"
+        )
         .setTimestamp();
       message.channel.send({
         embed: nonprefix,
       });
     }
     //autoMod START
-    if (message.member.hasPermission("KICK_MEMBERS")) {
+    if (message.member && message.member.hasPermission("KICK_MEMBERS")) {
     } else {
       if (guildChannels.autoMod == "strict" || guildChannels.autoMod == "2") {
         const automod = require("./automod.js");
@@ -192,6 +195,10 @@ module.exports = {
               "Our sincere apologies, Automod Strict is ON\nWhich means that people have to be manually approved!"
             );
           } else {
+            if (message.member.hasPermission("KICK_MEMBERS"))
+              return message.reply(
+                "So I fixed this, beecause you lot cannot behave yourselves..."
+              );
             let userscore1 = getScore.get(message.author.id, message.guild.id);
             if (!userscore1) {
             } else {
@@ -268,34 +275,39 @@ module.exports = {
     //Topic
     //For mint server only
     if (message.guild.id == "628978428019736619") {
-      if (message.content.startsWith(prefix + "topic")) {
-        let selectthis = [
-          "Which Linux distribution did you first user,\nand why did you start using it?",
-          "Do you have a favourite Linux/UNIX command?\nUse `" +
-            prefix +
-            "man command` to know what a command does, never use commands you do not know.",
-          "Are you currently dual booting another OS or distribution,\nwhy do you dual boot, or why do you not?",
-          "Do you know any programming languages,\nand which one is your favourite?",
-          "Which games do you usually play,\nand are they available on Linux?",
-          "Do you have any safety tips for others to know regarding the Corona virus?",
-          "What made you interested in Linux Mint?",
-        ];
-        let selectedthis = selectthis[~~(Math.random() * selectthis.length)];
-        const topicstart = new Discord.RichEmbed()
-          .setAuthor(message.author.username, message.author.avatarURL)
-          .setColor("RANDOM")
-          .setDescription(
-            "For the next 30 minutes this will be the topic!\nTrying to go off-topic may have consequences."
-          )
-          .addField(
-            "The topic that I have selected for you is: \n",
-            selectedthis
-          )
-          .setFooter("Behave properly, and respect each others opinions.\n")
-          .setTimestamp();
-        message.channel.send({
-          embed: topicstart,
-        });
+      if (message.member && message.member.hasPermission("KICK_MEMBERS")) {
+        if (message.content.startsWith(prefix + "topic")) {
+          let selectthis = [
+            "Which Linux distribution did you first user,\nand why did you start using it?",
+            "Do you have a favourite Linux/UNIX command?\nUse `" +
+              prefix +
+              "man command` to know what a command does, never use commands you do not know.",
+            "Are you currently dual booting another OS or distribution,\nwhy do you dual boot, or why do you not?",
+            "Do you know any programming languages,\nand which one is your favourite?",
+            "Which games do you usually play,\nand are they available on Linux?",
+            "Do you have any safety tips for others to know regarding the Corona virus?",
+            "What made you interested in Linux Mint?",
+          ];
+          let selectedthis = selectthis[~~(Math.random() * selectthis.length)];
+          message.client.channels
+            .get("695182849476657223")
+            .setTopic(selectedthis);
+          const topicstart = new Discord.RichEmbed()
+            .setAuthor(message.author.username, message.author.avatarURL)
+            .setColor("RANDOM")
+            .setDescription(
+              "For the next 30 minutes this will be the topic!\nTrying to go off-topic may have consequences."
+            )
+            .addField(
+              "The topic that I have selected for you is: \n",
+              selectedthis
+            )
+            .setFooter("Behave properly, and respect each others opinions.\n")
+            .setTimestamp();
+          message.channel.send({
+            embed: topicstart,
+          });
+        }
       }
     }
     /*   //EVENT
@@ -555,7 +567,8 @@ module.exports = {
     //console.log(message.member.roles.map(role => role.id));
     //thanks
     if (message.content.toLowerCase().includes("thank")) {
-      const user = message.mentions.users.first() || message.client.users.get(args[0]);
+      const user =
+        message.mentions.users.first() || message.client.users.get(args[0]);
       if (!user) return;
       if (user == message.author) return;
       if (thankedRecently.has(message.author.id)) {
@@ -584,7 +597,8 @@ module.exports = {
     }
     //love
     if (message.content.toLowerCase().includes("love")) {
-      const user = message.mentions.users.first() || message.client.users.get(args[0]);
+      const user =
+        message.mentions.users.first() || message.client.users.get(args[0]);
       if (!user) return;
       if (user == message.author) return;
       if (lovedRecently.has(message.author.id)) {
@@ -613,7 +627,8 @@ module.exports = {
     }
     //Congratulations
     if (message.content.toLowerCase().includes("congrat")) {
-      const user = message.mentions.users.first() || message.client.users.get(args[0]);
+      const user =
+        message.mentions.users.first() || message.client.users.get(args[0]);
       if (!user) return;
       if (user == message.author) return;
       if (congratulationsRecently.has(message.author.id)) {

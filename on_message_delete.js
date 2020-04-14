@@ -32,27 +32,31 @@ module.exports = {
       const { executor, target } = deletionLog;
       if (target.id === message.author.id) {
         if (executor.id == "440892659264126997") return;
-        const delmessage = new Discord.RichEmbed()
-          .setTitle("A message got Deleted!!")
-          .setAuthor(message.author.username, message.author.avatarURL)
-          .setDescription(
-            "Message by: " + message.author + "\nDeleted by: " + executor
-          )
-          .setColor("RANDOM")
-          .addField("Deleted Message:\n", message.content)
-          .addField("Channel", message.channel)
-          .setFooter(
-            "Message ID: " +
-              message.id +
-              "\nUser ID: " +
-              message.author.id +
-              "\nUser: " +
-              message.author.tag
-          )
-          .setTimestamp();
-        return logsChannel1.send({
-          embed: delmessage,
-        });
+        try {
+          const delmessage = new Discord.RichEmbed()
+            .setTitle("A message got Deleted!!")
+            .setAuthor(message.author.username, message.author.avatarURL)
+            .setDescription(
+              "Message by: " + message.author + "\nDeleted by: " + executor
+            )
+            .setColor("RANDOM")
+            .addField("Deleted Message:\n", message.content)
+            .addField("Channel", message.channel)
+            .setFooter(
+              "Message ID: " +
+                message.id +
+                "\nUser ID: " +
+                message.author.id +
+                "\nUser: " +
+                message.author.tag
+            )
+            .setTimestamp();
+          return logsChannel1.send({
+            embed: delmessage,
+          });
+        } catch {
+          console.log();
+        }
       } else {
       }
     }
