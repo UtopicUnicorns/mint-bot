@@ -64,12 +64,18 @@ This sets up the prefix of Artemis in your server.<br/>
 By default the prefix is `!`<br/>
 Using Artemis's website you can add an extra space on the end of your prefix to create a prefix like `artemis do `<br/>
 
+`server leveling`<br/>
+This enables or disables leveling in your server<br/>
+By default leveling is enabled.<br/>
+Using Artemis's website you can enable or disable it.<br/>
+
 
 
 ## Commands
 *A small list of notable commands*<br/>
 To see all commands visit `Artemis's website > login > commands tab` or use `!help`, `!help general`, `!help fun` etc...<br/>
 
+`leveling`,	Turn leveling on your server on or off with either leveling on or leveling off<br/>
 `warn`,	Warn a user<br/>
 `warnings`,	Look up user warning<br/>
 `set mute`, Mute a user<br/>
