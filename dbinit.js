@@ -32,7 +32,7 @@ exports.dbinit = function () {
     .get();
   if (!table2["count(*)"]) {
     db.prepare(
-      "CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT, streamHere TEXT, autoMod TEXT, prefix TEXT);"
+      "CREATE TABLE guildhub (guild TEXT PRIMARY KEY, generalChannel TEXT, highlightChannel TEXT, muteChannel TEXT, logsChannel TEXT, streamChannel TEXT, reactionChannel TEXT, streamHere TEXT, autoMod TEXT, prefix TEXT, leveling TEXT);"
     ).run();
     db.prepare("CREATE UNIQUE INDEX idx_guidhub_id ON guildhub (guild);").run();
     db.pragma("synchronous = 1");
@@ -41,7 +41,7 @@ exports.dbinit = function () {
   //run channelmanage
   getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
   setGuild = db.prepare(
-    "INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix);"
+    "INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix, leveling) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix, @leveling);"
   );
   ////////////////////
   //Rolemanage    DB//

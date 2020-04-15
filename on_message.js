@@ -7,37 +7,75 @@ module.exports = {
     //Disboard
     if (message.author.id == "302050872383242240") {
       if (message.embeds[0].description.includes("Bump done")) {
-        message.channel.fetchMessages().then((messages) => {
-          let dbumper = messages
-            .filter((msg) => msg.content.toLowerCase().startsWith("!d bump"))
-            .map((msg) => msg.author.id);
-          message.channel.send(
-            "You bumped!\nThis action gave you 20 points, and we will ping you in 2 hours for your next bump.\n<@" +
-              dbumper[0] +
-              ">"
-          );
-          const pointsToAdd = parseInt(20, 10);
-          let userscore = getScore.get(dbumper[0], message.guild.id);
-          if (!userscore) return;
-          userscore.points += pointsToAdd;
-          let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-          userscore.level = userLevel;
-          setScore.run(userscore);
-          //
-          let settime = 7200000;
-          let remindtext = "Time for your next `!d bump`";
-          let datefor = moment().add(settime, "ms").format("YYYYMMDDHHmmss");
-          timerset = {
-            mid: message.id,
-            cid: message.channel.id,
-            gid: message.guild.id,
-            uid: dbumper[0],
-            time: datefor,
-            reminder: remindtext,
-          };
-          setRemind.run(timerset);
-          //
-        });
+        let guildChannels2 = getGuild.get(message.guild.id);
+        if (guildChannels2) {
+          if (guildChannels2.leveling == "2") {
+            message.channel.fetchMessages().then((messages) => {
+              let dbumper = messages
+                .filter((msg) =>
+                  msg.content.toLowerCase().startsWith("!d bump")
+                )
+                .map((msg) => msg.author.id);
+              message.channel.send(
+                "You bumped!\nand we will ping you in 2 hours for your next bump.\n<@" +
+                  dbumper[0] +
+                  ">"
+              );
+              //
+              let settime = 7200000;
+              let remindtext = "Time for your next `!d bump`";
+              let datefor = moment()
+                .add(settime, "ms")
+                .format("YYYYMMDDHHmmss");
+              timerset = {
+                mid: message.id,
+                cid: message.channel.id,
+                gid: message.guild.id,
+                uid: dbumper[0],
+                time: datefor,
+                reminder: remindtext,
+              };
+              setRemind.run(timerset);
+              //
+            });
+          } else {
+            message.channel.fetchMessages().then((messages) => {
+              let dbumper = messages
+                .filter((msg) =>
+                  msg.content.toLowerCase().startsWith("!d bump")
+                )
+                .map((msg) => msg.author.id);
+              message.channel.send(
+                "You bumped!\nThis action gave you 20 points, and we will ping you in 2 hours for your next bump.\n<@" +
+                  dbumper[0] +
+                  ">"
+              );
+              const pointsToAdd = parseInt(20, 10);
+              let userscore = getScore.get(dbumper[0], message.guild.id);
+              if (!userscore) return;
+              userscore.points += pointsToAdd;
+              let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+              userscore.level = userLevel;
+              setScore.run(userscore);
+              //
+              let settime = 7200000;
+              let remindtext = "Time for your next `!d bump`";
+              let datefor = moment()
+                .add(settime, "ms")
+                .format("YYYYMMDDHHmmss");
+              timerset = {
+                mid: message.id,
+                cid: message.channel.id,
+                gid: message.guild.id,
+                uid: dbumper[0],
+                time: datefor,
+                reminder: remindtext,
+              };
+              setRemind.run(timerset);
+              //
+            });
+          }
+        }
       }
     }
     //ignore bots
@@ -482,7 +520,10 @@ module.exports = {
     let score;
     if (message.guild) {
       score = getScore.get(message.author.id, message.guild.id);
-      if (message.author.id == "121723489014120448") {
+      if (
+        guildChannels.leveling == "2" ||
+        message.author.id == "121723489014120448"
+      ) {
       } else {
         score.points++;
         const curLevel = Math.floor(0.5 * Math.sqrt(score.points));
@@ -565,94 +606,104 @@ module.exports = {
       }
     }
     //console.log(message.member.roles.map(role => role.id));
-    //thanks
-    if (message.content.toLowerCase().includes("thank")) {
-      const user =
-        message.mentions.users.first() || message.client.users.get(args[0]);
-      if (!user) return;
-      if (user == message.author) return;
-      if (thankedRecently.has(message.author.id)) {
-        return message.reply("You are thanking too much!");
-      } else {
-        thankedRecently.add(message.author.id);
-        setTimeout(() => {
-          thankedRecently.delete(message.author.id);
-        }, 600000);
-        const pointsToAdd = parseInt(20, 10);
-        let userscore = getScore.get(user.id, message.guild.id);
-        if (!userscore)
-          return message.reply("This user does not have a database index yet.");
-        userscore.points += pointsToAdd;
-        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-        userscore.level = userLevel;
-        setScore.run(userscore);
-        return message.reply(
-          "thanked " +
-            user.username +
-            "\n" +
-            user.username +
-            " has gotten 20 points for their effort!"
-        );
+    //welp ok
+    if (guildChannels.leveling == "2") {
+    } else {
+      //thanks
+      if (message.content.toLowerCase().includes("thank")) {
+        const user =
+          message.mentions.users.first() || message.client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (thankedRecently.has(message.author.id)) {
+          return message.reply("You are thanking too much!");
+        } else {
+          thankedRecently.add(message.author.id);
+          setTimeout(() => {
+            thankedRecently.delete(message.author.id);
+          }, 600000);
+          const pointsToAdd = parseInt(20, 10);
+          let userscore = getScore.get(user.id, message.guild.id);
+          if (!userscore)
+            return message.reply(
+              "This user does not have a database index yet."
+            );
+          userscore.points += pointsToAdd;
+          let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+          userscore.level = userLevel;
+          setScore.run(userscore);
+          return message.reply(
+            "thanked " +
+              user.username +
+              "\n" +
+              user.username +
+              " has gotten 20 points for their effort!"
+          );
+        }
       }
-    }
-    //love
-    if (message.content.toLowerCase().includes("love")) {
-      const user =
-        message.mentions.users.first() || message.client.users.get(args[0]);
-      if (!user) return;
-      if (user == message.author) return;
-      if (lovedRecently.has(message.author.id)) {
-        return message.reply("I love you too!");
-      } else {
-        lovedRecently.add(message.author.id);
-        setTimeout(() => {
-          lovedRecently.delete(message.author.id);
-        }, 600000);
-        const pointsToAdd = parseInt(20, 10);
-        let userscore = getScore.get(user.id, message.guild.id);
-        if (!userscore)
-          return message.reply("This user does not have a database index yet.");
-        userscore.points += pointsToAdd;
-        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-        userscore.level = userLevel;
-        setScore.run(userscore);
-        return message.reply(
-          "Gave love to " +
-            user.username +
-            "\n" +
-            user.username +
-            " gets 20 points!"
-        );
+      //love
+      if (message.content.toLowerCase().includes("love")) {
+        const user =
+          message.mentions.users.first() || message.client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (lovedRecently.has(message.author.id)) {
+          return message.reply("I love you too!");
+        } else {
+          lovedRecently.add(message.author.id);
+          setTimeout(() => {
+            lovedRecently.delete(message.author.id);
+          }, 600000);
+          const pointsToAdd = parseInt(20, 10);
+          let userscore = getScore.get(user.id, message.guild.id);
+          if (!userscore)
+            return message.reply(
+              "This user does not have a database index yet."
+            );
+          userscore.points += pointsToAdd;
+          let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+          userscore.level = userLevel;
+          setScore.run(userscore);
+          return message.reply(
+            "Gave love to " +
+              user.username +
+              "\n" +
+              user.username +
+              " gets 20 points!"
+          );
+        }
       }
-    }
-    //Congratulations
-    if (message.content.toLowerCase().includes("congrat")) {
-      const user =
-        message.mentions.users.first() || message.client.users.get(args[0]);
-      if (!user) return;
-      if (user == message.author) return;
-      if (congratulationsRecently.has(message.author.id)) {
-        return;
-      } else {
-        congratulationsRecently.add(message.author.id);
-        setTimeout(() => {
-          congratulationsRecently.delete(message.author.id);
-        }, 600000);
-        const pointsToAdd = parseInt(20, 10);
-        let userscore = getScore.get(user.id, message.guild.id);
-        if (!userscore)
-          return message.reply("This user does not have a database index yet.");
-        userscore.points += pointsToAdd;
-        let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
-        userscore.level = userLevel;
-        setScore.run(userscore);
-        return message.reply(
-          "Congratulated " +
-            user.username +
-            "\n" +
-            user.username +
-            " gets 20 points!"
-        );
+      //Congratulations
+      if (message.content.toLowerCase().includes("congrat")) {
+        const user =
+          message.mentions.users.first() || message.client.users.get(args[0]);
+        if (!user) return;
+        if (user == message.author) return;
+        if (congratulationsRecently.has(message.author.id)) {
+          return;
+        } else {
+          congratulationsRecently.add(message.author.id);
+          setTimeout(() => {
+            congratulationsRecently.delete(message.author.id);
+          }, 600000);
+          const pointsToAdd = parseInt(20, 10);
+          let userscore = getScore.get(user.id, message.guild.id);
+          if (!userscore)
+            return message.reply(
+              "This user does not have a database index yet."
+            );
+          userscore.points += pointsToAdd;
+          let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
+          userscore.level = userLevel;
+          setScore.run(userscore);
+          return message.reply(
+            "Congratulated " +
+              user.username +
+              "\n" +
+              user.username +
+              " gets 20 points!"
+          );
+        }
       }
     }
     //require prefix

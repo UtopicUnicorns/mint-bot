@@ -538,6 +538,28 @@ exports.run = (client, config) => {
                     '<input type="submit" class="button" onclick="document.getElementById(`' +
                     data.guild +
                     'rapp1`).innerHTML = `Changed!`" value="Save"></form></td></tr>';
+                  //leveling
+                  if (data.leveling == "2") {
+                    var lvlm = "OFF";
+                  } else {
+                    var lvlm = "ON";
+                  }
+                  let rapp4t =
+                    '<tr style="text-align:left; border-bottom: 1px solid black"><td>Leveling:</td><td><div id="' +
+                    data.guild +
+                    'rapp4">' +
+                    lvlm +
+                    "</div></td></tr>";
+                  let rapp4 =
+                    '<tr style="text-align:left; border-bottom: 1px solid black"><td></td><td><form action="/" method="post"><select name="data2"><option value="lv ' +
+                    data.guild +
+                    ' OFF">off</option><option value="lv ' +
+                    data.guild +
+                    ' ON">on</option></select>';
+                  let rapp4b =
+                    '<input type="submit" class="button" onclick="document.getElementById(`' +
+                    data.guild +
+                    'rapp4`).innerHTML = `Changed!`" value="Save"></form></td></tr>';
                   //streamhere
                   if (data.streamHere == "2") {
                     var streamm = "ON";
@@ -581,6 +603,9 @@ exports.run = (client, config) => {
                       rapp3t +
                       rapp3 +
                       rapp3b +
+                      rapp4t +
+                      rapp4 +
+                      rapp4b +
                       rapp1t +
                       rapp1 +
                       rapp1b +
@@ -1087,6 +1112,20 @@ exports.run = (client, config) => {
             if (data2[2] == "OFF") {
               let channelstuff = getGuild2.get(data2[1]);
               channelstuff.autoMod = `1`;
+              setGuild.run(channelstuff);
+              return res.status(204).send();
+            }
+          }
+          if (data2[0] == "lv") {
+            if (data2[2] == "ON") {
+              let channelstuff = getGuild2.get(data2[1]);
+              channelstuff.leveling = `1`;
+              setGuild.run(channelstuff);
+              return res.status(204).send();
+            }
+            if (data2[2] == "OFF") {
+              let channelstuff = getGuild2.get(data2[1]);
+              channelstuff.leveling = `2`;
               setGuild.run(channelstuff);
               return res.status(204).send();
             }
