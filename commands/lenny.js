@@ -1,4 +1,4 @@
-const npm = require('../NPM.js');
+const npm = require("../NPM.js");
 npm.npm();
 module.exports = {
   name: "lenny",
@@ -22,17 +22,36 @@ module.exports = {
     ) {
       let args = message.content.slice(prefix.length + 6).split(" ");
       if (!args[0]) {
-        let num = Math.floor(Math.random() * 611 + 1);
+        let num = Math.floor(Math.random() * 1424 + 1);
         const embed = new Discord.RichEmbed().setImage(
           "https://aranym.com/ecchi/" + num + ".jpg"
         );
         return message.channel.send({
           embed: embed,
         });
-      } else {
+      }
+      if (args[0].match(/^[0-9]+$/) != null) {
         let num = args[0];
         const embed = new Discord.RichEmbed().setImage(
           "https://aranym.com/ecchi/" + num + ".jpg"
+        );
+        return message.channel.send({
+          embed: embed,
+        });
+      }
+      if (args[0].toLowerCase() == "h" && !args[1]) {
+        let num = Math.floor(Math.random() * 757 + 1);
+        const embed = new Discord.RichEmbed().setImage(
+          "https://aranym.com/hentai/" + num + ".jpg"
+        );
+        return message.channel.send({
+          embed: embed,
+        });
+      }
+      if (args[1].match(/^[0-9]+$/) != null) {
+        let num = args[1];
+        const embed = new Discord.RichEmbed().setImage(
+          "https://aranym.com/hentai/" + num + ".jpg"
         );
         return message.channel.send({
           embed: embed,

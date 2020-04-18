@@ -12,27 +12,6 @@ module.exports = {
         usage = getUsage.get('help');
         usage.number++;
         setUsage.run(usage);
-        if (message.content === `${prefix}help admin`) {
-            if (message.member.hasPermission('KICK_MEMBERS')) {
-                let str = '';
-                const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-                for (const file of commandFiles) {
-                    const command = require(`./${file}`);
-                    if (command.description.includes(`[admin]`)) {
-                        let usag = getUsage.get(command.name);
-                        str += `${prefix}${command.name}, \n${command.description} \nCommand used: (${usag.number}) times\n\n`;
-                    }
-                }
-                let embed = new Discord.RichEmbed()
-                    .setColor(`RANDOM`)
-                    .setThumbnail(`https://artemisbot.eu/static/images/artava.png`)
-                    .setDescription(`${str}`)
-                    .setTimestamp();
-                return message.channel.send({
-                    embed: embed
-                });
-            }
-        }
         if (message.content === `${prefix}help mod`) {
             if (message.member.hasPermission('KICK_MEMBERS')) {
                 let str = '';

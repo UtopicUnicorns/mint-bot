@@ -1,4 +1,4 @@
-const npm = require('../NPM.js');
+const npm = require("../NPM.js");
 npm.npm();
 module.exports = {
   name: "purge",
@@ -27,7 +27,7 @@ module.exports = {
         "Must specify a user and amount, or just an amount, of messages to purge!"
       );
 
-/*     message.channel
+    /*     message.channel
       .fetchMessages({
         limit: 100
       })
@@ -39,17 +39,30 @@ module.exports = {
         message.channel
           .bulkDelete(messages)
           .catch(error => console.log(error.stack));
-      }); */
+      }); 
+
+    let i;
+  for (i = 0; i <= args; i++) {
+    message.channel
+      .fetchMessages({
+        limit: 1,
+      })
+      .then((messages) => {
+       let message = messages.first();
+        message.delete();
+      });
+  } */
+
 
     message.channel
       .fetchMessages({
-        limit: 100
+        limit: 100,
       })
-      .then(messages => {
+      .then((messages) => {
         if (user) {
           const filterBy = user ? user.id : Client.user.id;
           messages = messages
-            .filter(m => m.author.id === filterBy)
+            .filter((m) => m.author.id === filterBy)
             .array()
             .slice(0, amount);
         } else {
@@ -57,7 +70,7 @@ module.exports = {
         }
         message.channel
           .bulkDelete(messages)
-          .catch(error => console.log(error.stack));
+          .catch((error) => console.log(error.stack));
         //LOGS
         const guildChannels = getGuild.get(message.guild.id);
         var logger = message.guild.channels.get(guildChannels.logsChannel);
@@ -78,9 +91,9 @@ module.exports = {
             .setTimestamp();
           logger
             .send({
-              embed: logsmessage
+              embed: logsmessage,
             })
-            .catch(error =>
+            .catch((error) =>
               console.log(
                 new Date() +
                   "\n" +
@@ -94,5 +107,5 @@ module.exports = {
         }
         //
       });
-  }
+  },
 };

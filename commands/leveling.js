@@ -16,7 +16,7 @@ module.exports = {
         usage.number++;
         setUsage.run(usage);
         //
-        const args = message.content.slice(prefix.length + 11).split(" ");
+        const args = message.content.slice(prefix.length + 9).split(" ");
         if (args[0] == `on`) {
             let levelthing = getGuild.get(message.guild.id);
             if (levelthing.leveling != `1`) {

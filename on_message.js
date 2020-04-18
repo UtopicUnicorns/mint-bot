@@ -471,6 +471,7 @@ module.exports = {
           json: true,
         },
         (err, res, body) => {
+          if(!body) return;
           if (!body.text) {
             return;
           }
