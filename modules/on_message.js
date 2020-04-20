@@ -83,7 +83,11 @@ module.exports = {
     //Direct Message handle
     if (message.channel.type == "dm") {
       console.log(
-        new Date() + "\n" + message.author.username + "\n" + message.content
+        moment().format("MMMM Do YYYY, HH:mm:ss") +
+          "\n" +
+          message.author.username +
+          "\n" +
+          message.content
       );
       const whoartemis = new Discord.RichEmbed()
         .setTitle("Invite")
@@ -140,6 +144,7 @@ module.exports = {
         streamHere: `0`,
         autoMod: `0`,
         prefix: `!`,
+        leveling: `1`,
       };
       setGuild.run(guildfailsafe);
     }
@@ -296,12 +301,10 @@ module.exports = {
               .send(attachment)
               .catch((error) =>
                 console.log(
-                  new Date() +
+                  moment().format("MMMM Do YYYY, HH:mm:ss") +
                     "\n" +
-                    message.guild.id +
-                    " " +
-                    message.guild.owner.user.username +
-                    ": index.js:" +
+                    __filename +
+                    ":" +
                     ln()
                 )
               );
@@ -345,6 +348,27 @@ module.exports = {
           message.channel.send({
             embed: topicstart,
           });
+        }
+      }
+    }
+    //Secret adult role
+    if (message.guild.id == "628978428019736619") {
+      let amember = message.guild.members.get(message.author.id);
+      if (
+        message.content
+          .toLowerCase()
+          .startsWith("i want to enter the dark side, i accept the risk") &&
+        amember.roles.has("629020299261902889")
+      ) {
+        let haverole = amember.roles.has("701396956009857083");
+        if (haverole) {
+          return message.reply("You already have access to the dark side!");
+        } else {
+          let arole = message.guild.roles.find(
+            (r) => r.id == "701396956009857083"
+          );
+          amember.addRole(arole).catch(console.error);
+          return message.reply("You have been granted access!");
         }
       }
     }
@@ -404,14 +428,11 @@ module.exports = {
         try {
           message.client.channels.get(`${channelcheck}`).send(message.content);
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime +
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
               "\n" +
-              message.guild.id +
-              " " +
-              message.guild.owner.user.username +
-              ": index.js:" +
+              __filename +
+              ":" +
               ln()
           );
         }
@@ -471,7 +492,7 @@ module.exports = {
           json: true,
         },
         (err, res, body) => {
-          if(!body) return;
+          if (!body) return;
           if (!body.text) {
             return;
           }
@@ -498,14 +519,11 @@ module.exports = {
                   embed: translationtext,
                 });
               } catch {
-                let nowtime = new Date();
                 console.log(
-                  nowtime +
+                  moment().format("MMMM Do YYYY, HH:mm:ss") +
                     "\n" +
-                    message.guild.id +
-                    " " +
-                    message.guild.owner.user.username +
-                    ": index.js:" +
+                    __filename +
+                    ":" +
                     ln()
                 );
               }
@@ -572,12 +590,10 @@ module.exports = {
                 if (message.member.roles.find((r) => r.id === n)) {
                   message.member.removeRole(level2).catch((error) => {
                     console.log(
-                      new Date() +
+                      moment().format("MMMM Do YYYY, HH:mm:ss") +
                         "\n" +
-                        message.guild.id +
-                        " " +
-                        message.guild.owner.user.username +
-                        ": index.js:" +
+                        __filename +
+                        ":" +
                         ln()
                     );
                   });
@@ -586,12 +602,10 @@ module.exports = {
             }
             message.member.addRole(level).catch((error) => {
               console.log(
-                new Date() +
+                moment().format("MMMM Do YYYY, HH:mm:ss") +
                   "\n" +
-                  message.guild.id +
-                  " " +
-                  message.guild.owner.user.username +
-                  ": index.js:" +
+                  __filename +
+                  ":" +
                   ln()
               );
             });

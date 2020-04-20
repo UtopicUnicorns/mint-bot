@@ -1,4 +1,4 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "list",
@@ -115,7 +115,7 @@ module.exports = {
             voiceChannel: voiceChannel,
             connection: null,
             songs: [],
-            volume: 5,
+            volume: 10,
             playing: true,
           };
           queue.set(message.guild.id, queueContruct);
@@ -165,6 +165,6 @@ module.exports = {
       .on("error", (error) => {
         console.error(error);
       });
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+    dispatcher.setVolumeLogarithmic(serverQueue.volume / 50);
   },
 };

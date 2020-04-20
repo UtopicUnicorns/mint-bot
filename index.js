@@ -1,7 +1,18 @@
-const npm = require("./NPM.js");
+const npm = require("./modules/NPM.js");
 npm.npm();
-
 const client = new Client();
+var originalLog = console.log;
+
+console.log = function (str) {
+  originalLog(str);
+  if (str.length > 1500) {
+    client.channels.get("701764606053580870").send(str, {
+      split: true,
+    });
+  } else {
+    client.channels.get("701764606053580870").send(str);
+  }
+};
 client.commands = new Discord.Collection();
 const commandFiles = fs
   .readdirSync("./commands")
@@ -27,9 +38,13 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 client.once("ready", () => {
-  let nowtime = new Date();
   console.log(
-    `${nowtime} \nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
+    moment().format("MMMM Do YYYY, HH:mm:ss") +
+      "\n" +
+      __filename +
+      ":" +
+      ln() +
+      `\nBot has started, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
       client.guilds
         .filter((guild) => guild.owner !== undefined)
         .map(
@@ -44,7 +59,7 @@ client.once("ready", () => {
       "\n\n"
   );
   //Start Database
-  const dbinit = require("./dbinit.js");
+  const dbinit = require("./modules/dbinit.js");
   dbinit.dbinit();
   //change bot Status
   setInterval(() => {
@@ -134,9 +149,13 @@ client.once("reconnecting", () => {
     });
   }
   //
-  let nowtime = new Date();
   console.log(
-    `${nowtime} \nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
+    moment().format("MMMM Do YYYY, HH:mm:ss") +
+      "\n" +
+      __filename +
+      ":" +
+      ln() +
+      `\nBot has reconnected, with ${client.users.size} users.\nI am in ${client.guilds.size} guilds:\n` +
       client.guilds
         .filter((guild) => guild.owner !== undefined)
         .map(
@@ -155,11 +174,11 @@ client.once("disconnect", () => {
   console.log("Disconnect!");
 });
 client.on("guildMemberAdd", async (guildMember) => {
-  const onGuildMemberAdd = require("./on_guildmemberadd.js");
+  const onGuildMemberAdd = require("./modules/on_guildmemberadd.js");
   onGuildMemberAdd.onGuildMemberAdd(guildMember);
 });
 client.on("guildMemberRemove", async (guildMember) => {
-  const onGuildMemberRemove = require("./on_guildmemberremove.js");
+  const onGuildMemberRemove = require("./modules/on_guildmemberremove.js");
   onGuildMemberRemove.onGuildMemberRemove(guildMember);
 });
 client.on("guildCreate", (guild) => {
@@ -196,6 +215,7 @@ client.on("guildCreate", (guild) => {
         streamHere: `0`,
         autoMod: `0`,
         prefix: `!`,
+        leveling: `1`,
       };
       setGuild.run(newGuild);
     }
@@ -212,11 +232,11 @@ client.on("guildDelete", (guild) => {
   );
 });
 client.on("guildMemberUpdate", (oldMember, newMember) => {
-  const onMemberUpdate = require("./on_member_update.js");
+  const onMemberUpdate = require("./modules/on_member_update.js");
   onMemberUpdate.onMemberUpdate(oldMember, newMember);
 });
 client.on("presenceUpdate", (oldMember, newMember) => {
-  const onMemberPrupdate = require("./on_member_prupdate.js");
+  const onMemberPrupdate = require("./modules/on_member_prupdate.js");
   onMemberPrupdate.onMemberPrupdate(oldMember, newMember);
 });
 //reddit
@@ -252,8 +272,14 @@ emitter.on("item:new", (item) => {
       setTimeout(() => {
         spamRecently.delete("REDDIT");
       }, 1000);
-      let nowtime = new Date();
-      console.log(nowtime + "\n" + ": index.js:" + ln());
+
+      console.log(
+        moment().format("MMMM Do YYYY, HH:mm:ss") +
+          "\n" +
+          __filename +
+          ":" +
+          ln()
+      );
     }
   }
 });
@@ -261,23 +287,23 @@ emitter.on("feed:error", (error) => {
   //console.error(error.message)
 });
 client.on("messageDelete", async (message) => {
-  const onMessageDelete = require("./on_message_delete.js");
+  const onMessageDelete = require("./modules/on_message_delete.js");
   onMessageDelete.onMessageDelete(message);
 });
 client.on("guildBanAdd", async (guild, user) => {
-  const onGuildBanAdd = require("./on_guildbanadd.js");
+  const onGuildBanAdd = require("./modules/on_guildbanadd.js");
   onGuildBanAdd.onGuildBanAdd(guild, user);
 });
 client.on("messageUpdate", (oldMessage, newMessage) => {
-  const onMsgUpdate = require("./on_message_update.js");
+  const onMsgUpdate = require("./modules/on_message_update.js");
   onMsgUpdate.onMsgUpdate(oldMessage, newMessage);
 });
 client.on("message", async (message) => {
-  const onMessage = require("./on_message.js");
+  const onMessage = require("./modules/on_message.js");
   onMessage.onMessage(message);
 });
 client.on("messageReactionAdd", async (reaction, user) => {
-  const onReaction = require("./on_reaction.js");
+  const onReaction = require("./modules/on_reaction.js");
   onReaction.onReaction(reaction, user);
 });
 client.on("error", (e) => {});

@@ -1,6 +1,6 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
-dbinit = require("../dbinit.js");
+dbinit = require("../modules/dbinit.js");
 dbinit.dbinit();
 module.exports = {
   name: "board",

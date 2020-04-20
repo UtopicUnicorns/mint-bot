@@ -1,4 +1,4 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "purge",
@@ -26,34 +26,6 @@ module.exports = {
       return message.reply(
         "Must specify a user and amount, or just an amount, of messages to purge!"
       );
-
-    /*     message.channel
-      .fetchMessages({
-        limit: 100
-      })
-      .then(messages => {
-        messages = messages
-          .filter(m => m.author.id === "127708549118689280")
-          .array()
-          .slice(0, AMOUNT);
-        message.channel
-          .bulkDelete(messages)
-          .catch(error => console.log(error.stack));
-      }); 
-
-    let i;
-  for (i = 0; i <= args; i++) {
-    message.channel
-      .fetchMessages({
-        limit: 1,
-      })
-      .then((messages) => {
-       let message = messages.first();
-        message.delete();
-      });
-  } */
-
-
     message.channel
       .fetchMessages({
         limit: 100,
@@ -95,13 +67,11 @@ module.exports = {
             })
             .catch((error) =>
               console.log(
-                new Date() +
+                moment().format("MMMM Do YYYY, HH:mm:ss") +
                   "\n" +
-                  message.guild.id +
-                  " " +
-                  message.guild.owner.user.username +
-                  ": index.js:" +
-                  Math.floor(ln() - 4)
+                  __filename +
+                  ":" +
+                  ln()
               )
             );
         }

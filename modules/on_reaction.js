@@ -53,9 +53,12 @@ module.exports = {
               embed: editmessage,
             });
           } catch {
-            let nowtime = new Date();
             console.log(
-              nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+              moment().format("MMMM Do YYYY, HH:mm:ss") +
+                "\n" +
+                __filename +
+                ":" +
+                ln()
             );
           }
         }
@@ -82,9 +85,12 @@ module.exports = {
               embed: editmessage,
             });
           } catch {
-            let nowtime = new Date();
             console.log(
-              nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+              moment().format("MMMM Do YYYY, HH:mm:ss") +
+                "\n" +
+                __filename +
+                ":" +
+                ln()
             );
           }
         }
@@ -111,9 +117,12 @@ module.exports = {
             embed: editmessage,
           });
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -146,9 +155,12 @@ module.exports = {
             embed: editmessage,
           });
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -158,7 +170,7 @@ module.exports = {
     if (reaction.emoji.name == "🍵" && reaction.count == limit) {
       if (highlightChannel1 == "0")
         return reaction.message.channel.send(
-          "You did not set up a logs channel!"
+          "You did not set up a Highlights channel!"
         );
       if (reaction.message.author.id == "440892659264126997") return;
       if (!reaction.message.attachments.size > 0) {
@@ -184,9 +196,12 @@ module.exports = {
             embed: editmessage,
           });
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -218,9 +233,12 @@ module.exports = {
             embed: editmessage,
           });
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -252,9 +270,12 @@ module.exports = {
           embed: editmessage,
         });
       } catch {
-        let nowtime = new Date();
         console.log(
-          nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+          moment().format("MMMM Do YYYY, HH:mm:ss") +
+            "\n" +
+            __filename +
+            ":" +
+            ln()
         );
       }
     }
@@ -274,9 +295,12 @@ module.exports = {
               reaction.message.guild.roles.find((r) => r.id == data.roles).name
             );
           } catch {
-            let nowtime = new Date();
             console.log(
-              nowtime + "\n" + reaction.message.guild.id + ": index.js:" + ln()
+              moment().format("MMMM Do YYYY, HH:mm:ss") +
+                "\n" +
+                __filename +
+                ":" +
+                ln()
             );
           }
         }

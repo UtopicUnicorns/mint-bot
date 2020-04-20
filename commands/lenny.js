@@ -1,4 +1,4 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "lenny",
@@ -16,10 +16,7 @@ module.exports = {
     usage.number++;
     setUsage.run(usage);
     //
-    if (
-      message.channel.id === "629019515740487691" ||
-      message.channel.id === "666776795047002132"
-    ) {
+    if (message.channel.id === "701399878412140544") {
       let args = message.content.slice(prefix.length + 6).split(" ");
       if (!args[0]) {
         let num = Math.floor(Math.random() * 1424 + 1);
@@ -39,6 +36,7 @@ module.exports = {
           embed: embed,
         });
       }
+      
       if (args[0].toLowerCase() == "h" && !args[1]) {
         let num = Math.floor(Math.random() * 757 + 1);
         const embed = new Discord.RichEmbed().setImage(
@@ -57,6 +55,7 @@ module.exports = {
           embed: embed,
         });
       }
+      
     } else {
       message.reply("( ͡° ͜ʖ ͡°)");
     }

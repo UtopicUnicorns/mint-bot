@@ -1,4 +1,4 @@
-const npm = require('../NPM.js');
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "btw",

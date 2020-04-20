@@ -1,5 +1,5 @@
 
-const app = require('./modules/app')
+const app = require('./app')
 
 module.exports.run = (client, config, oAuth) => {
 

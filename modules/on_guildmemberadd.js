@@ -7,7 +7,7 @@ module.exports = {
     //ignoredbl
     if (guildMember.guild.id == "264445053596991498") return;
     //load shit
-    let nowtime = new Date();
+
     const guildChannels = getGuild.get(guildMember.guild.id);
     if (guildChannels) {
       var thisguild = guildMember.client.guilds.get(guildChannels.guild);
@@ -104,9 +104,12 @@ module.exports = {
           embed,
         });
       } catch {
-        let nowtime = new Date();
         console.log(
-          nowtime + "\n" + guildMember.guild.id + ": index.js:" + ln()
+          moment().format("MMMM Do YYYY, HH:mm:ss") +
+            "\n" +
+            __filename +
+            ":" +
+            ln()
         );
       }
     }
@@ -122,9 +125,12 @@ module.exports = {
               "\nAutomod Strict is on!\nThis means that every user gets dumped into this channel.\nAutomod strict is usually enabled if there is a raid going on."
           );
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + guildMember.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -138,9 +144,12 @@ module.exports = {
               "\nYou have a rather new account so you have to verify!\nType your username(case sensitive) and attach 1337 to the end.\nExample: UtopicUnicorn1337"
           );
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + guildMember.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }
@@ -188,9 +197,12 @@ module.exports = {
         );
         await generalChannel1.send(attachment);
       } catch {
-        let nowtime = new Date();
         console.log(
-          nowtime + "\n" + guildMember.guild.id + ": index.js:" + ln()
+          moment().format("MMMM Do YYYY, HH:mm:ss") +
+            "\n" +
+            __filename +
+            ":" +
+            ln()
         );
       }
     }

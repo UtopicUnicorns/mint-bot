@@ -1,6 +1,6 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
-dbinit = require("../dbinit.js");
+dbinit = require("../modules/dbinit.js");
 dbinit.dbinit();
 module.exports = {
   name: "add",
@@ -71,13 +71,11 @@ module.exports = {
             })
             .catch((error) =>
               console.log(
-                new Date() +
+                moment().format("MMMM Do YYYY, HH:mm:ss") +
                   "\n" +
-                  message.guild.id +
-                  " " +
-                  message.guild.owner.user.username +
-                  ": index.js:" +
-                  Math.floor(ln() - 4)
+                  __filename +
+                  ":" +
+                  ln()
               )
             );
         }

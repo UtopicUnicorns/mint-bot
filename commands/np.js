@@ -1,4 +1,4 @@
-const npm = require('../NPM.js');
+const npm = require('../modules/NPM.js');
 npm.npm();
 module.exports = {
     name: 'np',
@@ -17,14 +17,14 @@ module.exports = {
         const serverQueue = message.client.queue.get(message.guild.id);
         if (!serverQueue) return message.channel.send('There is nothing playing.');
         let array = [];
-        let count = "-1";
-        serverQueue.songs.map(song => count++ && array.push('(' + count + ') ' + song.title));
+        let count = "0";
+        serverQueue.songs.map(song => count++ && array.push('(' + Math.floor(count - 1) + ') ' + song.title));
         const rembed = new Discord.RichEmbed()
             .setTitle('Now playing:' + serverQueue.songs[0].title)
             .setAuthor(message.author.username, message.author.avatarURL)
             .setThumbnail(serverQueue.songs[0].thumb)
             .setColor("RANDOM")
-            .setDescription("Queue below:\n" + array.slice(1).join('\n'))
+            .setDescription("Queue below:\n" + array.join('\n'))
             .setFooter('You can skip songs by using the matching song number:\n' + prefix + 'skip 4');
            message.channel.send(rembed);
     },

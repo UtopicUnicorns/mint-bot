@@ -33,7 +33,8 @@
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "fs": "^0.0.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
     "google-it": "^1.5.0",
     "html-text": "^1.0.1",
     "html-to-text": "^5.1.1",
@@ -55,7 +56,6 @@
     "steam-searcher": "^1.0.3",
     "translate-google": "^1.3.5",
     "wtf_wikipedia": "^8.0.0",
-    "youtube-audio-server": "^2.4.2",
-    "ytdl-core": "^1.0.9"
+    "ytdl-core": "^2.1.0"
   }
 }

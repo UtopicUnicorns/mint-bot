@@ -99,12 +99,11 @@ module.exports = {
                         embed,
                       });
                     } catch {
-                      let nowtime = new Date();
                       console.log(
-                        nowtime +
+                        moment().format("MMMM Do YYYY, HH:mm:ss") +
                           "\n" +
-                          newMember.guild.id +
-                          ": index.js:" +
+                          __filename +
+                          ":" +
                           ln()
                       );
                     }
@@ -125,12 +124,11 @@ module.exports = {
                           embed,
                         });
                       } catch {
-                        let nowtime = new Date();
                         console.log(
-                          nowtime +
+                          moment().format("MMMM Do YYYY, HH:mm:ss") +
                             "\n" +
-                            newMember.guild.id +
-                            ": index.js:" +
+                            __filename +
+                            ":" +
                             ln()
                         );
                       }
@@ -151,12 +149,11 @@ module.exports = {
                         embed,
                       });
                     } catch {
-                      let nowtime = new Date();
                       console.log(
-                        nowtime +
+                        moment().format("MMMM Do YYYY, HH:mm:ss") +
                           "\n" +
-                          newMember.guild.id +
-                          ": index.js:" +
+                          __filename +
+                          ":" +
                           ln()
                       );
                     }
@@ -197,9 +194,12 @@ module.exports = {
             embed,
           });
         } catch {
-          let nowtime = new Date();
           console.log(
-            nowtime + "\n" + newMember.guild.id + ": index.js:" + ln()
+            moment().format("MMMM Do YYYY, HH:mm:ss") +
+              "\n" +
+              __filename +
+              ":" +
+              ln()
           );
         }
       }

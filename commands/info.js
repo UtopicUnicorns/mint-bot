@@ -1,4 +1,4 @@
-const npm = require('../NPM.js');
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "info",
@@ -22,7 +22,7 @@ module.exports = {
         day: day,
         hour: hour,
         minute: minute,
-        seconds: seconds
+        seconds: seconds,
       };
     }
     let timers = convertMS(message.client.uptime);
@@ -37,7 +37,18 @@ module.exports = {
       .addField("Members", `${message.guild.memberCount}`, inline)
       .addField("Roles", message.guild.roles.size, inline)
       .addField("Channels", message.guild.channels.size, inline)
-      .addField("Uptime: ", 'Day [' + timers.day + '], Hour [' + timers.hour + '], Minute [' + timers.minute + '], Seconds [' + timers.seconds + ']')
+      .addField(
+        "Uptime: ",
+        "Day [" +
+          timers.day +
+          "], Hour [" +
+          timers.hour +
+          "], Minute [" +
+          timers.minute +
+          "], Seconds [" +
+          timers.seconds +
+          "]"
+      )
       .addField(
         "Ram: ",
         (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + "MB"
@@ -56,5 +67,5 @@ module.exports = {
     usage.number++;
     setUsage.run(usage);
     //
-  }
+  },
 };

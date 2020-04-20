@@ -1,4 +1,4 @@
-const npm = require("../NPM.js");
+const npm = require("../modules/NPM.js");
 npm.npm();
 module.exports = {
   name: "play",
@@ -16,6 +16,7 @@ module.exports = {
     usage.number++;
     setUsage.run(usage);
     //
+
     let args = message.content
       .toLowerCase()
       .slice(prefix.length + 5)
@@ -59,7 +60,7 @@ module.exports = {
     //
     for (let i of playlistlist) {
       count++;
-      await sleep(count * 20000);
+      await sleep(count * 30000);
       //
       const queue = message.client.queue;
       const serverQueue = message.client.queue.get(message.guild.id);
@@ -74,7 +75,11 @@ module.exports = {
       const id = openmusicurl2[0].id;
       const file = "./music/" + openmusicurl2[0].title + ".mp3";
       message.delete();
-      const embed = new Discord.RichEmbed()
+
+      let stream = ytdl(id, {
+        quality: "highestaudio",
+      });
+      let embed = new Discord.RichEmbed()
         .setTitle(openmusicurl2[0].title)
         .setAuthor(message.author.username, message.author.avatarURL)
         .setThumbnail(openmusicurl2[0].thumbnails.default.url)
@@ -84,13 +89,32 @@ module.exports = {
           openmusicurl2[0].title,
           "https://www.youtube.com/watch?v=" + openmusicurl2[0].id
         );
-      message.channel
-        .send({
-          embed: embed,
+      let messageToEdit = message.channel.send(embed);
+
+      ffmpeg(stream)
+        .audioBitrate(128)
+        .save(file)
+        .on("progress", (p) => {
+          let embed2 = new Discord.RichEmbed()
+            .setTitle(openmusicurl2[0].title)
+            .setAuthor(message.author.username, message.author.avatarURL)
+            .setThumbnail(openmusicurl2[0].thumbnails.default.url)
+            .setColor("RANDOM")
+            .setDescription(
+              "Downloading......" + p.targetSize + "kb downloaded"
+            )
+            .addField(
+              openmusicurl2[0].title,
+              "https://www.youtube.com/watch?v=" + openmusicurl2[0].id
+            );
+          messageToEdit.then((messageToEdit) => {
+            messageToEdit.edit(embed2);
+          });
         })
-        .then((m) => m.delete(5000));
-      yas.downloader
-        .onSuccess(async ({ id, file }) => {
+        .on("end", async () => {
+          messageToEdit.then((messageToEdit) => {
+            messageToEdit.delete();
+          });
           var song = {
             title: openmusicurl2[0].title,
             thumb: openmusicurl2[0].thumbnails.default.url,
@@ -106,7 +130,7 @@ module.exports = {
               voiceChannel: voiceChannel,
               connection: null,
               songs: [],
-              volume: 5,
+              volume: 10,
               playing: true,
             };
             queue.set(message.guild.id, queueContruct);
@@ -131,6 +155,9 @@ module.exports = {
               return message.channel.send("error");
             }
           } else {
+            messageToEdit.then((messageToEdit) => {
+              messageToEdit.delete();
+            });
             serverQueue.songs.push(song);
             const rembed = new Discord.RichEmbed()
               .setTitle(song.title)
@@ -141,14 +168,8 @@ module.exports = {
               .addField(song.title, song.webs);
             return message.channel.send(rembed);
           }
-        })
-        .onError(({ id, file, error }) => {
-          console.error(
-            `Sorry, an error ocurred when trying to download ${id}`,
-            error
-          );
-        })
-        .download({ id, file });
+        });
+
       //
     }
     //
@@ -171,6 +192,6 @@ module.exports = {
       .on("error", (error) => {
         console.error(error);
       });
-    dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+    dispatcher.setVolumeLogarithmic(serverQueue.volume / 50);
   },
 };
