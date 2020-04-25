@@ -1,0 +1,18 @@
+librorum@prohibitorum 
+--------------------- 
+OS: Utopic Unicorn OS x86_64 
+Host: MS-7918 1.0 
+Kernel: 5.6.3-arch1-1 
+Uptime: 13 hours, 19 mins 
+Packages: 902 
+Shell: bash 5.0.16 
+Resolution: 1920x1080 @ 74.92Hz, 1920x1080 @ 60.00Hz 
+DE: Cinnamon 
+WM: Mutter (Muffin) 
+Terminal: cool-retro-term 
+CPU: Intel i7-4790 (8) @ 4.000GHz [38.0°C] 
+GPU: NVIDIA GeForce GTX 960 
+Memory: 2296MiB / 16027MiB (14%) 
+GPU Driver: NVIDIA 440.82 
+CPU Usage: 9% 
+Disk (/): 136G / 442G (33%)

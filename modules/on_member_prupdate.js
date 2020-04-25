@@ -52,64 +52,36 @@ module.exports = {
           setScore.run(streamcheck);
           if (streamcheck.stream == `2`) {
           } else {
-            //no double posts
-            if (streamedRecently.has(newMember.user.id + newMember.guild.id)) {
-            } else {
-              streamedRecently.add(newMember.user.id + newMember.guild.id);
-              setTimeout(() => {
-                streamedRecently.delete(newMember.user.id + newMember.guild.id);
-              }, 7200000);
-              request(
-                "https://api.rawg.io/api/games?page_size=5&search=" +
-                  newMember.presence.game.state,
-                {
-                  json: true,
-                },
-                function (err, res, body) {
-                  if (streamNotif == "2") {
-                    try {
-                      streamChannel1.send("@here");
-                      if (!body.results[0].background_image) {
-                        const embed = new Discord.RichEmbed()
-                          .setTitle(newMember.presence.game.state)
-                          .setColor(`RANDOM`)
-                          .setURL(newMember.presence.game.url)
-                          .setDescription(newMember.user + " went live!")
-                          .addField(
-                            newMember.presence.game.details,
-                            "\n" + newMember.presence.game.url
-                          )
-                          .setTimestamp();
-                        return streamChannel1.send({
-                          embed,
-                        });
-                      }
-                      const embed = new Discord.RichEmbed()
-                        .setTitle(newMember.presence.game.state)
-                        .setColor(`RANDOM`)
-                        .setURL(newMember.presence.game.url)
-                        .setThumbnail(`${body.results[0].background_image}`)
-                        .setDescription(newMember.user + " went live!")
-                        .addField(
-                          newMember.presence.game.details,
-                          "\n" + newMember.presence.game.url
-                        )
-                        .setTimestamp();
-                      return streamChannel1.send({
-                        embed,
-                      });
-                    } catch {
-                      console.log(
-                        moment().format("MMMM Do YYYY, HH:mm:ss") +
-                          "\n" +
-                          __filename +
-                          ":" +
-                          ln()
-                      );
-                    }
-                  } else {
+            let getTimers2 = db.prepare(
+              "SELECT * FROM timers WHERE uid = ? AND gid = ? AND bs = 'stream'"
+            );
+            let timersCheck = getTimers2.get(user.id, newMember.guild.id);
+              if (timersCheck) {
+              } else {
+                let datefor = moment()
+                  .add("7200000", "ms")
+                  .format("YYYYMMDDHHmmss");
+                timerset = {
+                  mid: Math.random() * 999999,
+                  cid: newMember.user.id,
+                  gid: newMember.guild.id,
+                  uid: newMember.user.id,
+                  time: datefor,
+                  bs: `stream`,
+                };
+                setTimers.run(timerset);
+                request(
+                  "https://api.rawg.io/api/games?page_size=5&search=" +
+                    newMember.presence.game.state,
+                  {
+                    json: true,
+                  },
+                  function (err, res, body) {
                     if (!body.results[0].background_image) {
                       try {
+                        if (streamNotif == "2") {
+                          streamChannel1.send("@here");
+                        }
                         const embed = new Discord.RichEmbed()
                           .setTitle(newMember.presence.game.state)
                           .setColor(`RANDOM`)
@@ -134,6 +106,9 @@ module.exports = {
                       }
                     }
                     try {
+                      if (streamNotif == "2") {
+                        streamChannel1.send("@here");
+                      }
                       const embed = new Discord.RichEmbed()
                         .setTitle(newMember.presence.game.state)
                         .setColor(`RANDOM`)
@@ -158,9 +133,8 @@ module.exports = {
                       );
                     }
                   }
-                }
-              );
-            }
+                );
+              }
           }
         }
       }

@@ -1,0 +1,19 @@
+
+konomi@ichinomiya.localdomain 
+----------------------------- 
+OS: Fedora 31 (Thirty One) x86_64 
+Host: 80XG Lenovo ideapad 320-14ISK 
+Kernel: 5.3.16-300.fc31.x86_64 
+Uptime: 11 days, 11 hours, 38 mins 
+Packages: 2892 (rpm), 17 (flatpak) 
+Shell: zsh 5.7.1 
+Resolution: 1366x768 
+DE: Cinnamon 4.4.2 
+WM: Mutter (Muffin) 
+WM Theme: Mint-Y-Dark-Aqua (Mint-Y-Dark) 
+Theme: Mint-Y-Dark-Aqua [GTK2/3] 
+Icons: Papirus-Dark [GTK2/3] 
+Terminal: tilix 
+CPU: Intel i3-6006U (4) @ 2.000GHz 
+GPU: Intel HD Graphics 520 
+Memory: 6192MiB / 7744MiB

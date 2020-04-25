@@ -124,15 +124,28 @@ module.exports = {
             userscore.muted = `1`;
             setScore.run(userscore);
             if (isTime) {
-              mutedtime.add(member.id + message.guild.id);
-              setTimeout(async () => {
-                mutedtime.delete(member.id + message.guild.id);
-                HitOrMiss(false);
-              }, isTime);
+              let datefor = moment().add(isTime, "ms").format("YYYYMMDDHHmmss");
+              timerset = {
+                mid: message.id,
+                cid: message.channel.id,
+                gid: message.guild.id,
+                uid: member.id,
+                time: datefor,
+                bs: `mute`,
+              };
+              setTimers.run(timerset);
               if (muteChannel1) {
                 try {
-                  message.reply(member + " is temp muted!");
-                  muteChannel1.send(member + ", You have been temp muted!");
+                  message.reply(
+                    member +
+                      " is temp muted!\n" +
+                      moment(datefor, "YYYYMMDDHHmmss").fromNow()
+                  );
+                  muteChannel1.send(
+                    member +
+                      ", You have been temp muted!\n" +
+                      moment(datefor, "YYYYMMDDHHmmss").fromNow()
+                  );
                   return logMe();
                 } catch {
                   return logMe();
@@ -190,7 +203,7 @@ module.exports = {
             .addField(prefix + "set mute @mention\n", "Mute a user")
             .addField(
               prefix + "set mute time X Y @mention\n",
-              "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours"
+              "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours d/days"
             )
             .addField(
               prefix + "set mute time 10 m @mention\n",
@@ -213,7 +226,7 @@ module.exports = {
               .addField(prefix + "set mute @mention\n", "Mute a user")
               .addField(
                 prefix + "set mute time X Y @mention\n",
-                "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours"
+                "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours d/days"
               )
               .addField(
                 prefix + "set mute time 10 m @mention\n",
@@ -232,7 +245,7 @@ module.exports = {
               .addField(prefix + "set mute @mention\n", "Mute a user")
               .addField(
                 prefix + "set mute time X Y @mention\n",
-                "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours"
+                "Where X = time => 10\nWhere Y = format => s/seconds m/minutes h/hours d/days"
               )
               .addField(
                 prefix + "set mute time 10 m @mention\n",
@@ -243,16 +256,36 @@ module.exports = {
               embed: logsmessage2,
             });
           }
-          if (args[3] == "s" || args[3] == "sec" || args[3] == "seconds") {
+          if (
+            args[3].toLowerCase() == "s" ||
+            args[3].toLowerCase() == "sec" ||
+            args[3].toLowerCase() == "seconds"
+          ) {
             let settime = Math.floor(args[2] * 1000);
             return HitOrMiss(true, settime);
           }
-          if (args[3] == "m" || args[3] == "min" || args[3] == "minutes") {
+          if (
+            args[3].toLowerCase() == "m" ||
+            args[3].toLowerCase() == "min" ||
+            args[3].toLowerCase() == "minutes"
+          ) {
             let settime = Math.floor(args[2] * 60000);
             return HitOrMiss(true, settime);
           }
-          if (args[3] == "h" || args[3] == "hour" || args[3] == "hours") {
+          if (
+            args[3].toLowerCase() == "h" ||
+            args[3].toLowerCase() == "hour" ||
+            args[3].toLowerCase() == "hours"
+          ) {
             let settime = Math.floor(args[2] * 3600000);
+            return HitOrMiss(true, settime);
+          }
+          if (
+            args[3].toLowerCase() == "d" ||
+            args[3].toLowerCase() == "day" ||
+            args[3].toLowerCase() == "days"
+          ) {
+            let settime = Math.floor(args[2] * 86400000);
             return HitOrMiss(true, settime);
           }
         }

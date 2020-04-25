@@ -1,0 +1,12 @@
+amir@Computinator
+-----------------
+OS: Arch
+Kernel: 5.5.13-arch2-1
+Uptime: 12 hours, 17 mins
+Packages: 1431 (pacman)
+Resolution: 1920x1080
+WM: dwm
+Terminal: st
+Terminal Font: JoyPixels
+CPU: i7 920
+Memory: 2469MiB / 3926MiB

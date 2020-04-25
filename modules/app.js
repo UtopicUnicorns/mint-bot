@@ -54,7 +54,7 @@ setLevel = db.prepare(
 exports.run = (client, config) => {
   // App view
   app.set("view engine", "ejs");
-  app.set("views", "./src/views");
+  app.set("views", "./modules/web/views");
   app.use(
     bodyParser.urlencoded({
       extended: true,
@@ -68,7 +68,7 @@ exports.run = (client, config) => {
     }
   });
   // Asset directories
-  app.use("/static", express.static("./src/add"));
+  app.use("/static", express.static("./modules/web/add"));
 
   app.use(passport.initialize());
   app.use(passport.session());

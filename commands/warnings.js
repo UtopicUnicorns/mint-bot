@@ -25,7 +25,7 @@ module.exports = {
             for (const data of getstuff) {
                 if (message.guild.members.get(data.user) && data.warning > 0) {
                     let user = message.guild.members.get(data.user);
-                    embed.addField(user.user.username, `Warnings: ${data.warning} | Reason: ${data.notes})`);
+                    embed.addField(user.user.username, `Warnings: ${data.warning} | Reason: ${data.notes}`);
                 }
             }
             message.channel.send({

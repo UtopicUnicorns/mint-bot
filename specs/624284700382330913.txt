@@ -1,0 +1,16 @@
+OS: Ubuntu 19.10 x86_64 
+Host: HP Laptop 14-dk0xxx 
+Kernel: 5.4.7-050407-generic 
+Uptime: 40 mins 
+Packages: 2108 (dpkg), 8 (snap) 
+Shell: bash 5.0.3 
+Resolution: 1366x768 
+DE: Cinnamon 4.0.10 
+WM: Mutter (Muffin) 
+WM Theme: Adapta-Nokto (Adapta-Nokto) 
+Theme: Adapta-Nokto [GTK2/3] 
+Icons: Papirus-Dark [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: AMD A9-9425 RADEON R5 2C+3G (2) @ 3.100GHz 
+GPU: AMD ATI Radeon R2/R3/R4/R5 Graphics 
+Memory: 1467MiB / 3882MiB

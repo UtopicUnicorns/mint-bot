@@ -1,0 +1,19 @@
+-------------------------------------- 
+OS: Fedora release 31 (Thirty One) x86_64 
+Host: 20L7002LCD ThinkPad T480s 
+Kernel: 5.5.8-200.fc31.x86_64 
+Uptime: 1 hour, 5 mins 
+Packages: 2207 (rpm), 8 (flatpak) 
+Shell: bash 5.0.11 
+Resolution: 1920x1080, 1920x1080 
+DE: GNOME 3.34.4 
+WM: Mutter 
+WM Theme: Adwaita 
+Theme: Nordic [GTK2/3] 
+Icons: Tela-circle-dark [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: Intel i5-8250U (8) @ 3.400GHz 
+GPU: NVIDIA GeForce MX150 
+GPU: NVIDIA GeForce GTX 1050 Mobile 
+GPU: Intel UHD Graphics 620 
+Memory: 2894MiB / 15769MiB

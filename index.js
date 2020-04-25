@@ -1,43 +1,61 @@
+//NPM and such
 const npm = require("./modules/NPM.js");
 npm.npm();
-const client = new Client();
-var originalLog = console.log;
 
+//Shit
+const client = new Client();
+
+//load Database
+const dbinit = require("./modules/dbinit.js");
+dbinit.dbinit();
+
+//Stolen console logger
+var originalLog = console.log;
 console.log = function (str) {
   originalLog(str);
-  if (str.length > 1500) {
-    client.channels.get("701764606053580870").send(str, {
-      split: true,
-    });
-  } else {
-    client.channels.get("701764606053580870").send(str);
+  if (str) {
+    if (str.length > 1500) {
+      client.channels.get("701764606053580870").send(str, {
+        split: true,
+      });
+    } else {
+      client.channels.get("701764606053580870").send(str);
+    }
   }
 };
+
+//reddit rss feed
+const { FeedEmitter } = require("rss-emitter-ts");
+const emitter = new FeedEmitter();
+
+//Dashboard stuff
+const oAuth = Discord.OAuth2Application;
+
+//command holder
 client.commands = new Discord.Collection();
+
+//command files open
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
-const { FeedEmitter } = require("rss-emitter-ts");
-const emitter = new FeedEmitter();
-const oAuth = Discord.OAuth2Application;
-require("dotenv").config();
-let getUsage1 = db.prepare("SELECT * FROM usage WHERE command = ?");
-let setUsage1 = db.prepare(
-  "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
-);
+
+//loopdiloop commands and loads em
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
-  let usagecheck = getUsage1.get(command.name);
+  let usagecheck = getUsage.get(command.name);
   if (!usagecheck) {
     usagecheck = {
       command: command.name,
       number: `0`,
     };
-    setUsage1.run(usagecheck);
+    setUsage.run(usagecheck);
   }
   client.commands.set(command.name, command);
 }
+
+//Bot ready
 client.once("ready", () => {
+  //look at that a fucking welcome message to the console
   console.log(
     moment().format("MMMM Do YYYY, HH:mm:ss") +
       "\n" +
@@ -49,18 +67,11 @@ client.once("ready", () => {
         .filter((guild) => guild.owner !== undefined)
         .map(
           (guild) =>
-            guild.name +
-            " \nUsers: " +
-            guild.memberCount +
-            " \nOwner: " +
-            guild.owner.user.username
+            `${guild.id}/${guild.name}\nUsers: ${guild.memberCount}\nOwner: ${guild.owner.user.username}`
         )
-        .join("\n\n") +
-      "\n\n"
+        .join("\n\n")
   );
-  //Start Database
-  const dbinit = require("./modules/dbinit.js");
-  dbinit.dbinit();
+
   //change bot Status
   setInterval(() => {
     var RAN = [`https://artemisbot.eu`, `${client.guilds.size} servers`];
@@ -68,6 +79,7 @@ client.once("ready", () => {
       type: "LISTENING",
     });
   }, 60000);
+
   //Wipe music
   const musicf = fs.readdirSync("./music");
   for (const file of musicf) {
@@ -78,7 +90,7 @@ client.once("ready", () => {
       }
     });
   }
-  //
+
   //Reminder run
   setInterval(() => {
     const remindersdb = db
@@ -115,7 +127,82 @@ client.once("ready", () => {
       }
     }
   }, 5000);
-  //preload messages on reconnect
+
+  //streamshit run
+  setInterval(() => {
+    const timerdb2 = db
+      .prepare("SELECT * FROM timers ORDER BY time DESC;")
+      .all();
+    for (const data of timerdb2) {
+      let timenow = moment().format("YYYYMMDDHHmmss");
+      if (timenow > data.time) {
+        if (data.bs !== "stream") return;
+        return db
+          .prepare(
+            `DELETE FROM timers WHERE cid = ${data.cid} AND uid = ${data.uid}`
+          )
+          .run();
+      }
+    }
+  }, 5000);
+
+  //mutedshit run
+  setInterval(() => {
+    const timerdb = db
+      .prepare("SELECT * FROM timers ORDER BY time DESC;")
+      .all();
+    for (const data of timerdb) {
+      let timenow = moment().format("YYYYMMDDHHmmss");
+      if (timenow > data.time) {
+        let gettheguild = client.guilds.get(data.gid);
+        let reminduser = gettheguild.members.get(data.uid);
+        if (!reminduser) {
+          return db
+            .prepare(
+              `DELETE FROM timers WHERE mid = ${data.mid} AND uid = ${data.uid}`
+            )
+            .run();
+        }
+        //try
+        if (data.bs !== "mute") return;
+        let userscore = getScore.get(data.uid, data.gid);
+        if (userscore.muted == `0`)
+          return db
+            .prepare(
+              `DELETE FROM timers WHERE mid = ${data.mid} AND uid = ${data.uid}`
+            )
+            .run();
+        let memberrole = gettheguild.roles.find((r) => r.name === `~/Members`);
+        reminduser.addRole(memberrole).catch(console.error);
+        let array2 = [];
+        client.channels
+          .filter((channel) => channel.guild.id === data.gid)
+          .map((channels) => array2.push(channels.id));
+        for (let i of array2) {
+          setTimeout(() => {
+            let channel = client.channels.find((channel) => channel.id === i);
+            if (channel) {
+              if (channel.permissionOverwrites.get(data.uid)) {
+                channel.permissionOverwrites.get(data.uid).delete();
+              }
+            }
+          }, 200);
+        }
+        userscore.muted = `0`;
+        userscore.warning = `0`;
+        setScore.run(userscore);
+        //
+        client.channels
+          .get(data.cid)
+          .send("<@" + data.uid + "> has been unmuted!");
+        db.prepare(
+          `DELETE FROM remind WHERE mid = ${data.mid} AND uid = ${data.uid}`
+        ).run();
+      }
+    }
+  }, 5000);
+
+  //preload messages on for teh reaction channel
   const fetch2 = db.prepare("SELECT * FROM guildhub").all();
   let array4 = [];
   for (const data of fetch2) {
@@ -126,6 +213,7 @@ client.once("ready", () => {
       }
     }
   }
+
   //start Website
   dashboard.run(
     client,
@@ -136,7 +224,11 @@ client.once("ready", () => {
     },
     oAuth
   );
+
+  //next
 });
+
+//Reconnect
 client.once("reconnecting", () => {
   //Wipe music
   const musicf = fs.readdirSync("./music");
@@ -148,7 +240,8 @@ client.once("reconnecting", () => {
       }
     });
   }
-  //
+
+  //reconnect console message fuck you too
   console.log(
     moment().format("MMMM Do YYYY, HH:mm:ss") +
       "\n" +
@@ -160,28 +253,35 @@ client.once("reconnecting", () => {
         .filter((guild) => guild.owner !== undefined)
         .map(
           (guild) =>
-            guild.name +
-            " \nUsers: " +
-            guild.memberCount +
-            " \nOwner: " +
-            guild.owner.user.username
+            `${guild.id}/${guild.name}\nUsers: ${guild.memberCount}\nOwner: ${guild.owner.user.username}`
         )
-        .join("\n\n") +
-      "\n\n"
+        .join("\n\n")
   );
+
+  //next
 });
-client.once("disconnect", () => {
-  console.log("Disconnect!");
-});
+
+//new member
 client.on("guildMemberAdd", async (guildMember) => {
+  //load module
   const onGuildMemberAdd = require("./modules/on_guildmemberadd.js");
   onGuildMemberAdd.onGuildMemberAdd(guildMember);
+
+  //next
 });
+
+//member leaves
 client.on("guildMemberRemove", async (guildMember) => {
+  //load module
   const onGuildMemberRemove = require("./modules/on_guildmemberremove.js");
   onGuildMemberRemove.onGuildMemberRemove(guildMember);
+
+  //next
 });
+
+//new guild
 client.on("guildCreate", (guild) => {
+  //log it into the console
   console.log(
     "Joined a new guild: " +
       guild.name +
@@ -190,6 +290,8 @@ client.on("guildCreate", (guild) => {
       " Owner: " +
       guild.owner.user.username
   );
+
+  //Check if they have been sad returnees
   newGuild1 = getGuild.get(guild.id);
   if (!newGuild1) {
     newGuild = getGuild.get(guild.id);
@@ -220,8 +322,13 @@ client.on("guildCreate", (guild) => {
       setGuild.run(newGuild);
     }
   }
+
+  //next
 });
+
+//Fuck you too
 client.on("guildDelete", (guild) => {
+  //log the pitiful loser who left us
   console.log(
     "Left a guild: " +
       guild.name +
@@ -230,22 +337,38 @@ client.on("guildDelete", (guild) => {
       " Owner: " +
       guild.owner.user.username
   );
+
+  //next
 });
+
+//On member change
 client.on("guildMemberUpdate", (oldMember, newMember) => {
+  //load module
   const onMemberUpdate = require("./modules/on_member_update.js");
   onMemberUpdate.onMemberUpdate(oldMember, newMember);
+
+  //next
 });
+
+//presence updates
 client.on("presenceUpdate", (oldMember, newMember) => {
+  //load module
   const onMemberPrupdate = require("./modules/on_member_prupdate.js");
   onMemberPrupdate.onMemberPrupdate(oldMember, newMember);
+
+  //next
 });
-//reddit
+
+//reddit load rss
 emitter.add({
   url: "https://www.reddit.com/r/linuxmint/new.rss",
   refresh: 10000,
   ignoreFirst: true,
 });
+
+//reddit found a new shit message
 emitter.on("item:new", (item) => {
+  //converting all that data because emmiter sucks
   const reddittext = htmlToText.fromString(item.description, {
     wordwrap: false,
     ignoreHref: true,
@@ -254,6 +377,8 @@ emitter.on("item:new", (item) => {
   });
   let reddittext2 = reddittext.replace("[link]", "").replace("[comments]", "");
   let reddittext3 = reddittext2.substr(0, 1000);
+
+  //welp let's send the shit
   try {
     const redditmessage = new Discord.RichEmbed()
       .setTitle(item.title.substr(0, 100))
@@ -266,47 +391,67 @@ emitter.on("item:new", (item) => {
       embed: redditmessage,
     });
   } catch {
-    if (spamRecently.has("REDDIT")) {
-    } else {
-      spamRecently.add("REDDIT");
-      setTimeout(() => {
-        spamRecently.delete("REDDIT");
-      }, 1000);
-
-      console.log(
-        moment().format("MMMM Do YYYY, HH:mm:ss") +
-          "\n" +
-          __filename +
-          ":" +
-          ln()
-      );
-    }
+    //log JK fuck you
+    console.log();
   }
+
+  //next
 });
+
+//go fuck yourself
 emitter.on("feed:error", (error) => {
   //console.error(error.message)
 });
+
+//Message delete
 client.on("messageDelete", async (message) => {
+  //load module
   const onMessageDelete = require("./modules/on_message_delete.js");
   onMessageDelete.onMessageDelete(message);
+
+  //next
 });
+
+//Banned fuckers
 client.on("guildBanAdd", async (guild, user) => {
+  //load module
   const onGuildBanAdd = require("./modules/on_guildbanadd.js");
   onGuildBanAdd.onGuildBanAdd(guild, user);
+
+  //next
 });
+
+//Editing your own message does things
 client.on("messageUpdate", (oldMessage, newMessage) => {
+  //load module
   const onMsgUpdate = require("./modules/on_message_update.js");
   onMsgUpdate.onMsgUpdate(oldMessage, newMessage);
+
+  //next
 });
+
+//the best thing here
 client.on("message", async (message) => {
+  //load module
   const onMessage = require("./modules/on_message.js");
   onMessage.onMessage(message);
+
+  //next
 });
+
+//reactionroles and stuff
 client.on("messageReactionAdd", async (reaction, user) => {
+  //load module
   const onReaction = require("./modules/on_reaction.js");
   onReaction.onReaction(reaction, user);
+
+  //end
 });
+
+//worthless errors, ignoring them fuck you
 client.on("error", (e) => {});
 client.on("warn", (e) => {});
 client.on("debug", (e) => {});
+
+//And login in the bot
 client.login(configfile.token);

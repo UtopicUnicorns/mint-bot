@@ -1,0 +1,38 @@
+
+~Retro Laptop~
+jay@i-am-poppy
+--------------
+OS: Pop!_OS 19.10 x86_64
+Host: 80MJ Lenovo ideapad 100-15IBY
+Kernel: 5.5.8-xanmod6
+Packages: 3095 (dpkg), 9 (snap)
+Shell: bash 5.0.3
+Resolution: 1366x768
+DE: GNOME 3.34.3
+WM: GNOME Shell
+WM Theme: Ambiance
+Theme: QogirBudgie-dark [GTK2/3]
+Icons: Pop [GTK2/3]
+Terminal: gnome-terminal
+CPU: Intel Celeron N2840 (2) @ 2.582G
+GPU: Intel Atom Processor Z36xxx/Z37x
+Memory: 2240MiB / 7398MiB
+                     
+My Desktop PC
+jay@i-am-poppy-rog-the-rag
+--------------
+OS: Pop!_OS 19.10 x86_64
+Host: ASUS ROG Strix GL12
+Kernel: 5.5.8-xanmod6
+Packages: 3166 (dpkg), 4 (snap)
+Shell: bash 5.0.3
+Resolution: 2560x1440
+DE: GNOME 3.34.3
+WM: GNOME Shell
+WM Theme: Ambiance
+Theme: QogirBudgie-dark [GTK2/3]
+Icons: Pop [GTK2/3]
+Terminal: gnome-terminal
+CPU: Intel Core i7-8700K (6) @ 4.707G
+GPU: NVIDIA GeForce RTX 2080ti
+Memory: 4240MiB / 3166MiB

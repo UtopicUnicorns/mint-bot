@@ -1,5 +1,8 @@
+//load modules
 npm = require("./NPM.js");
 npm.npm();
+
+//load databases
 dbinit = require("./dbinit.js");
 dbinit.dbinit();
 module.exports = {
@@ -21,7 +24,6 @@ module.exports = {
                   dbumper[0] +
                   ">"
               );
-              //
               let settime = 7200000;
               let remindtext = "Time for your next `!d bump`";
               let datefor = moment()
@@ -36,7 +38,6 @@ module.exports = {
                 reminder: remindtext,
               };
               setRemind.run(timerset);
-              //
             });
           } else {
             message.channel.fetchMessages().then((messages) => {
@@ -72,14 +73,15 @@ module.exports = {
                 reminder: remindtext,
               };
               setRemind.run(timerset);
-              //
             });
           }
         }
       }
     }
+
     //ignore bots
     if (message.author.bot) return;
+
     //Direct Message handle
     if (message.channel.type == "dm") {
       console.log(
@@ -106,14 +108,8 @@ module.exports = {
         embed: whoartemis,
       });
     }
-    //ignoredbl
-    if (message.guild) {
-      if (message.guild.id == "264445053596991498") return;
-    } else {
-      return;
-    }
-    //Failsafes
-    //userfailsafe
+
+    //userfailsafe db
     userfailsafe = getScore.get(message.author.id, message.guild.id);
     if (!userfailsafe) {
       userfailsafe = {
@@ -130,7 +126,8 @@ module.exports = {
       };
       setScore.run(userfailsafe);
     }
-    //Guild safe
+
+    //Guild safe db
     guildfailsafe = getGuild.get(message.guild.id);
     if (!guildfailsafe) {
       guildfailsafe = {
@@ -148,7 +145,8 @@ module.exports = {
       };
       setGuild.run(guildfailsafe);
     }
-    //Level failsafe
+
+    //Level failsafe db
     newLevel = getLevel.get(message.guild.id);
     if (!newLevel) {
       newLevel = {
@@ -163,7 +161,8 @@ module.exports = {
       };
       setLevel.run(newLevel);
     }
-    //load shit
+
+    //load channels from database
     const guildChannels = getGuild.get(message.guild.id);
     if (guildChannels) {
       var thisguild = message.client.guilds.get(guildChannels.guild);
@@ -188,11 +187,42 @@ module.exports = {
       var muteChannel1 = "0";
       var logsChannel1 = "0";
     }
+
+    //load prefix
     const prefixstart = getGuild.get(message.guild.id);
     const prefix = prefixstart.prefix;
+
+    //build args
     const args = message.content.slice(prefix.length).split(/ +/);
+
+    //define commands
     const commandName = args.shift().toLowerCase();
     const command = message.client.commands.get(commandName);
+
+    //support channel stuff
+    let supportID = getSupport.get(message.channel.id, message.guild.id);
+    if (supportID) {
+      let nameSup = message.guild.channels.find(
+        (channel) => channel.id === message.channel.id
+      );
+      let cCname = nameSup.name;
+      let eCname = "\u231B";
+      if (nameSup.name.startsWith("\u231B")) {
+      } else {
+        message.channel.setName(`${eCname}` + cCname);
+        message.reply("You have started a support session!");
+        setTimeout(() => {
+          return message.reply(
+            "Do not forget to write\n" +
+              "`" +
+              prefix +
+              "support done`\n" +
+              "When you are done receiving help!"
+          );
+        }, 300000);
+      }
+    }
+
     //non-prefix help
     if (
       message.isMemberMentioned(message.client.user) &&
@@ -216,6 +246,7 @@ module.exports = {
         embed: nonprefix,
       });
     }
+
     //autoMod START
     if (message.member && message.member.hasPermission("KICK_MEMBERS")) {
     } else {
@@ -227,7 +258,7 @@ module.exports = {
         automod.automod("antiMention", message);
       }
     }
-    //AutoMod END
+
     //Mute filter
     if (muteChannel1 == "0") {
     } else {
@@ -313,6 +344,7 @@ module.exports = {
         }
       }
     }
+
     //Topic
     //For mint server only
     if (message.guild.id == "628978428019736619") {
@@ -351,6 +383,7 @@ module.exports = {
         }
       }
     }
+
     //Secret adult role
     if (message.guild.id == "628978428019736619") {
       let amember = message.guild.members.get(message.author.id);
@@ -372,6 +405,7 @@ module.exports = {
         }
       }
     }
+
     /*   //EVENT
   if (message.guild.id == "628978428019736619") {
     let eventnumber = 25;
@@ -396,6 +430,7 @@ module.exports = {
       }
     }
   } */
+
     //Artemis Talk
     if (message.channel.id === "642882039372185609") {
       if (message.author.id !== "440892659264126997") {
@@ -439,6 +474,7 @@ module.exports = {
         return;
       }
     }
+
     //Simulate guild member join
     if (message.content === prefix + "guildmemberadd") {
       if (
@@ -451,6 +487,7 @@ module.exports = {
         );
       }
     }
+
     //Simulate guild member leave
     if (message.content === prefix + "guildmemberremove") {
       if (
@@ -463,6 +500,7 @@ module.exports = {
         );
       }
     }
+
     //translate
     //Start db for opt
     translateopt = getScore.get(message.author.id, message.guild.id);
@@ -535,6 +573,7 @@ module.exports = {
         }
       );
     }
+
     //set points
     let score;
     if (message.guild) {
@@ -552,6 +591,7 @@ module.exports = {
         setScore.run(score);
       }
     }
+
     //start level rewards
     const levelups = getLevel.get(message.guild.id);
     let levelers = [
@@ -620,7 +660,7 @@ module.exports = {
         }
       }
     }
-    //console.log(message.member.roles.map(role => role.id));
+
     //welp ok
     if (guildChannels.leveling == "2") {
     } else {
@@ -630,19 +670,16 @@ module.exports = {
           message.mentions.users.first() || message.client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (thankedRecently.has(message.author.id)) {
-          return message.reply("You are thanking too much!");
+        if (congratulationsRecently.has(message.author.id)) {
+          return;
         } else {
-          thankedRecently.add(message.author.id);
+          congratulationsRecently.add(message.author.id);
           setTimeout(() => {
-            thankedRecently.delete(message.author.id);
+            congratulationsRecently.delete(message.author.id);
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
-          if (!userscore)
-            return message.reply(
-              "This user does not have a database index yet."
-            );
+          if (!userscore) return;
           userscore.points += pointsToAdd;
           let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
           userscore.level = userLevel;
@@ -656,25 +693,23 @@ module.exports = {
           );
         }
       }
+
       //love
       if (message.content.toLowerCase().includes("love")) {
         const user =
           message.mentions.users.first() || message.client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (lovedRecently.has(message.author.id)) {
-          return message.reply("I love you too!");
+        if (congratulationsRecently.has(message.author.id)) {
+          return;
         } else {
-          lovedRecently.add(message.author.id);
+          congratulationsRecently.add(message.author.id);
           setTimeout(() => {
-            lovedRecently.delete(message.author.id);
+            congratulationsRecently.delete(message.author.id);
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
-          if (!userscore)
-            return message.reply(
-              "This user does not have a database index yet."
-            );
+          if (!userscore) return;
           userscore.points += pointsToAdd;
           let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
           userscore.level = userLevel;
@@ -688,6 +723,7 @@ module.exports = {
           );
         }
       }
+
       //Congratulations
       if (message.content.toLowerCase().includes("congrat")) {
         const user =
@@ -703,10 +739,7 @@ module.exports = {
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
-          if (!userscore)
-            return message.reply(
-              "This user does not have a database index yet."
-            );
+          if (!userscore) return;
           userscore.points += pointsToAdd;
           let userLevel = Math.floor(0.5 * Math.sqrt(userscore.points));
           userscore.level = userLevel;
@@ -721,6 +754,7 @@ module.exports = {
         }
       }
     }
+
     //require prefix
     if (!message.content.startsWith(prefix)) return;
     try {

@@ -1,0 +1,16 @@
+zero@Defiant 
+OS: openSUSE Leap 15.2 Beta x86_64 
+Host: 90H90015UK Legion Y720T-34ASU
+Kernel: 5.3.18-lp152.10-default
+Uptime: 2 hours
+Packages: 2320 (rpm), 15 (flatpak)
+Shell: bash 4.4.23
+Resolution: 2560x1440
+DE: KDE
+WM: KWin
+WM Theme: Sweet-DarkTheme: Sweet [KDE], Sweet [GTK2/3]
+Icons: candy-icons [KDE], candy-icons [GTK2/3]
+Terminal: konsole
+CPU: AMD Ryzen 7 1800X (16) @ 3.600GHz
+GPU: AMD ATI Radeon RX570
+Memory: 2506MiB / 15143MiB

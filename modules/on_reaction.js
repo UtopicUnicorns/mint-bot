@@ -295,13 +295,7 @@ module.exports = {
               reaction.message.guild.roles.find((r) => r.id == data.roles).name
             );
           } catch {
-            console.log(
-              moment().format("MMMM Do YYYY, HH:mm:ss") +
-                "\n" +
-                __filename +
-                ":" +
-                ln()
-            );
+            console.log();
           }
         }
         for (let n in array2) {

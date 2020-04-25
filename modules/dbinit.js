@@ -17,11 +17,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //Run user info/scores
-  getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-  setScore = db.prepare(
-    "INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);"
-  );
   ////////////////////
   //Channelmanage DB//
   ////////////////////
@@ -38,11 +33,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //run channelmanage
-  getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
-  setGuild = db.prepare(
-    "INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix, leveling) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix, @leveling);"
-  );
   ////////////////////
   //Rolemanage    DB//
   ////////////////////
@@ -59,11 +49,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //run rolemanage
-  getRoles = db.prepare("SELECT * FROM roles WHERE guild = ?");
-  setRoles = db.prepare(
-    "INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);"
-  );
   ////////////////////
   //Word filter   DB//
   ////////////////////
@@ -82,11 +67,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //run word filter
-  getWords = db.prepare("SELECT * FROM words WHERE guild = ?");
-  setWords = db.prepare(
-    "INSERT OR REPLACE INTO words (guild, words) VALUES (@guild, @words);"
-  );
   ////////////////////
   //level up      DB//
   ////////////////////
@@ -103,11 +83,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //run level up
-  getLevel = db.prepare("SELECT * FROM level WHERE guild = ?");
-  setLevel = db.prepare(
-    "INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);"
-  );
   ////////////////////
   //command usage DB//
   ////////////////////
@@ -124,11 +99,6 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  //loadusage
-  getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
-  setUsage = db.prepare(
-    "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
-  );
   //////////////////////
   //Remind          DB//
   //////////////////////
@@ -145,9 +115,81 @@ exports.dbinit = function () {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
+  //////////////////////
+  //ban or stream   DB//
+  //////////////////////
+  const table8 = db
+    .prepare(
+      "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'timers';"
+    )
+    .get();
+  if (!table8["count(*)"]) {
+    db.prepare(
+      "CREATE TABLE timers (mid TEXT PRIMARY KEY, cid TEXT, gid TEXT, uid TEXT, time TEXT, bs TEXT);"
+    ).run();
+    db.prepare("CREATE UNIQUE INDEX idx_timers_id ON timers (mid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  }
+  //////////////////////
+  //support         DB//
+  //////////////////////
+  const table9 = db
+    .prepare(
+      "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'support';"
+    )
+    .get();
+  if (!table9["count(*)"]) {
+    db.prepare(
+      "CREATE TABLE support (cid TEXT PRIMARY KEY, gid);"
+    ).run();
+    db.prepare("CREATE UNIQUE INDEX idx_support_id ON support (cid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  }
+  //Run support DB
+  getSupport = db.prepare("SELECT * FROM support WHERE cid = ? AND gid = ?");
+  setSupport = db.prepare(
+    "INSERT OR REPLACE INTO support (cid, gid) VALUES (@cid, @gid);"
+  );
   //Run remind DB
   getRemind = db.prepare("SELECT * FROM remind WHERE time = ?");
   setRemind = db.prepare(
     "INSERT OR REPLACE INTO remind (mid, cid, gid, uid, time, reminder) VALUES (@mid, @cid, @gid, @uid, @time, @reminder);"
+  );
+  //Run ban or stream DB
+  getTimers = db.prepare("SELECT * FROM timers WHERE time = ?");
+  setTimers = db.prepare(
+    "INSERT OR REPLACE INTO timers (mid, cid, gid, uid, time, bs) VALUES (@mid, @cid, @gid, @uid, @time, @bs);"
+  );
+  //Run user info/scores
+  getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+  setScore = db.prepare(
+    "INSERT OR REPLACE INTO scores (id, user, guild, points, level, warning, muted, translate, stream, notes) VALUES (@id, @user, @guild, @points, @level, @warning, @muted, @translate, @stream, @notes);"
+  );
+  //loadusage
+  getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
+  setUsage = db.prepare(
+    "INSERT OR REPLACE INTO usage (command, number) VALUES (@command, @number);"
+  );
+  //run level up
+  getLevel = db.prepare("SELECT * FROM level WHERE guild = ?");
+  setLevel = db.prepare(
+    "INSERT OR REPLACE INTO level (guild, lvl5, lvl10, lvl15, lvl20, lvl30, lvl50, lvl85) VALUES (@guild, @lvl5, @lvl10, @lvl15, @lvl20, @lvl30, @lvl50, @lvl85);"
+  );
+  //run word filter
+  getWords = db.prepare("SELECT * FROM words WHERE guild = ?");
+  setWords = db.prepare(
+    "INSERT OR REPLACE INTO words (guild, words) VALUES (@guild, @words);"
+  );
+  //run rolemanage
+  getRoles = db.prepare("SELECT * FROM roles WHERE guild = ?");
+  setRoles = db.prepare(
+    "INSERT OR REPLACE INTO roles (guild, roles) VALUES (@guild, @roles);"
+  );
+  //run channelmanage
+  getGuild = db.prepare("SELECT * FROM guildhub WHERE guild = ?");
+  setGuild = db.prepare(
+    "INSERT OR REPLACE INTO guildhub (guild, generalChannel, highlightChannel, muteChannel, logsChannel, streamChannel, reactionChannel, streamHere, autoMod, prefix, leveling) VALUES (@guild, @generalChannel, @highlightChannel, @muteChannel, @logsChannel, @streamChannel, @reactionChannel, @streamHere, @autoMod, @prefix, @leveling);"
   );
 };

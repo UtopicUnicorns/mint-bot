@@ -48,6 +48,6 @@ module.exports = {
             }
             return message.reply("Done!");
         }
-        message.reply(prefix + 'wordlist add/del\n' + array);
+        message.reply(prefix + 'wordlist add/del\n' + '||' + array.join(" ") + '||');
     }
 };

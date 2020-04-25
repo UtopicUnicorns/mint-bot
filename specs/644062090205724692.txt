@@ -1,0 +1,17 @@
+OS: Debian GNU/Linux bullseye/sid x86_64 
+Host: Inspiron 5577 1.1.3 
+Kernel: 5.4.0-4-amd64 
+Uptime: 17 mins 
+Packages: 1811 (dpkg) 
+Shell: bash 5.0.16 
+Resolution: 1920x1080 
+DE: GNOME 3.34.4 
+WM: Mutter 
+WM Theme: Adwaita 
+Theme: Adwaita-dark [GTK2/3] 
+Icons: Adwaita [GTK2/3] 
+Terminal: gnome-terminal 
+CPU: Intel i5-7300HQ (4) @ 3.500GHz 
+GPU: NVIDIA GeForce GTX 1050 Mobile 
+GPU: Intel HD Graphics 630 
+Memory: 7801MiB

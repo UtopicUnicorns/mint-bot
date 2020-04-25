@@ -1,0 +1,19 @@
+luxorr@heinsenberger 
+-------------------- 
+OS: Debian GNU/Linux bullseye/sid x86_64 
+Host: X507UA 1.0 
+Kernel: 5.5.0-2-amd64 
+Uptime: 1 day, 15 hours, 26 mins 
+Packages: 2792 (dpkg), 6 (snap) 
+Shell: bash 5.0.16 
+Resolution: 1920x1080 
+DE: Plasma 
+WM: KWin 
+WM Theme: Aritim-Dark 
+Theme: Aritim-Dark [Plasma], Breeze-Dark [GTK2/3] 
+Icons: candy-icons [Plasma], breeze [GTK2/3] 
+Terminal: konsole 
+Terminal Font: Hack 10 
+CPU: Intel i3-6006U (4) @ 2.000GHz 
+GPU: Intel Skylake GT2 [HD Graphics 520] 
+Memory: 3292MiB / 7913MiB

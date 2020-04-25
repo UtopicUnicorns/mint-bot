@@ -203,7 +203,6 @@ module.exports = {
             .addField(`${prefix}help music`, 'Display music help\n')
         if (message.member.hasPermission('KICK_MEMBERS')) {
             embed2.addField(`${prefix}help mod`, 'Display Mod commands\n')
-            embed2.addField(`${prefix}help admin`, 'Display Admin commands\n')
             embed2.addField(`${prefix}help server`, 'Display server commands\n')
             embed2.addField(`${prefix}help mscore`, 'Display score/level commands\n')
         }

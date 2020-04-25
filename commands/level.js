@@ -43,6 +43,7 @@ module.exports = {
             message.mentions.users.first().id
           );
         }
+        if (!user) return;
         let userscore = getScore.get(user.user.id, message.guild.id);
         if (!userscore)
           return message.reply("This user does not have a database index yet.");

@@ -16,7 +16,7 @@ module.exports = {
     usage.number++;
     setUsage.run(usage);
     //
-    if (message.channel.id === "701399878412140544") {
+    if (message.channel.id === "701399878412140544" || message.channel.id === "702267558195232868") {
       let args = message.content.slice(prefix.length + 6).split(" ");
       if (!args[0]) {
         let num = Math.floor(Math.random() * 1424 + 1);

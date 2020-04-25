@@ -20,13 +20,9 @@ exports.npm = function () {
   htmlToText = require("html-to-text");
   ffmpeg = require('fluent-ffmpeg');
   youtube = new YouTube(configfile.youtubekey);
-  mutedtime = new Set();
   ping = new Set();
-  thankedRecently = new Set();
-  streamedRecently = new Set();
-  lovedRecently = new Set();
-  borgRecently = new Set();
   spamRecently = new Set();
   noticeset = new Set();
+  supportGet = new Set();
   congratulationsRecently = new Set();
 };

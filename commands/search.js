@@ -19,25 +19,33 @@ module.exports = {
 
     let args = message.content.slice(prefix.length + 7);
     const options = {
-      lang: "en"
+      lang: "en",
     };
-    googleIt({ options, query: args })
-      .then(results => {
+    googleIt({ options, query: args, disableConsole: true })
+      .then((results) => {
         let embed = new Discord.RichEmbed()
           .setAuthor(message.author.username, message.author.avatarURL)
           .setTitle(results[0].title)
           .setURL(results[0].link)
-          .setDescription(results[0].snippet + '\n\n' + results[0].link)
+          .setDescription(results[0].snippet + "\n\n" + results[0].link)
           .setColor("RANDOM")
-          .setFooter(results[1].snippet + '\n' + results[1].link + '\n\n' + results[2].snippet + '\n' + results[2].link)
+          .setFooter(
+            results[1].snippet +
+              "\n" +
+              results[1].link +
+              "\n\n" +
+              results[2].snippet +
+              "\n" +
+              results[2].link
+          );
         message.channel.send({
-          embed
+          embed,
         });
       })
-      .catch(e => {
+      .catch((e) => {
         message.reply("No results, or an error occured.");
       });
 
     //
-  }
+  },
 };
