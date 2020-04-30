@@ -69,7 +69,9 @@ module.exports = {
       setScore.run(userscore2);
     } else {
       if (userscore2.muted == "1") {
-        guildMember.addRole(roledel1);
+        if (roledel1) {
+          guildMember.addRole(roledel1);
+        }
         if (muteChannel1 == "0") {
         } else {
           return muteChannel1.send(
@@ -97,7 +99,7 @@ module.exports = {
               "\n" +
               guildMember.user.id +
               "\nAccount age: " +
-              ageA
+              ageA.join(" ")
           )
           .setTimestamp();
         logsChannel1.send({
@@ -115,11 +117,14 @@ module.exports = {
     }
     if (muteChannel1 == `0`) {
     } else {
+      //if Anti raid is on
       if (guildChannels.autoMod == "strict") {
-        guildMember.addRole(roledel1);
+        if (roledel1) {
+          guildMember.addRole(roledel1).catch(console.error);
+        }
         try {
           return muteChannel1.send(
-            ageA +
+            ageA.join(" ") +
               " " +
               guildMember.user +
               "\nAutomod Strict is on!\nThis means that every user gets dumped into this channel.\nAutomod strict is usually enabled if there is a raid going on."
@@ -134,41 +139,28 @@ module.exports = {
           );
         }
       }
-      if (ageA[1] == "hours" || ageA[1] == "day" || ageA[1] == "days") {
-        guildMember.addRole(roledel1);
-        try {
-          return muteChannel1.send(
-            ageA +
-              " " +
-              guildMember.user +
-              "\nYou have a rather new account so you have to verify!\nType your username(case sensitive) and attach 1337 to the end.\nExample: UtopicUnicorn1337"
-          );
-        } catch {
-          console.log(
-            moment().format("MMMM Do YYYY, HH:mm:ss") +
-              "\n" +
-              __filename +
-              ":" +
-              ln()
-          );
-        }
+      //if there is a mute channel
+      const prefixstart = getGuild.get(guildMember.guild.id);
+      const prefix = prefixstart.prefix;
+      if (roledel1) {
+        guildMember.addRole(roledel1).catch(console.error);
       }
+      return muteChannel1.send(
+        ageA.join(" ") +
+          " " +
+          guildMember.user +
+          "\nWelcome, you need to verify yourself first!\nTo begin write `" +
+          prefix +
+          "verify`"
+      );
     }
     //make nice image for welcoming
-    guildMember.addRole(roleadd1).catch((error) => {});
+    if (roleadd1) {
+      guildMember.addRole(roleadd1).catch(console.error);
+    }
     if (generalChannel1 == "0") {
     } else {
       try {
-        var ReBeL = guildMember.user.username;
-        var bel = [
-          "\njust started brewing some minty tea!",
-          "\nis using Arch BTW!",
-          "\necho 'is here!'",
-          "\nis sipping minty tea!",
-          "\nuseradd -m -g users /bin/sh @",
-        ];
-        var moon = bel[~~(Math.random() * bel.length)];
-        moon = moon.replace("@", ReBeL);
         const canvas = Canvas.createCanvas(700, 250);
         const ctx = canvas.getContext("2d");
         const background = await Canvas.loadImage("./mintwelcome.png");
@@ -177,10 +169,10 @@ module.exports = {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 5;
         ctx.fillStyle = "#FFFFFF";
-        ctx.fillText(ReBeL, canvas.width / 3.0, canvas.height / 2.0);
+        ctx.fillText(guildMember.user.username, canvas.width / 3.0, canvas.height / 2.0);
         ctx.font = "21px sans-serif";
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
+        ctx.fillText("\nAccount age: " + ageA.join(" ") + "\nID: " + guildMember.id, canvas.width / 3.0, canvas.height / 2.0);
         const avatar = await Canvas.loadImage(
           guildMember.user.displayAvatarURL
         );

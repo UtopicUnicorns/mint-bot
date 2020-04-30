@@ -72,6 +72,11 @@ client.once("ready", () => {
         .join("\n\n")
   );
 
+  //loop read
+  setInterval(() => {
+    console.log('');
+  }, 1000);
+
   //change bot Status
   setInterval(() => {
     var RAN = [`https://artemisbot.eu`, `${client.guilds.size} servers`];

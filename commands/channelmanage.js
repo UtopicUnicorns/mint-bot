@@ -94,7 +94,7 @@ module.exports = {
             let channelget = getGuild.get(message.guild.id);
             if (!channelget) return message.channel.send("You do not have set me up yet.\nSay the words: `setup auto`");
             if (args[1] == 'null' || args[1] == 'reset' || args[1] == '0') {
-                channelget.reactionChannel = `0`;
+                channelget.streamChannel = `0`;
                 message.reply(args[0] + ' channel has been set to 0/reset!');
                 return setGuild.run(channelget);
             }

@@ -9,7 +9,7 @@ module.exports = {
     //load prefix
     const prefixstart = getGuild.get(message.guild.id);
     const prefix = prefixstart.prefix;
-    
+
     //Usage
     let getUsage = db.prepare("SELECT * FROM usage WHERE command = ?");
     let setUsage = db.prepare(
@@ -18,19 +18,15 @@ module.exports = {
     usage = getUsage.get("support");
     usage.number++;
     setUsage.run(usage);
-    
+
     //build args
     const args = message.content.slice(prefix.length + 8).split(" ");
 
     //Complete support
-    if (args[0].toLowerCase() == "done") {
-      if (message.channel.name.startsWith("\u231B")) {
-        let changeC = message.channel.name;
-        let changeCC = changeC.split("");
-        let changeCCC = changeCC.slice(1);
-        message.channel.setName(changeCCC.join());
-        return message.reply("Wrapping this up, we are done here!");
-      }
+    if (!args[0]) {
+      return message.reply(
+        "Simply type `help` to start a session if you are in a support channel\nThen write `done` when you received the help!"
+      );
     }
 
     //reject non mods after this point
@@ -76,9 +72,7 @@ module.exports = {
           "Use in channel you want assigned/removed as support channel\n" +
           prefix +
           "support set" +
-          "\n\nUse in support channel when support is done\n" +
-          prefix +
-          "support done"
+          "\n\nUse in support channel when support is done\n`done`"
       )
       .addField("Support channels of this server: ", array2.join("\n"));
     return message.channel.send({

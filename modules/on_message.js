@@ -208,18 +208,18 @@ module.exports = {
       let cCname = nameSup.name;
       let eCname = "\u231B";
       if (nameSup.name.startsWith("\u231B")) {
+        if (message.content.toLowerCase() == "done") {
+          let changeC = message.channel.name;
+          let changeCC = changeC.split("");
+          let changeCCC = changeCC.slice(1);
+          message.channel.setName(changeCCC.join());
+          return message.reply("Wrapping this up, we are done here!");
+        }
       } else {
-        message.channel.setName(`${eCname}` + cCname);
-        message.reply("You have started a support session!");
-        setTimeout(() => {
-          return message.reply(
-            "Do not forget to write\n" +
-              "`" +
-              prefix +
-              "support done`\n" +
-              "When you are done receiving help!"
-          );
-        }, 300000);
+        if (message.content.toLowerCase() == "help") {
+          message.channel.setName(`${eCname}` + cCname);
+          return message.reply("You have started a support session!");
+        }
       }
     }
 
@@ -263,85 +263,102 @@ module.exports = {
     if (muteChannel1 == "0") {
     } else {
       if (message.channel.id === muteChannel1.id) {
-        if (message.content == message.author.username + "1337") {
-          if (guildChannels.autoMod == "strict") {
-            return message.reply(
-              "Our sincere apologies, Automod Strict is ON\nWhich means that people have to be manually approved!"
-            );
-          } else {
-            if (message.member.hasPermission("KICK_MEMBERS"))
-              return message.reply(
-                "So I fixed this, beecause you lot cannot behave yourselves..."
-              );
-            let userscore1 = getScore.get(message.author.id, message.guild.id);
-            if (!userscore1) {
-            } else {
-              if (userscore1.muted == "1")
+        //if (message.content == message.author.username + "1337") {
+        function verifyHuman(message) {
+          let captcha = new Captcha();
+          const attachment = new Discord.Attachment(
+            captcha.PNGStream,
+            "captcha.png"
+          );
+          message.reply(
+            "**Enter the text shown in the image below:**\nIf you're blind or visually disabled then ping an admin.",
+            attachment
+          );
+          let collector = message.channel.createMessageCollector(
+            (m) => m.author.id === message.author.id
+          );
+          collector.on("collect", async (m) => {
+            if (m.content.toUpperCase() === captcha.value) {
+              if (guildChannels.autoMod == "strict") {
                 return message.reply(
-                  "You have been muted by our system due to breaking rules, the verification system is not for you!"
+                  "Our sincere apologies, Automod Strict is ON\nWhich means that people have to be manually approved!"
                 );
-            }
-            let roleadd = message.guild.roles.find(
-              (r) => r.name === "~/Members"
-            );
-            let roledel = message.guild.roles.find((r) => r.name === "Muted");
-            let member = message.member;
-            message.member.addRole(roleadd).catch(console.error);
-            message.member.removeRole(roledel).catch(console.error);
-            var ReBeL = member;
-            var bel = [
-              "\njust started brewing some minty tea!",
-              "\nis using Arch BTW!",
-              "\necho 'is here!'",
-              "\nis sipping minty tea!",
-              "\nuseradd -m -g users /bin/sh @",
-            ];
-            var moon = bel[~~(Math.random() * bel.length)];
-            moon = moon.replace("@", message.author.username);
-            const canvas = Canvas.createCanvas(700, 250);
-            const ctx = canvas.getContext("2d");
-            const background = await Canvas.loadImage("./mintwelcome.png");
-            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            ctx.font = "30px Zelda";
-            ctx.shadowColor = "black";
-            ctx.shadowBlur = 5;
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillText(
-              message.author.username,
-              canvas.width / 3.0,
-              canvas.height / 2.0
-            );
-            const avatar = await Canvas.loadImage(
-              message.author.displayAvatarURL
-            );
-            ctx.drawImage(avatar, 600, 25, 50, 50);
-            ctx.beginPath();
-            ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.clip();
-            const guildlogo = await Canvas.loadImage(message.guild.iconURL);
-            ctx.drawImage(guildlogo, 25, 25, 200, 200);
-            ctx.font = "21px sans-serif";
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(moon, canvas.width / 3.0, canvas.height / 2.0);
-            const attachment = new Discord.Attachment(
-              canvas.toBuffer(),
-              "welcome-image.png"
-            );
-            await generalChannel1
-              .send(attachment)
-              .catch((error) =>
-                console.log(
-                  moment().format("MMMM Do YYYY, HH:mm:ss") +
-                    "\n" +
-                    __filename +
-                    ":" +
-                    ln()
-                )
-              );
-            return message.channel.send(`${member} has been approved.`);
-          }
+              } else {
+                //if (message.member.hasPermission("KICK_MEMBERS"))
+                // return message.reply(
+                //   "So I fixed this, because you lot cannot behave yourselves..."
+                // );
+                let userscore1 = getScore.get(
+                  message.author.id,
+                  message.guild.id
+                );
+                if (!userscore1) {
+                } else {
+                  if (userscore1.muted == "1")
+                    return message.reply(
+                      "You have been muted by our system due to breaking rules, the verification system is not for you!"
+                    );
+                }
+                let roleadd = message.guild.roles.find(
+                  (r) => r.name === "~/Members"
+                );
+                let roledel = message.guild.roles.find(
+                  (r) => r.name === "Muted"
+                );
+                let member = message.author;
+                var cdate = moment.utc(member.createdAt).format("YYYYMMDD");
+                let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
+                let ageA = ageS.split(" ");
+                if (roleadd) {
+                  await message.member.addRole(roleadd).catch(console.error);
+                }
+                if (roledel) {
+                  await message.member.removeRole(roledel).catch(console.error);
+                }
+                const canvas = Canvas.createCanvas(700, 250);
+                const ctx = canvas.getContext("2d");
+                const background = await Canvas.loadImage("./mintwelcome.png");
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                ctx.font = "30px Zelda";
+                ctx.shadowColor = "black";
+                ctx.shadowBlur = 5;
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillText(
+                  member.username,
+                  canvas.width / 3.0,
+                  canvas.height / 2.0
+                );
+                ctx.font = "21px sans-serif";
+                ctx.fillStyle = "#ffffff";
+                ctx.fillText(
+                  "\nAccount age: " + ageA.join(" ") + "\nID: " + member.id,
+                  canvas.width / 3.0,
+                  canvas.height / 2.0
+                );
+                const avatar = await Canvas.loadImage(member.displayAvatarURL);
+                ctx.drawImage(avatar, 600, 25, 50, 50);
+                ctx.beginPath();
+                ctx.arc(125, 125, 100, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                const guildlogo = await Canvas.loadImage(message.guild.iconURL);
+                ctx.drawImage(guildlogo, 25, 25, 200, 200);
+                const attachment = new Discord.Attachment(
+                  canvas.toBuffer(),
+                  "welcome-image.png"
+                );
+                await generalChannel1.send(attachment);
+
+                return message.channel.send(`${member} has been approved.`);
+              }
+            } else message.channel.send("Failed Verification!");
+            collector.stop();
+          });
         }
+        if (message.content == prefix + "verify") {
+          verifyHuman(message);
+        }
+        //}
       }
     }
 
@@ -488,6 +505,9 @@ module.exports = {
       }
     }
 
+    /* let user = message.guild.members.get("96651732985081856");
+    message.client.emit("guildMemberAdd", user); */
+
     //Simulate guild member leave
     if (message.content === prefix + "guildmemberremove") {
       if (
@@ -583,12 +603,19 @@ module.exports = {
         message.author.id == "121723489014120448"
       ) {
       } else {
+        // if (msgRecently.has(message.author.id + message.guild.id)) {
+        // } else {
+        //   msgRecently.add(message.author.id + message.guild.id);
+        //  setTimeout(() => {
+        // msgRecently.delete(message.author.id + message.guild.id);
+        //  }, 5000);
         score.points++;
         const curLevel = Math.floor(0.5 * Math.sqrt(score.points));
         if (score.level < curLevel) {
           score.level++;
         }
         setScore.run(score);
+        // }
       }
     }
 
@@ -670,12 +697,14 @@ module.exports = {
           message.mentions.users.first() || message.client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (congratulationsRecently.has(message.author.id)) {
+        if (congratulationsRecently.has(message.author.id + message.guild.id)) {
           return;
         } else {
-          congratulationsRecently.add(message.author.id);
+          congratulationsRecently.add(message.author.id) + message.guild.id;
           setTimeout(() => {
-            congratulationsRecently.delete(message.author.id);
+            congratulationsRecently.delete(
+              message.author.id + message.guild.id
+            );
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
@@ -700,12 +729,14 @@ module.exports = {
           message.mentions.users.first() || message.client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (congratulationsRecently.has(message.author.id)) {
+        if (congratulationsRecently.has(message.author.id + message.guild.id)) {
           return;
         } else {
-          congratulationsRecently.add(message.author.id);
+          congratulationsRecently.add(message.author.id + message.guild.id);
           setTimeout(() => {
-            congratulationsRecently.delete(message.author.id);
+            congratulationsRecently.delete(
+              message.author.id + message.guild.id
+            );
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
@@ -730,12 +761,14 @@ module.exports = {
           message.mentions.users.first() || message.client.users.get(args[0]);
         if (!user) return;
         if (user == message.author) return;
-        if (congratulationsRecently.has(message.author.id)) {
+        if (congratulationsRecently.has(message.author.id + message.guild.id)) {
           return;
         } else {
-          congratulationsRecently.add(message.author.id);
+          congratulationsRecently.add(message.author.id + message.guild.id);
           setTimeout(() => {
-            congratulationsRecently.delete(message.author.id);
+            congratulationsRecently.delete(
+              message.author.id + message.guild.id
+            );
           }, 600000);
           const pointsToAdd = parseInt(20, 10);
           let userscore = getScore.get(user.id, message.guild.id);
@@ -757,6 +790,15 @@ module.exports = {
 
     //require prefix
     if (!message.content.startsWith(prefix)) return;
+    //anti command spam fuck you guys
+    if (supportGet.has(message.author.id + message.guild.id)) {
+      return;
+    } else {
+      supportGet.add(message.author.id + message.guild.id);
+      setTimeout(() => {
+        supportGet.delete(message.author.id + message.guild.id);
+      }, 10000);
+    }
     try {
       command.execute(message);
     } catch (error) {

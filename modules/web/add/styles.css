@@ -38,6 +38,25 @@ body {
   z-index: 1;
 }
 
+h1 {
+  font-family: "Quicksand";
+  text-shadow: 5px 5px rgb(13, 27, 9);
+  font-size: 20px;
+  transition: 500ms;
+}
+
+h1:hover {
+  text-shadow: 5px 5px rgb(46, 85, 34);
+  font-size: 30px;
+}
+
+hr {
+  border: 0;
+  height: 0;
+  box-shadow: 0 0 10px 1px rgb(255, 255, 255);
+  width: 350px;
+}
+
 #header {
   position: absolute;
   left: 0px;
