@@ -1,8 +1,0 @@
-OS: Gentoo Linux x86_64 
-Kernel: 5.5.2-gentoo-tamika 
-Shell: bash 4.4.23
-DE: KDE 
-WM: i3 
-CPU: Intel Xeon E5-2650 v2 (16) @ 3.400GHz 
-GPU: AMD ATI Radeon RX 470/480/570/570X/580/580X/590 
-Memory: 842MiB / 32030MiB

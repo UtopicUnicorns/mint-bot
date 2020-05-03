@@ -50,7 +50,6 @@ module.exports = {
     }
     //account age check
     let roleadd1 = guildMember.guild.roles.find((r) => r.name === "~/Members");
-    let roledel1 = guildMember.guild.roles.find((r) => r.name === "Muted");
     let user = guildMember.user;
     let userscore2 = getScore.get(user.id, guildMember.guild.id);
     if (!userscore2) {
@@ -69,11 +68,50 @@ module.exports = {
       setScore.run(userscore2);
     } else {
       if (userscore2.muted == "1") {
-        if (roledel1) {
-          guildMember.addRole(roledel1);
-        }
         if (muteChannel1 == "0") {
         } else {
+          let array = [];
+          guildMember.client.channels
+            .filter((channel) => channel.guild.id === guildMember.guild.id)
+            .map((channels) => array.push(channels.id));
+          for (let i of array) {
+            setTimeout(() => {
+              let channel = guildMember.guild.channels.find(
+                (channel) => channel.id === i
+              );
+              if (channel) {
+                if (muteChannel1) {
+                  if (i == muteChannel1.id) {
+                    channel.overwritePermissions(user, {
+                      VIEW_CHANNEL: true,
+                      READ_MESSAGES: true,
+                      SEND_MESSAGES: true,
+                      READ_MESSAGE_HISTORY: true,
+                      ATTACH_FILES: false,
+                    });
+                  }
+                  if (i !== muteChannel1.id) {
+                    channel.overwritePermissions(user, {
+                      VIEW_CHANNEL: false,
+                      READ_MESSAGES: false,
+                      SEND_MESSAGES: false,
+                      READ_MESSAGE_HISTORY: false,
+                      ADD_REACTIONS: false,
+                    });
+                  }
+                }
+                if (!muteChannel1) {
+                  channel.overwritePermissions(user, {
+                    VIEW_CHANNEL: false,
+                    READ_MESSAGES: false,
+                    SEND_MESSAGES: false,
+                    READ_MESSAGE_HISTORY: false,
+                    ADD_REACTIONS: false,
+                  });
+                }
+              }
+            }, 500);
+          }
           return muteChannel1.send(
             user +
               ", You have been muted by our system due to breaking rules, trying to leave and rejoin will not work!"
@@ -117,11 +155,52 @@ module.exports = {
     }
     if (muteChannel1 == `0`) {
     } else {
+      let array = [];
+      guildMember.client.channels
+        .filter((channel) => channel.guild.id === guildMember.guild.id)
+        .map((channels) => array.push(channels.id));
+      let count = "0";
+      for (let i of array) {
+        count++;
+        setTimeout(() => {
+          let channel = guildMember.guild.channels.find(
+            (channel) => channel.id === i
+          );
+          if (channel) {
+            if (muteChannel1) {
+              if (i == muteChannel1.id) {
+                channel.overwritePermissions(user, {
+                  VIEW_CHANNEL: true,
+                  READ_MESSAGES: true,
+                  SEND_MESSAGES: true,
+                  READ_MESSAGE_HISTORY: true,
+                  ATTACH_FILES: false,
+                });
+              }
+              if (i !== muteChannel1.id) {
+                channel.overwritePermissions(user, {
+                  VIEW_CHANNEL: false,
+                  READ_MESSAGES: false,
+                  SEND_MESSAGES: false,
+                  READ_MESSAGE_HISTORY: false,
+                  ADD_REACTIONS: false,
+                });
+              }
+            }
+            if (!muteChannel1) {
+              channel.overwritePermissions(user, {
+                VIEW_CHANNEL: false,
+                READ_MESSAGES: false,
+                SEND_MESSAGES: false,
+                READ_MESSAGE_HISTORY: false,
+                ADD_REACTIONS: false,
+              });
+            }
+          }
+        }, 500 * count);
+      }
       //if Anti raid is on
       if (guildChannels.autoMod == "strict") {
-        if (roledel1) {
-          guildMember.addRole(roledel1).catch(console.error);
-        }
         try {
           return muteChannel1.send(
             ageA.join(" ") +
@@ -142,9 +221,6 @@ module.exports = {
       //if there is a mute channel
       const prefixstart = getGuild.get(guildMember.guild.id);
       const prefix = prefixstart.prefix;
-      if (roledel1) {
-        guildMember.addRole(roledel1).catch(console.error);
-      }
       return muteChannel1.send(
         ageA.join(" ") +
           " " +
@@ -169,10 +245,18 @@ module.exports = {
         ctx.shadowColor = "black";
         ctx.shadowBlur = 5;
         ctx.fillStyle = "#FFFFFF";
-        ctx.fillText(guildMember.user.username, canvas.width / 3.0, canvas.height / 2.0);
+        ctx.fillText(
+          guildMember.user.username,
+          canvas.width / 3.0,
+          canvas.height / 2.0
+        );
         ctx.font = "21px sans-serif";
         ctx.fillStyle = "#ffffff";
-        ctx.fillText("\nAccount age: " + ageA.join(" ") + "\nID: " + guildMember.id, canvas.width / 3.0, canvas.height / 2.0);
+        ctx.fillText(
+          "\nAccount age: " + ageA.join(" ") + "\nID: " + guildMember.id,
+          canvas.width / 3.0,
+          canvas.height / 2.0
+        );
         const avatar = await Canvas.loadImage(
           guildMember.user.displayAvatarURL
         );

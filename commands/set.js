@@ -68,11 +68,6 @@ module.exports = {
           if (userscore.muted == `1`) {
             return message.reply(member + " is already muted!");
           } else {
-            if (memberrole) {
-              setTimeout(() => {
-                member.removeRole(memberrole).catch(console.log());
-              }, 2500);
-            }
             let array = [];
             message.client.channels
               .filter((channel) => channel.guild.id === message.guild.id)
@@ -103,7 +98,12 @@ module.exports = {
                     ADD_REACTIONS: false,
                   });
                 }
-              }, 200);
+              }, 500);
+            }
+            if (memberrole) {
+              setTimeout(() => {
+                member.removeRole(memberrole).catch(console.log());
+              }, 10000);
             }
 
             let userscore = getScore.get(member.id, message.guild.id);

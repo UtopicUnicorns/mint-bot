@@ -1,4 +1,0 @@
-OS: Linux Mint 19.2 Tina x86_64 
-CPU: Intel i3-7100U (4) @ 2.400GHz 
-GPU: NVIDIA NVIDIA Corporation Device 179c 
-GPU: Intel Integrated Graphics

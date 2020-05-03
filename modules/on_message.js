@@ -271,7 +271,9 @@ module.exports = {
             "captcha.png"
           );
           message.reply(
-            "**Enter the text shown in the image below:**\nIf you're blind or visually disabled then ping an admin.",
+            "**Enter the text shown in the image below:**\nIf you fail the verifications just do " +
+              prefix +
+              "verify again!\nIf you're blind or visually disabled then ping an admin.",
             attachment
           );
           let collector = message.channel.createMessageCollector(
@@ -302,18 +304,14 @@ module.exports = {
                 let roleadd = message.guild.roles.find(
                   (r) => r.name === "~/Members"
                 );
-                let roledel = message.guild.roles.find(
-                  (r) => r.name === "Muted"
-                );
                 let member = message.author;
                 var cdate = moment.utc(member.createdAt).format("YYYYMMDD");
                 let ageS = moment(cdate, "YYYYMMDD").fromNow(true);
                 let ageA = ageS.split(" ");
                 if (roleadd) {
-                  await message.member.addRole(roleadd).catch(console.error);
-                }
-                if (roledel) {
-                  await message.member.removeRole(roledel).catch(console.error);
+                  setTimeout(async () => {
+                    await message.member.addRole(roleadd).catch(console.error);
+                  }, 5000);
                 }
                 const canvas = Canvas.createCanvas(700, 250);
                 const ctx = canvas.getContext("2d");
@@ -348,7 +346,24 @@ module.exports = {
                   "welcome-image.png"
                 );
                 await generalChannel1.send(attachment);
-
+                setTimeout(() => {
+                  let array2 = [];
+                  message.client.channels
+                    .filter((channel) => channel.guild.id === message.guild.id)
+                    .map((channels) => array2.push(channels.id));
+                  for (let i of array2) {
+                    setTimeout(() => {
+                      let channel = message.guild.channels.find(
+                        (channel) => channel.id === i
+                      );
+                      if (channel) {
+                        if (channel.permissionOverwrites.get(member.id)) {
+                          channel.permissionOverwrites.get(member.id).delete();
+                        }
+                      }
+                    }, 200);
+                  }
+                }, 2000);
                 return message.channel.send(`${member} has been approved.`);
               }
             } else message.channel.send("Failed Verification!");
@@ -491,7 +506,16 @@ module.exports = {
         return;
       }
     }
-
+    if (message.content.toLowerCase() == "kill yourself") {
+      if (message.author.id === "127708549118689280") {
+        message.reply(
+          "\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80\uD83D\uDC80"
+        );
+        setTimeout(() => {
+          process.exit();
+        }, 2000);
+      }
+    }
     //Simulate guild member join
     if (message.content === prefix + "guildmemberadd") {
       if (
@@ -564,7 +588,7 @@ module.exports = {
             to: "en",
           })
             .then((res) => {
-              if (message.content.includes("ツ")) return;
+              if (message.content.includes("ãƒ„")) return;
               if (res == message.content) return;
               try {
                 const translationtext = new Discord.RichEmbed()
