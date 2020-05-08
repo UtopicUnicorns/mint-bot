@@ -72,7 +72,9 @@ module.exports = {
             message.client.channels
               .filter((channel) => channel.guild.id === message.guild.id)
               .map((channels) => array.push(channels.id));
+              let count = "0";
             for (let i of array) {
+              count++
               setTimeout(() => {
                 let channel = message.guild.channels.find(
                   (channel) => channel.id === i
@@ -98,7 +100,7 @@ module.exports = {
                     ADD_REACTIONS: false,
                   });
                 }
-              }, 500);
+              }, 200 * count);
             }
             if (memberrole) {
               setTimeout(() => {

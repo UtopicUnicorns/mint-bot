@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/UtopicUnicorns/mint-bot#readme",
   "dependencies": {
-    "@haileybot/captcha-generator": "^1.1.3",
     "better-sqlite3": "^5.4.3",
     "body-parser": "^1.19.0",
     "canvas": "^2.6.1",
@@ -41,6 +40,7 @@
     "https": "^1.0.0",
     "jquery": "^3.4.1",
     "moment": "^2.24.0",
+    "node-gyp": "^6.1.0",
     "node-opus": "^0.3.3",
     "nodejs-linenumber": "^1.0.0",
     "nodemon": "^2.0.2",

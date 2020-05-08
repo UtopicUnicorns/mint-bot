@@ -27,13 +27,12 @@ module.exports = {
     if (!logsChannel1 == "0") {
       //report
       let limit1 = 1;
-      if (reaction.emoji.name == "❌" && reaction.count == limit1) {
+      if (reaction.emoji.name == "\uD83D\uDEAB" && reaction.count == limit1) {
         if (reaction.message.author.id == "440892659264126997") return;
         if (reaction.users.first() == reaction.message.author)
           return reaction.remove(reaction.message.author.id);
         if (!reaction.message.attachments.size > 0) {
           try {
-            logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
             const editmessage = new Discord.RichEmbed()
               .setTitle("A message got reported!")
               .setAuthor(
@@ -64,7 +63,6 @@ module.exports = {
         }
         if (reaction.message.content === "") {
           try {
-            logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
             const image = reaction.message.attachments.array()[0].url;
             const editmessage = new Discord.RichEmbed()
               .setTitle("A message got reported!")
@@ -95,7 +93,6 @@ module.exports = {
           }
         }
         try {
-          logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
           const image = reaction.message.attachments.array()[0].url;
           const editmessage = new Discord.RichEmbed()
             .setTitle("A message got reported!")
@@ -128,9 +125,8 @@ module.exports = {
       }
       //reportdelete
       let limit2 = 3;
-      if (reaction.emoji.name == "❌" && reaction.count == limit2) {
+      if (reaction.emoji.name == "\uD83D\uDEAB" && reaction.count == limit2) {
         try {
-          logsChannel1.send("<@" + reaction.message.guild.owner.id + ">");
           if (reaction.message.author.id == "440892659264126997") return;
           if (reaction.message.author.id == "127708549118689280") return;
           if (reaction.users.first() == reaction.message.author)

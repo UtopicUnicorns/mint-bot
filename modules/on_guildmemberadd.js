@@ -4,8 +4,8 @@ dbinit = require("./dbinit.js");
 dbinit.dbinit();
 module.exports = {
   onGuildMemberAdd: async function (guildMember) {
-    //ignoredbl
-    if (guildMember.guild.id == "264445053596991498") return;
+    //ignore bots
+    if (guildMember.user.bot) return;
     //load shit
 
     const guildChannels = getGuild.get(guildMember.guild.id);
@@ -70,26 +70,19 @@ module.exports = {
       if (userscore2.muted == "1") {
         if (muteChannel1 == "0") {
         } else {
+          let count = "0";
           let array = [];
           guildMember.client.channels
             .filter((channel) => channel.guild.id === guildMember.guild.id)
             .map((channels) => array.push(channels.id));
           for (let i of array) {
+            count++;
             setTimeout(() => {
               let channel = guildMember.guild.channels.find(
                 (channel) => channel.id === i
               );
               if (channel) {
                 if (muteChannel1) {
-                  if (i == muteChannel1.id) {
-                    channel.overwritePermissions(user, {
-                      VIEW_CHANNEL: true,
-                      READ_MESSAGES: true,
-                      SEND_MESSAGES: true,
-                      READ_MESSAGE_HISTORY: true,
-                      ATTACH_FILES: false,
-                    });
-                  }
                   if (i !== muteChannel1.id) {
                     channel.overwritePermissions(user, {
                       VIEW_CHANNEL: false,
@@ -99,18 +92,19 @@ module.exports = {
                       ADD_REACTIONS: false,
                     });
                   }
-                }
-                if (!muteChannel1) {
-                  channel.overwritePermissions(user, {
-                    VIEW_CHANNEL: false,
-                    READ_MESSAGES: false,
-                    SEND_MESSAGES: false,
-                    READ_MESSAGE_HISTORY: false,
-                    ADD_REACTIONS: false,
+                  let channel2 = guildMember.guild.channels.find(
+                    (channel) => channel.id === muteChannel1.id
+                  );
+                  channel2.overwritePermissions(user, {
+                    VIEW_CHANNEL: true,
+                    READ_MESSAGES: true,
+                    SEND_MESSAGES: true,
+                    READ_MESSAGE_HISTORY: true,
+                    ATTACH_FILES: false,
                   });
                 }
               }
-            }, 500);
+            }, 200 * count);
           }
           return muteChannel1.send(
             user +
@@ -168,15 +162,6 @@ module.exports = {
           );
           if (channel) {
             if (muteChannel1) {
-              if (i == muteChannel1.id) {
-                channel.overwritePermissions(user, {
-                  VIEW_CHANNEL: true,
-                  READ_MESSAGES: true,
-                  SEND_MESSAGES: true,
-                  READ_MESSAGE_HISTORY: true,
-                  ATTACH_FILES: false,
-                });
-              }
               if (i !== muteChannel1.id) {
                 channel.overwritePermissions(user, {
                   VIEW_CHANNEL: false,
@@ -186,18 +171,19 @@ module.exports = {
                   ADD_REACTIONS: false,
                 });
               }
-            }
-            if (!muteChannel1) {
-              channel.overwritePermissions(user, {
-                VIEW_CHANNEL: false,
-                READ_MESSAGES: false,
-                SEND_MESSAGES: false,
-                READ_MESSAGE_HISTORY: false,
-                ADD_REACTIONS: false,
+              let channel2 = guildMember.guild.channels.find(
+                (channel) => channel.id === muteChannel1.id
+              );
+              channel2.overwritePermissions(user, {
+                VIEW_CHANNEL: true,
+                READ_MESSAGES: true,
+                SEND_MESSAGES: true,
+                READ_MESSAGE_HISTORY: true,
+                ATTACH_FILES: false,
               });
             }
           }
-        }, 500 * count);
+        }, 200 * count);
       }
       //if Anti raid is on
       if (guildChannels.autoMod == "strict") {

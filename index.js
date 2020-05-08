@@ -74,7 +74,7 @@ client.once("ready", () => {
 
   //loop read
   setInterval(() => {
-    console.log('');
+    console.log("");
   }, 1000);
 
   //change bot Status
@@ -365,8 +365,16 @@ client.on("presenceUpdate", (oldMember, newMember) => {
 });
 
 //reddit load rss
+//Mint
 emitter.add({
   url: "https://www.reddit.com/r/linuxmint/new.rss",
+  refresh: 10000,
+  ignoreFirst: true,
+});
+
+//Pop_OS
+emitter.add({
+  url: "https://www.reddit.com/r/pop_os/new.rss",
   refresh: 10000,
   ignoreFirst: true,
 });
@@ -385,16 +393,41 @@ emitter.on("item:new", (item) => {
 
   //welp let's send the shit
   try {
-    const redditmessage = new Discord.RichEmbed()
-      .setTitle(item.title.substr(0, 100))
-      .setURL(item.link)
-      .setColor("RANDOM")
-      .setDescription(reddittext3)
-      .addField(item.link + "\n", "https://www.reddit.com" + item.author, true)
-      .setTimestamp();
-    return client.channels.get("656194923107713024").send({
-      embed: redditmessage,
-    });
+    //mint
+    if (item.link.startsWith("https://www.reddit.com/r/linuxmint/")) {
+      const redditmessage = new Discord.RichEmbed()
+        .setTitle(item.title.substr(0, 100))
+        .setURL(item.link)
+        .setColor("RANDOM")
+        .setDescription(reddittext3)
+        .addField(
+          item.link + "\n",
+          "https://www.reddit.com" + item.author,
+          true
+        )
+        .setTimestamp();
+      return client.channels.get("656194923107713024").send({
+        embed: redditmessage,
+      });
+    }
+
+    //pop_OS
+    if (item.link.startsWith("https://www.reddit.com/r/pop_os/")) {
+      const redditmessage = new Discord.RichEmbed()
+        .setTitle(item.title.substr(0, 100))
+        .setURL(item.link)
+        .setColor("RANDOM")
+        .setDescription(reddittext3)
+        .addField(
+          item.link + "\n",
+          "https://www.reddit.com" + item.author,
+          true
+        )
+        .setTimestamp();
+      return client.channels.get("706777014610165780").send({
+        embed: redditmessage,
+      });
+    }
   } catch {
     //log JK fuck you
     console.log();

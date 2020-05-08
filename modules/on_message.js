@@ -265,7 +265,7 @@ module.exports = {
       if (message.channel.id === muteChannel1.id) {
         //if (message.content == message.author.username + "1337") {
         function verifyHuman(message) {
-          let captcha = new Captcha();
+          let captcha = new Captcha2();
           const attachment = new Discord.Attachment(
             captcha.PNGStream,
             "captcha.png"
@@ -816,7 +816,7 @@ module.exports = {
     if (!message.content.startsWith(prefix)) return;
     //anti command spam fuck you guys
     if (supportGet.has(message.author.id + message.guild.id)) {
-      return;
+      return message.reply('Command executed-- wait nope. wait 10 seconds between each command.');
     } else {
       supportGet.add(message.author.id + message.guild.id);
       setTimeout(() => {

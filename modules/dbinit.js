@@ -140,13 +140,30 @@ exports.dbinit = function () {
     )
     .get();
   if (!table9["count(*)"]) {
-    db.prepare(
-      "CREATE TABLE support (cid TEXT PRIMARY KEY, gid);"
-    ).run();
+    db.prepare("CREATE TABLE support (cid TEXT PRIMARY KEY, gid TEXT);").run();
     db.prepare("CREATE UNIQUE INDEX idx_support_id ON support (cid);").run();
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
+  //////////////////////
+  //specs           DB//
+  //////////////////////
+  const table10 = db
+    .prepare(
+      "SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'specs';"
+    )
+    .get();
+  if (!table10["count(*)"]) {
+    db.prepare("CREATE TABLE specs (uid TEXT PRIMARY KEY, spec TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_specs_id ON specs (uid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  }
+  //Run specs DB
+  getSpecs = db.prepare("SELECT * FROM specs WHERE uid = ?");
+  setSpecs = db.prepare(
+    "INSERT OR REPLACE INTO specs (uid, spec) VALUES (@uid, @spec);"
+  );
   //Run support DB
   getSupport = db.prepare("SELECT * FROM support WHERE cid = ? AND gid = ?");
   setSupport = db.prepare(

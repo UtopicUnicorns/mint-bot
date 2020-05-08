@@ -18,7 +18,7 @@ module.exports = {
     setUsage.run(usage);
     //
     function verifyHuman(message) {
-      let captcha = new Captcha();
+      let captcha = new Captcha2();
       const attachment = new Discord.Attachment(
           captcha.PNGStream,
           "captcha.png"
